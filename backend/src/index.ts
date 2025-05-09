@@ -1,6 +1,6 @@
 import express from 'express'
 
-const { PORT } = process.env
+const { BACKEND_PORT } = process.env
 
 const app = express();
 
@@ -8,6 +8,6 @@ app.get('/', (req, res) => {
     res.send('TEST')
 })
 
-app.listen(PORT, () => {
-    console.log(`Financial app listening on port ${PORT}`)
+app.listen(BACKEND_PORT, () => {
+    console.log(`Financial app listening on port ${BACKEND_PORT}`)
 })
