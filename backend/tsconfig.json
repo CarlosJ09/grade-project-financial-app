@@ -14,7 +14,7 @@
       "isolatedModules": true, // Required for using ESM modules
       "baseUrl": ".", // Allow absolute imports relative to project root
       "paths": {
-        "*": ["node_modules/*"]
+        "@/*": ["src/*"]
       }
     }
   }
