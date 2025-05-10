@@ -9,4 +9,3 @@ export class UserController {
         res.json(users);
     }
 }
-

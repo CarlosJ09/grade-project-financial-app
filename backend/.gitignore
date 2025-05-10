@@ -16,3 +16,6 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
+
+# prisma
+generated/prisma/

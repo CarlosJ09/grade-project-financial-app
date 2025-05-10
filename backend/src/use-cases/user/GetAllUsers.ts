@@ -8,4 +8,3 @@ export class GetAllUsers {
         return this.userRepository.findAll();
     }
 }
-
