@@ -26,20 +26,8 @@ services:
       JWT_SECRET: ${JWT_SECRET}
     volumes:
       - ./backend:/app
-    command: ["npm", "run", "dev"]
+    command: [ "npm", "run", "dev" ]
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: frontend.dockerfile
-    container_name: financial_app_frontend
-    depends_on:
-      - backend
-    ports:
-      - "3000:3000"
-    volumes:
-      - ./frontend:/app
-    command: ["npm", "run", "start"]
 
 volumes:
   postgres_data:
