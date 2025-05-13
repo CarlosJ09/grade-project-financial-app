@@ -10,6 +10,6 @@ RUN npm install
 
 COPY . .
 
-EXPOSE 4000
+EXPOSE ${PORT}
 
 CMD ["npm", "run", "dev"]
