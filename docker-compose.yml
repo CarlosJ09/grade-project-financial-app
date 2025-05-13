@@ -16,7 +16,6 @@ services:
       context: ./backend
       dockerfile: backend.dockerfile
     container_name: financial_app_backend
-    restart: always
     depends_on:
       - db
     ports:
