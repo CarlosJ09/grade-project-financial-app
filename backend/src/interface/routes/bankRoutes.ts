@@ -16,7 +16,28 @@ const getBankById = new GetBankById(bankRepository);
 
 const bankController = new BankController(getAllBanks, getBankById);
 
+/**
+ * @swagger
+ * /banks:
+ *   get:
+ *     summary: Get all banks
+ *     tags: [Banks]
+ *     responses:
+ *       200:
+ *         description: A list of banks
+ */
 router.get("/banks", (req, res) => bankController.getAll(req, res));
+
+/**
+ * @swagger
+ * /banks/{id}:
+ *   get:
+ *     summary: Get a bank by id
+ *     tags: [Banks]
+ *     responses:
+ *       200:
+ *         description: A bank
+ */
 router.get("/banks/:id", (req, res) => bankController.getById(req, res));
 
 export { router as bankRoutes };

@@ -1,6 +1,6 @@
 import { Bank } from "@/domain/entities/Bank";
 
-export interface BankRepository {
+export interface IBankRepository {
     findAll(): Promise<Bank[]>;
     findById(id: string): Promise<Bank | null>;
     create(bank: Bank): Promise<Bank>;

@@ -1,8 +1,8 @@
 import { Bank } from "@/domain/entities/Bank";
-import { BankRepository } from "@/domain/interfaces/BankRepository";
+import { IBankRepository } from "@/domain/interfaces/IBankRepository";
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
-export class PostgresBankRepository implements BankRepository {
+export class PostgresBankRepository implements IBankRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
     async findAll(): Promise<Bank[]> {

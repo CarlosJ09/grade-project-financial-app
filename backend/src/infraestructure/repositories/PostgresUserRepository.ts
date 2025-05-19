@@ -1,8 +1,8 @@
 import { User } from "@/domain/entities/User";
-import { UserRepository } from "@/domain/interfaces/UserRepository";
+import { IUserRepository } from "@/domain/interfaces/IUserRepository";
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
-export class PostgresUserRepository implements UserRepository {
+export class PostgresUserRepository implements IUserRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
     async findAll(): Promise<User[]> {

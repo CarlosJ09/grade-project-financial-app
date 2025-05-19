@@ -16,7 +16,28 @@ const getUserById = new GetUserById(userRepository);
 
 const userController = new UserController(getAllUsers, getUserById);
 
+/**
+ * @swagger
+ * /users:
+ *   get:
+ *     summary: Get all users
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: A list of users
+ */
 router.get("/users", (req, res) => userController.getAll(req, res));
+
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Get a user by id
+ *     tags: [Users]
+ *     responses:
+ *       200:
+ *         description: A user
+ */
 router.get("/users/:id", (req, res) => userController.getById(req, res));
 
 export { router as userRoutes };
