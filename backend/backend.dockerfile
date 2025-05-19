@@ -4,9 +4,9 @@ WORKDIR /app
 
 COPY package*.json ./
 
-COPY ./src/infraestructure/prisma ./prisma/
-
 RUN npm install
+
+COPY ./src/infraestructure/prisma ./prisma/
 
 COPY . .
 

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { DbUserRepository } from "@/infraestructure/repositories/DbUserRepository";
 import { GetAllUsers } from "@/use-cases/user/GetAllUsers";
 import { UserController } from "@/interface/controllers/UserController";
-import { PrismaClient } from "@/infraestructure/generated/prisma";
+import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
 const router = Router();
 
