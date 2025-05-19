@@ -14,29 +14,4 @@ export class PostgresUserRepository implements UserRepository {
             where: { id }
         });
     }
-
-    async findByEmail(email: string): Promise<User | null> {
-        return this.prisma.user.findUnique({
-            where: { email }
-        });
-    }
-
-    async create(user: User): Promise<User> {
-        return this.prisma.user.create({
-            data: user
-        });
-    }
-
-    async update(user: User): Promise<User> {
-        return this.prisma.user.update({
-            where: { id: user.id },
-            data: user
-        });
-    }
-
-    async delete(id: string): Promise<void> {
-        await this.prisma.user.delete({
-            where: { id }
-        });
-    }
 }
