@@ -2,7 +2,7 @@ import { User } from "@/domain/entities/User";
 import { UserRepository } from "@/domain/interfaces/UserRepository";
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
-export class DbUserRepository implements UserRepository {
+export class PostgresUserRepository implements UserRepository {
     constructor(private readonly prisma: PrismaClient) { }
 
     async findAll(): Promise<User[]> {
