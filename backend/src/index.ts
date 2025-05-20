@@ -12,10 +12,10 @@ const { BACKEND_PORT } = process.env
 const app = express();
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 app.use(express.json());
 app.use(userRoutes);
 app.use(bankRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.listen(BACKEND_PORT, () => {
     console.log(`Financial app listening on port ${BACKEND_PORT}`)

@@ -23,19 +23,36 @@ JWT_SECRET=your_jwt_secret
 
 ### Using Docker (Recommended)
 
-1. Build and start all services:
+1. Install backend dependencies:
 ```bash
+cd backend
+npm i
+```
+
+2. Generate prisma client:
+```bash
+npx prisma generate
+```
+
+3. Install frontend dependencies:
+```bash
+cd ../frontend
+npm i
+```
+
+4. Return to root directory and build/start all services:
+```bash
+cd ..
 docker-compose up --build
 ```
 
 This will start:
 - PostgreSQL database
 - Backend API server
-- Frontend application
 
 ### Running Locally
 
-#### Backend
+#### Backend Setup
 
 1. Navigate to the backend directory:
 ```bash
@@ -44,7 +61,7 @@ cd backend
 
 2. Install dependencies:
 ```bash
-npm install
+npm i
 ```
 
 3. Start the development server:
@@ -52,16 +69,16 @@ npm install
 npm run dev
 ```
 
-#### Frontend
+#### Frontend Setup
 
 1. Navigate to the frontend directory:
 ```bash
-cd frontend
+cd ../frontend
 ```
 
 2. Install dependencies:
 ```bash
-npm install
+npm i
 ```
 
 3. Start the development server:
