@@ -1,8 +1,8 @@
-import { UserRepository } from "@/domain/interfaces/UserRepository";
+import { IUserRepository } from "@/domain/interfaces/IUserRepository";
 import { User } from "@/domain/entities/User";
 
 export class GetUserById {
-    constructor(private userRepository: UserRepository) { }
+    constructor(private userRepository: IUserRepository) { }
 
     async execute(id: string): Promise<User | null> {
         return this.userRepository.findById(id);
