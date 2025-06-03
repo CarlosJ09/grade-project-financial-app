@@ -16,15 +16,152 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  lastName  String
-  email     String   @unique
-  dateOfBirth DateTime
+  id           String   @id @default(uuid())
+  name         String
+  lastName     String
+  email        String   @unique
+  dateOfBirth  DateTime
   passwordHash String
-  status Boolean
+  status       Boolean
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  budgets            Budget[]
+  transactions       Transaction[]
+  userBanks          UserBank[]
+  courseEnrollments  CourseEnrollment[]
+  userModuleProgress UserModuleProgress[]
+  chatSessions       ChatSession[]
+  quizAttempts       QuizAttempt[]
+  recommendations    Recommendation[]
+
+  @@map("users")
+}
+
+model Budget {
+  id            String   @id @default(uuid())
+  userId        String
+  name          String   @db.VarChar(25)
+  description   String
+  currentAmount Decimal  @db.Decimal(18, 4)
+  goalAmount    Decimal  @db.Decimal(18, 4)
+  currencyId    String
+  startDate     DateTime
+  finishedDate  DateTime
+  state         String // Enum: active, inactive, completed
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deletedAt     DateTime?
+
+  // Relations
+  user                User                  @relation(fields: [userId], references: [id])
+  currency            Currency              @relation(fields: [currencyId], references: [id])
+  budgetLineMovements BudgetLineMovement[]
+
+  @@map("budgets")
+}
+
+model BudgetCategory {
+  id         String @id @default(uuid())
+  budgetId   String
+  categoryId String
+
+  // Relations (assuming many-to-many relationship)
+  @@map("budget_categories")
+}
+
+model BudgetLineMovement {
+  id           String   @id @default(uuid())
+  budgetId     String
+  transactionId String
+  movementType String // Enum: allocation, actual
+  amount       Decimal  @db.Decimal(18, 4)
+  dateMovement DateTime
+
+  // Relations
+  budget      Budget      @relation(fields: [budgetId], references: [id])
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("budget_line_movements")
+}
+
+model Transaction {
+  id                    String    @id @default(uuid())
+  userId                String
+  amount                Decimal   @db.Decimal(18, 4)
+  currencyId            String
+  exchangeRateId        String?
+  type                  String // Enum: expense, income
+  categoryId            String
+  paymentMethodId       String
+  place                 String    @db.VarChar(25)
+  bankingProductId      String?
+  transactionDate       DateTime
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+  deletedAt             DateTime?
+
+  // Relations
+  user                User                 @relation(fields: [userId], references: [id])
+  currency            Currency             @relation(fields: [currencyId], references: [id])
+  exchangeRate        ExchangeRate?        @relation(fields: [exchangeRateId], references: [id])
+  category            Category             @relation(fields: [categoryId], references: [id])
+  paymentMethod       PaymentMethod        @relation(fields: [paymentMethodId], references: [id])
+  bankingProduct      BankingProduct?      @relation(fields: [bankingProductId], references: [id])
+  budgetLineMovements BudgetLineMovement[]
+
+  @@map("transactions")
+}
+
+model PaymentMethod {
+  id        String   @id @default(uuid())
+  paymentMethod String // Enum
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  transactions Transaction[]
+
+  @@map("payment_methods")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @db.VarChar(25) @unique
+  kind      String // Enum: expense, income, budget
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  transactions Transaction[]
+
+  @@map("categories")
+}
+
+model Currency {
+  id       String @id @default(uuid())
+  currency String @db.VarChar(3)
+
+  // Relations
+  budgets       Budget[]
+  transactions  Transaction[]
+  exchangeRates ExchangeRate[]
+
+  @@map("currencies")
+}
+
+model ExchangeRate {
+  id         String   @id @default(uuid())
+  currencyId String
+  rate       Decimal  @db.Decimal(18, 8)
+  rateDate   DateTime
+
+  // Relations
+  currency     Currency      @relation(fields: [currencyId], references: [id])
+  transactions Transaction[]
+
+  @@map("exchange_rates")
 }
 
 model Bank {
@@ -32,5 +169,245 @@ model Bank {
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Relations
+  userBanks         UserBank[]
+  bankBankingProduct BankBankingProduct[]
+
+  @@map("banks")
+}
+
+model UserBank {
+  id         String    @id @default(uuid())
+  userId     String
+  bankId     String
+  alias      String
+  lastSyncAt DateTime?
+
+  // Relations
+  user User @relation(fields: [userId], references: [id])
+  bank Bank @relation(fields: [bankId], references: [id])
+
+  @@map("user_banks")
+}
+
+model BankingProduct {
+  id                  String @id @default(uuid())
+  bankingProductName String // Enum
+
+  // Relations
+  transactions       Transaction[]
+  bankBankingProduct BankBankingProduct[]
+
+  @@map("banking_products")
+}
+
+model BankBankingProduct {
+  id               String @id @default(uuid())
+  bankId           String
+  bankingProductId String
+
+  // Relations
+  bank           Bank           @relation(fields: [bankId], references: [id])
+  bankingProduct BankingProduct @relation(fields: [bankingProductId], references: [id])
+
+  @@map("bank_banking_products")
+}
+
+model CourseEnrollment {
+  id         String    @id @default(uuid())
+  userId     String
+  courseId   String
+  enrolledAt DateTime
+  unenrolledAt DateTime?
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@map("course_enrollments")
+}
+
+model Course {
+  id          String @id @default(uuid())
+  name        String
+  description String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  // Relations
+  courseEnrollments  CourseEnrollment[]
+  modules            Module[]
+
+  @@map("courses")
+}
+
+model UserModuleProgress {
+  id              String    @id @default(uuid())
+  userId          String
+  moduleId        String
+  status          String // Enum
+  progressPercent Decimal   @db.Decimal(3, 2)
+  startedAt       DateTime
+  completedAt     DateTime?
+
+  // Relations
+  user   User   @relation(fields: [userId], references: [id])
+  module Module @relation(fields: [moduleId], references: [id])
+
+  @@map("user_module_progress")
+}
+
+model Module {
+  id               String @id @default(uuid())
+  courseId         String
+  contentItem      String
+  sequence         Int
+  summary          String
+  estimatedMinutes Int
+  releaseAt        DateTime
+  prerequisiteModuleId String?
+
+  // Relations
+  course             Course               @relation(fields: [courseId], references: [id])
+  userModuleProgress UserModuleProgress[]
+  contentItems       ContentItem[]
+
+  @@map("modules")
+}
+
+model ContentItem {
+  id          String @id @default(uuid())
+  sectionId   String
+  moduleId    String
+  sequence    Int
+  title       String
+  fileUrl     String
+  markdownBody String
+
+  // Relations
+  module Module @relation(fields: [moduleId], references: [id])
+
+  @@map("content_items")
+}
+
+model QuizQuestion {
+  id           String @id @default(uuid())
+  contentItemId String
+  questionText String
+  questionType String
+  explanation  String
+
+  // Relations
+  quizOptions QuizOption[]
+
+  @@map("quiz_questions")
+}
+
+model QuizOption {
+  id             String  @id @default(uuid())
+  quizQuestionId String
+  optionText     String
+  isCorrect      Boolean
+
+  // Relations
+  quizQuestion        QuizQuestion         @relation(fields: [quizQuestionId], references: [id])
+  quizAttemptAnswers  QuizAttemptAnswer[]
+
+  @@map("quiz_options")
+}
+
+model QuizAttempt {
+  id          String    @id @default(uuid())
+  userId      String
+  contentItemId String
+  attemptNo   Int
+  status      String // Enum
+  startedAt   DateTime
+  finishedAt  DateTime?
+  score       Decimal
+
+  // Relations
+  user               User                @relation(fields: [userId], references: [id])
+  quizAttemptAnswers QuizAttemptAnswer[]
+
+  @@map("quiz_attempts")
+}
+
+model QuizAttemptAnswer {
+  id            String @id @default(uuid())
+  quizAttemptId String
+  quizQuestionId String
+
+  // Relations
+  quizAttempt  QuizAttempt  @relation(fields: [quizAttemptId], references: [id])
+  quizOption   QuizOption   @relation(fields: [quizQuestionId], references: [id])
+
+  @@map("quiz_attempt_answers")
+}
+
+model ChatSession {
+  id        String   @id @default(uuid())
+  userId    String
+  startedAt DateTime
+  closedAt  DateTime?
+  createdAt DateTime @default(now())
+
+  // Relations
+  user         User           @relation(fields: [userId], references: [id])
+  chatMessages ChatMessage[]
+  chatFeedback ChatFeedback[]
+
+  @@map("chat_sessions")
+}
+
+model ChatMessage {
+  id           String @id @default(uuid())
+  sessionId    String
+  role         String // Enum
+  message      String
+  tokenCount   Int
+  createdAt    DateTime @default(now())
+
+  // Relations
+  session ChatSession @relation(fields: [sessionId], references: [id])
+
+  @@map("chat_messages")
+}
+
+model ChatFeedback {
+  id        String  @id @default(uuid())
+  chatId    String
+  sessionId String
+  score     Int
+  comment   String?
+
+  // Relations
+  session ChatSession @relation(fields: [sessionId], references: [id])
+
+  @@map("chat_feedback")
+}
+
+model ChatEmbedding {
+  id        String @id @default(uuid())
+  messageId String
+  vector    String // pgvector type in production
+
+  @@map("chat_embeddings")
+}
+
+model Recommendation {
+  id         String   @id @default(uuid())
+  sessionId  String
+  type       String // Enum
+  message    String
+  accepted   Boolean
+  acceptedAt DateTime?
+  sentAt     DateTime
+
+  // Relations
+  user User @relation(fields: [sessionId], references: [id])
+
+  @@map("recommendations")
 }
 

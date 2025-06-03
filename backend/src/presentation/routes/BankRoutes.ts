@@ -3,7 +3,7 @@ import { PostgresBankRepository } from "@/infraestructure/repositories/PostgresB
 
 import { GetAllBanks } from "@/use-cases/bank/GetAllBanks";
 import { GetBankById } from "@/use-cases/bank/GetBankById";
-import { BankController } from "@/interface/controllers/BankController";
+import { BankController } from "@/presentation/controllers/BankController";
 
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
@@ -38,6 +38,6 @@ router.get("/banks", (req, res) => bankController.getAll(req, res));
  *       200:
  *         description: A bank
  */
-router.get("/banks/:id", (req, res) => bankController.getById(req, res));
+/* router.get("/banks/:id", (req, res) => bankController.getById(req, res)); */
 
 export { router as bankRoutes };

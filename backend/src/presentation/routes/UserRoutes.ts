@@ -3,7 +3,7 @@ import { PostgresUserRepository } from "@/infraestructure/repositories/PostgresU
 
 import { GetAllUsers } from "@/use-cases/user/GetAllUsers";
 import { GetUserById } from "@/use-cases/user/GetUserById";
-import { UserController } from "@/interface/controllers/UserController";
+import { UserController } from "@/presentation/controllers/UserController";
 
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
@@ -38,6 +38,6 @@ router.get("/users", (req, res) => userController.getAll(req, res));
  *       200:
  *         description: A user
  */
-router.get("/users/:id", (req, res) => userController.getById(req, res));
+/* router.get("/users/:id", (req, res) => userController.getById(req, res)); */
 
 export { router as userRoutes };
