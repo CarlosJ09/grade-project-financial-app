@@ -14,4 +14,23 @@ export class PostgresUserRepository implements IUserRepository {
             where: { id }
         });
     }
+
+    async create(entity: Omit<User, 'id' | 'createdAt' | 'updatedAt'>): Promise<User> {
+        return this.prisma.user.create({
+            data: entity
+        });
+    }
+
+    async update(id: string, entity: Partial<Omit<User, 'id' | 'createdAt' | 'updatedAt'>>): Promise<User> {
+        return this.prisma.user.update({
+            where: { id },
+            data: entity
+        });
+    }
+
+    async delete(id: string): Promise<void> {
+        await this.prisma.user.delete({
+            where: { id }
+        });
+    }
 }

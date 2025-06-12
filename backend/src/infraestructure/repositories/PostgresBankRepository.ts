@@ -15,16 +15,16 @@ export class PostgresBankRepository implements IBankRepository {
         });
     }
 
-    async create(bank: Bank): Promise<Bank> {
+    async create(entity: Omit<Bank, 'id' | 'createdAt' | 'updatedAt'>): Promise<Bank> {
         return this.prisma.bank.create({
-            data: bank
+            data: entity
         });
     }
 
-    async update(bank: Bank): Promise<Bank> {
+    async update(id: string, entity: Partial<Omit<Bank, 'id' | 'createdAt' | 'updatedAt'>>): Promise<Bank> {
         return this.prisma.bank.update({
-            where: { id: bank.id },
-            data: bank
+            where: { id },
+            data: entity
         });
     }
 
