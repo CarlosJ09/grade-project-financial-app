@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, RequestHandler } from "express";
 import { PostgresBankRepository } from "@/infraestructure/repositories/PostgresBankRepository";
 
 import { GetAllBanks } from "@/use-cases/bank/GetAllBanks";
@@ -6,6 +6,8 @@ import { GetBankById } from "@/use-cases/bank/GetBankById";
 import { BankController } from "@/presentation/controllers/BankController";
 
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
+
+import { asyncHandler } from "@/presentation/utils/asyncHandler";
 
 const router = Router();
 
@@ -26,7 +28,7 @@ const bankController = new BankController(getAllBanks, getBankById);
  *       200:
  *         description: A list of banks
  */
-router.get("/banks", (req, res) => bankController.getAll(req, res));
+router.get("/banks", asyncHandler((req, res) => bankController.getAll(req, res)));
 
 /**
  * @swagger
@@ -38,6 +40,6 @@ router.get("/banks", (req, res) => bankController.getAll(req, res));
  *       200:
  *         description: A bank
  */
-/* router.get("/banks/:id", (req, res) => bankController.getById(req, res)); */
+router.get("/banks/:id", asyncHandler((req, res) => bankController.getById(req, res)));
 
 export { router as bankRoutes };

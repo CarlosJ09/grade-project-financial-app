@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { userRoutes } from './UserRoutes';
-import { bankRoutes } from './BankRoutes';
+import { userRoutes } from '@/presentation/routes/UserRoutes';
+import { bankRoutes } from '@/presentation/routes/BankRoutes';
+
 const apiRouter = Router();
 
 apiRouter.use(userRoutes);

@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response } from "express";
 import { PostgresUserRepository } from "@/infraestructure/repositories/PostgresUserRepository";
 
 import { GetAllUsers } from "@/use-cases/user/GetAllUsers";
@@ -6,6 +6,8 @@ import { GetUserById } from "@/use-cases/user/GetUserById";
 import { UserController } from "@/presentation/controllers/UserController";
 
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
+
+import { asyncHandler } from "@/presentation/utils/asyncHandler";
 
 const router = Router();
 
@@ -26,7 +28,7 @@ const userController = new UserController(getAllUsers, getUserById);
  *       200:
  *         description: A list of users
  */
-router.get("/users", (req, res) => userController.getAll(req, res));
+router.get("/users", asyncHandler((req, res) => userController.getAll(req, res)));
 
 /**
  * @swagger
@@ -38,6 +40,6 @@ router.get("/users", (req, res) => userController.getAll(req, res));
  *       200:
  *         description: A user
  */
-/* router.get("/users/:id", (req, res) => userController.getById(req, res)); */
+router.get("/users/:id", asyncHandler((req, res) => userController.getById(req, res)));
 
 export { router as userRoutes };
