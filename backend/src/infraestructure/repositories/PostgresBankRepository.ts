@@ -1,5 +1,5 @@
 import { Bank } from "@/domain/entities/Bank";
-import { IBankRepository } from "@/domain/interfaces/IBankRepository";
+import { IBankRepository } from "@/domain/repositories/IBankRepository";
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
 export class PostgresBankRepository implements IBankRepository {

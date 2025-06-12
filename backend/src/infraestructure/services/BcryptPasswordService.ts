@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { IPasswordService } from '@/domain/interfaces/IPasswordService';
+import { IPasswordService } from '@/domain/services/IPasswordService';
 
 /**
  * Bcrypt implementation of password service

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { ITokenService } from '@/domain/interfaces/ITokenService';
+import { ITokenService } from '@/domain/services/ITokenService';
 
 /**
  * JWT implementation of token service

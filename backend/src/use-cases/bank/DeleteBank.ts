@@ -1,4 +1,4 @@
-import { IBankRepository } from "@/domain/interfaces/IBankRepository";
+import { IBankRepository } from "@/domain/repositories/IBankRepository";
 
 export class DeleteBank {
     constructor(private bankRepository: IBankRepository) { }

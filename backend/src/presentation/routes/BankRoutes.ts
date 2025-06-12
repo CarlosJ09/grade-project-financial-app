@@ -32,9 +32,13 @@ const bankController = new BankController(getAllBanks, getBankById, createBank, 
  *   get:
  *     summary: Get all banks
  *     tags: [Banks]
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: A list of banks
+ *       401:
+ *         description: Unauthorized
  */
 router.get("/banks", authMiddleware, asyncHandler(async (req, res) => {
     return bankController.getAll(req, res);
@@ -71,6 +75,8 @@ router.get("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
  *   post:
  *     summary: Create a new bank
  *     tags: [Banks]
+ *     security:
+ *       - bearerAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -88,8 +94,10 @@ router.get("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
  *         description: Bank created successfully
  *       400:
  *         description: Bad request
+ *       401:
+ *         description: Unauthorized
  */
-router.post("/banks", asyncHandler(async (req, res) => {
+router.post("/banks", authMiddleware, asyncHandler(async (req, res) => {
     return bankController.create(req, res);
 }));
 
@@ -99,6 +107,8 @@ router.post("/banks", asyncHandler(async (req, res) => {
  *   put:
  *     summary: Update a bank by id
  *     tags: [Banks]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -123,8 +133,10 @@ router.post("/banks", asyncHandler(async (req, res) => {
  *         description: Bank not found
  *       400:
  *         description: Bad request
+ *       401:
+ *         description: Unauthorized
  */
-router.put("/banks/:id", asyncHandler(async (req, res) => {
+router.put("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
     return bankController.update(req, res);
 }));
 
@@ -134,6 +146,8 @@ router.put("/banks/:id", asyncHandler(async (req, res) => {
  *   delete:
  *     summary: Delete a bank by id
  *     tags: [Banks]
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: path
  *         name: id
@@ -146,8 +160,10 @@ router.put("/banks/:id", asyncHandler(async (req, res) => {
  *         description: Bank deleted successfully
  *       404:
  *         description: Bank not found
+ *       401:
+ *         description: Unauthorized
  */
-router.delete("/banks/:id", asyncHandler(async (req, res) => {
+router.delete("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
     return bankController.delete(req, res);
 }));
 

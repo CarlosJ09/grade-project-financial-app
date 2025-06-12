@@ -1,4 +1,4 @@
-import { IBankRepository } from "@/domain/interfaces/IBankRepository";
+import { IBankRepository } from "@/domain/repositories/IBankRepository";
 import { Bank } from "@/domain/entities/Bank";
 
 export class GetAllBanks {

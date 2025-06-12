@@ -1,6 +1,6 @@
-import { IUserRepository } from "@/domain/interfaces/IUserRepository";
-import { IPasswordService } from "@/domain/interfaces/IPasswordService";
-import { ITokenService } from "@/domain/interfaces/ITokenService";
+import { IUserRepository } from "@/domain/repositories/IUserRepository";
+import { IPasswordService } from "@/domain/services/IPasswordService";
+import { ITokenService } from "@/domain/services/ITokenService";
 
 export type RegisterInput = {
     name: string;

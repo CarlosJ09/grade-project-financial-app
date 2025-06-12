@@ -1,5 +1,5 @@
 import { User } from "@/domain/entities/User";
-import { IUserRepository } from "@/domain/interfaces/IUserRepository";
+import { IUserRepository } from "@/domain/repositories/IUserRepository";
 import { PrismaClient } from "@/infraestructure/prisma/generated/prisma";
 
 export class PostgresUserRepository implements IUserRepository {

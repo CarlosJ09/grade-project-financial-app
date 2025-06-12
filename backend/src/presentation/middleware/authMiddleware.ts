@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { ITokenService } from '@/domain/interfaces/ITokenService';
+import { ITokenService } from '@/domain/services/ITokenService';
 
 // Extend Express Request type to include user
 declare global {
