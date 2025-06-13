@@ -23,9 +23,9 @@ export class PostgresModuleRepository implements IModuleRepository {
         const module = await this.prisma.module.findUnique({
             where: { id }
         });
-        
+
         if (!module) return null;
-        
+
         return new Module(
             module.id,
             module.courseId,
@@ -45,7 +45,7 @@ export class PostgresModuleRepository implements IModuleRepository {
                 prerequisiteModuleId: entity.prerequisiteModuleId || null
             }
         });
-        
+
         return new Module(
             module.id,
             module.courseId,
@@ -60,17 +60,17 @@ export class PostgresModuleRepository implements IModuleRepository {
 
     async update(id: string, entity: Partial<Omit<Module, 'id'>>): Promise<Module> {
         const updateData: any = { ...entity };
-        
+
         // Handle nullable prerequisiteModuleId properly
         if (entity.prerequisiteModuleId !== undefined) {
             updateData.prerequisiteModuleId = entity.prerequisiteModuleId || null;
         }
-        
+
         const module = await this.prisma.module.update({
             where: { id },
             data: updateData
         });
-        
+
         return new Module(
             module.id,
             module.courseId,
