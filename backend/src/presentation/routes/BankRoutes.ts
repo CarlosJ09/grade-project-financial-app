@@ -13,7 +13,6 @@ import { asyncHandler } from "@/presentation/utils/asyncHandler";
 
 const router = Router();
 
-// Create auth middleware
 const tokenService = new JwtTokenService();
 const authMiddleware = createAuthMiddleware(tokenService);
 

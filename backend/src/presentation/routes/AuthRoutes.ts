@@ -10,7 +10,6 @@ import { asyncHandler } from "@/presentation/utils/asyncHandler";
 
 const router = Router();
 
-// Create dependencies
 const prisma = Database.getInstance();
 const userRepository = new PostgresUserRepository(prisma);
 const passwordService = new BcryptPasswordService();
