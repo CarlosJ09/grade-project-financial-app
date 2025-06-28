@@ -1,11 +1,11 @@
-import { useAuthStore } from '@/stores';
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: `${process.env.EXPO_PUBLIC_BACKEND_HOST}/api`,
+  baseURL: `${process.env.EXPO_PUBLIC_API_URL}/api`,
   headers: {
     'Content-type': 'application/json',
   },
+  timeout: 10000, // 10 second timeout
 });
 
 api.interceptors.response.use(
@@ -16,10 +16,11 @@ api.interceptors.response.use(
   async error => {
     const originalRequest = error.config;
 
-    console.log('API PATH', `PATH: ${originalRequest.url}`);
-    console.log('API ERROR', `STATUS CODE: ${error.response?.status}`);
-    console.log(`DATA: ${error.response?.data}`);
-    console.log(`ERROR: ${error.response?.data?.error}`);
+    console.log(
+      'API ERROR',
+      `PATH: ${originalRequest.url}`,
+      `STATUS: ${error.response?.status}`
+    );
 
     const isAuthRequest = !!originalRequest.headers['Authorization'];
 
@@ -38,8 +39,10 @@ api.interceptors.response.use(
           return api(originalRequest);
         } else {
           // If refresh failed, logout the user
-          const { logout } = useAuthStore.getState();
-          logout();
+          // Dynamic import to avoid circular dependency
+          import('@/stores').then(({ useAuthStore }) => {
+            useAuthStore.getState().logout();
+          });
           return Promise.reject(error);
         }
       } catch (error) {
@@ -52,13 +55,11 @@ api.interceptors.response.use(
 );
 
 const refreshToken = async () => {
-  // Get the refresh token function from the auth store
-  const { refreshToken: storeRefreshToken } = useAuthStore.getState();
-
+  // Dynamic import to avoid circular dependency
   try {
-    const success = await storeRefreshToken();
+    const { useAuthStore } = await import('@/stores');
+    const success = await useAuthStore.getState().refreshToken();
     if (success) {
-      // Return the new token from the store
       const { session } = useAuthStore.getState();
       return session?.token;
     }

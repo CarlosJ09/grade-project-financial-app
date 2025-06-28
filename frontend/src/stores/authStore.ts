@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import api from '@/interceptor/core-api';
+import { AuthService } from '@/services/auth';
 import type {
   AuthError,
   AuthSession,
@@ -58,11 +59,10 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await api.post('/auth/login', credentials);
-
-          if (response.data?.error) {
+          const response = await AuthService.login(credentials);
+          if (response.status !== 200) {
             set({
-              error: { message: response.data.error },
+              error: { message: response.data.message },
               isLoading: false,
             });
             return false;
@@ -70,7 +70,6 @@ export const useAuthStore = create<AuthState>()(
 
           const session: AuthSession = response.data;
 
-          // Set auth header for future requests
           api.defaults.headers.common['Authorization'] =
             `Bearer ${session.token}`;
 
@@ -82,12 +81,16 @@ export const useAuthStore = create<AuthState>()(
             error: null,
           });
 
-          // Navigate to main app
           router.replace('/(tabs)');
           return true;
         } catch (error: any) {
+          const errorMessage =
+            error.response?.data?.message || error.message === 'Network Error'
+              ? 'Cannot connect to server'
+              : error.message || 'Login failed';
+
           set({
-            error: { message: error.response?.data?.message || 'Login failed' },
+            error: { message: errorMessage },
             isLoading: false,
           });
           return false;
@@ -98,7 +101,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await api.post('/auth/register', credentials);
+          const response = await AuthService.register(credentials);
 
           if (response.data?.error) {
             set({
