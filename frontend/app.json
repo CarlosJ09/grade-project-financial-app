@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "Financial App",
+    "slug": "financial-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
-    "scheme": "frontend",
+    "scheme": "financial-app",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -27,7 +27,7 @@
       [
         "expo-router",
         {
-          "root": "./src"
+          "root": "./src/app"
         }
       ],
       [
@@ -38,7 +38,15 @@
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
-      ]
+      ],
+      [
+        "expo-secure-store",
+        {
+          "configureAndroidBackup": true,
+          "faceIDPermission": "Allow $(PRODUCT_NAME) to access your Face ID biometric data."
+        }
+      ],
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

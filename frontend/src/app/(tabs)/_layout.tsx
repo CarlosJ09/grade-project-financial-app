@@ -5,17 +5,26 @@ import { Platform } from 'react-native';
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
-import { Colors } from '@/constants/Colors';
+import { Colors } from '@/constants/colors';
+import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
+  // Require authentication for tab screens
+  const { isLoading } = useAuthGuard(true);
+
+  // Show loading or nothing while checking auth
+  if (isLoading) {
+    return null;
+  }
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: true,
+        headerShown: false,
         tabBarButton: HapticTab,
         tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({

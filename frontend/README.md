@@ -1,50 +1,134 @@
-# Welcome to your Expo app 👋
+# Financial Education App Frontend
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native app built with Expo for financial education powered by AI.
 
-## Get started
+## Features
 
-1. Install dependencies
+- 🔐 **Secure Authentication** with persistent sessions
+- 💰 **Financial Management** - budgets, transactions, banking
+- 📚 **Educational Content** - courses, modules, quizzes
+- 🎨 **Modern UI** with NativeWind (Tailwind CSS)
+- 📱 **Cross-platform** - iOS, Android, Web
+
+## State Management
+
+This app uses **Zustand** for state management with the following stores:
+
+### Auth Store (`useAuthStore`)
+
+- User authentication and session management
+- Secure token storage with auto-refresh
+- Protected routing
+
+```tsx
+import { useAuthStore } from '@/stores';
+
+const { user, login, logout, isAuthenticated } = useAuthStore();
+```
+
+### Financial Store (`useFinancialStore`)
+
+- Banking, transactions, budgets management
+- Secure data persistence
+- Optimistic updates
+
+```tsx
+import { useFinancialStore } from '@/stores';
+
+const { transactions, createTransaction, fetchBudgets } = useFinancialStore();
+```
+
+### Education Store (`useEducationStore`)
+
+- Course enrollment and progress tracking
+- Quiz attempts and scoring
+- Module completion
+
+```tsx
+import { useEducationStore } from '@/stores';
+
+const { courses, enrollInCourse, updateProgress } = useEducationStore();
+```
+
+## Custom Hooks
+
+### `useAuthGuard(requireAuth: boolean)`
+
+Protects routes and handles automatic navigation:
+
+```tsx
+import { useAuthGuard } from '@/hooks/useAuthGuard';
+
+// Require authentication
+const { isLoading } = useAuthGuard(true);
+
+// Redirect if authenticated (for auth pages)
+useAuthGuard(false);
+```
+
+### `useAuthUser()`
+
+Quick access to current user data:
+
+```tsx
+import { useAuthUser } from '@/hooks/useAuthGuard';
+
+const { user, isAuthenticated } = useAuthUser();
+```
+
+## Getting Started
+
+1. **Install dependencies:**
 
    ```bash
    npm install
    ```
 
-2. Start the app
+2. **Start the development server:**
 
    ```bash
-   npx expo start
+   npm start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Run on specific platform:**
+   ```bash
+   npm run ios     # iOS
+   npm run android # Android
+   npm run web     # Web
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Environment Variables
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+Create a `.env` file with:
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```env
+EXPO_PUBLIC_BACKEND_HOST=http://localhost:3000
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Architecture
 
-## Learn more
+```
+src/
+├── stores/           # Zustand stores
+├── types/           # TypeScript types
+├── hooks/           # Custom hooks
+├── components/      # Reusable components
+├── app/            # Expo Router pages
+├── interceptor/    # API configuration
+└── utils/          # Utility functions
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Development
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- **Linting:** `npm run lint`
+- **Formatting:** `npm run format`
+- **Type checking:** Built into your editor with TypeScript
 
-## Join the community
+## Technologies
 
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- **React Native** with Expo
+- **Zustand** for state management
+- **TypeScript** for type safety
+- **NativeWind** for styling
+- **Expo Router** for navigation
+- **Expo SecureStore** for secure data storage
