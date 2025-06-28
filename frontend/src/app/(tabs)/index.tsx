@@ -1,80 +1,162 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import React from 'react';
+import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { useTranslation } from '@/hooks/useTranslation';
+import { useAuthStore } from '@/stores';
 
 export default function HomeScreen() {
+  const { user } = useAuthStore();
+  const { t } = useTranslation();
+
+  // Get current time for greeting
+  const currentHour = new Date().getHours();
+  const getGreeting = () => {
+    if (currentHour < 12) return t('home.greeting.goodMorning');
+    if (currentHour < 18) return t('home.greeting.goodAfternoon');
+    return t('home.greeting.goodEvening');
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }
-    >
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit{' '}
-          <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText>{' '}
-          to see changes. Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">
-            npm run reset-project
-          </ThemedText>{' '}
-          to get a fresh <ThemedText type="defaultSemiBold">app</ThemedText>{' '}
-          directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
+      <ScrollView className="flex-1">
+        {/* Header with Profile Button */}
+        <View className="flex-row items-center justify-between p-6 pb-4">
+          <View>
+            <Text className="text-sm text-gray-600 dark:text-gray-400">
+              {getGreeting()}
+            </Text>
+            <ThemedText type="title" className="mt-1">
+              {user?.firstName || t('home.greeting.welcome')}
+            </ThemedText>
+          </View>
+          <TouchableOpacity
+            className="h-10 w-10 items-center justify-center rounded-full bg-blue-500"
+            onPress={() => router.push('/profile')}
+          >
+            <Text className="text-lg font-bold text-white">
+              {user?.firstName?.[0]?.toUpperCase() || '?'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        {/* Financial Overview */}
+        <View className="mb-6 px-6">
+          <View className="rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 p-6">
+            <Text className="mb-2 text-lg font-semibold text-white">
+              {t('home.financialOverview.title')}
+            </Text>
+            <Text className="mb-1 text-3xl font-bold text-blue-100">
+              {t('home.financialOverview.noBalance')}
+            </Text>
+            <Text className="text-sm text-blue-200">
+              {t('home.financialOverview.totalBalance')}
+            </Text>
+          </View>
+        </View>
+
+        {/* Quick Actions */}
+        <View className="mb-6 px-6">
+          <ThemedText type="subtitle" className="mb-4">
+            {t('home.quickActions.title')}
+          </ThemedText>
+          <View className="mb-4 flex-row gap-3">
+            <TouchableOpacity
+              className="flex-1 items-center rounded-xl bg-green-50 p-4 dark:bg-green-900/20"
+              onPress={() => router.push('/(tabs)/finances')}
+            >
+              <Text className="mb-2 text-2xl">💰</Text>
+              <Text className="text-sm font-medium text-green-800 dark:text-green-300">
+                {t('home.quickActions.addIncome')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="flex-1 items-center rounded-xl bg-red-50 p-4 dark:bg-red-900/20"
+              onPress={() => router.push('/(tabs)/finances')}
+            >
+              <Text className="mb-2 text-2xl">💸</Text>
+              <Text className="text-sm font-medium text-red-800 dark:text-red-300">
+                {t('home.quickActions.addExpense')}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              className="flex-1 items-center rounded-xl bg-blue-50 p-4 dark:bg-blue-900/20"
+              onPress={() => router.push('/(tabs)/finances')}
+            >
+              <Text className="mb-2 text-2xl">📊</Text>
+              <Text className="text-sm font-medium text-blue-800 dark:text-blue-300">
+                {t('home.quickActions.budget')}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        {/* Learning Progress */}
+        <View className="mb-6 px-6">
+          <ThemedText type="subtitle" className="mb-4">
+            {t('home.learning.title')}
+          </ThemedText>
+          <TouchableOpacity
+            className="rounded-xl bg-gray-50 p-4 dark:bg-gray-800"
+            onPress={() => router.push('/(tabs)/learn')}
+          >
+            <View className="flex-row items-center">
+              <Text className="mr-4 text-3xl">📚</Text>
+              <View className="flex-1">
+                <Text className="mb-1 font-semibold text-gray-900 dark:text-white">
+                  {t('home.learning.subtitle')}
+                </Text>
+                <Text className="mb-2 text-sm text-gray-600 dark:text-gray-400">
+                  {t('home.learning.description')}
+                </Text>
+                <View className="h-2 rounded-full bg-gray-200 dark:bg-gray-700">
+                  <View className="h-2 w-0 rounded-full bg-blue-500" />
+                </View>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* AI Assistant */}
+        <View className="mb-6 px-6">
+          <ThemedText type="subtitle" className="mb-4">
+            {t('home.aiAssistant.title')}
+          </ThemedText>
+          <TouchableOpacity
+            className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 p-4"
+            onPress={() => router.push('/(tabs)/chat')}
+          >
+            <View className="flex-row items-center">
+              <Text className="mr-4 text-3xl">🤖</Text>
+              <View className="flex-1">
+                <Text className="mb-1 font-semibold text-white">
+                  {t('home.aiAssistant.subtitle')}
+                </Text>
+                <Text className="text-sm text-purple-100">
+                  {t('home.aiAssistant.description')}
+                </Text>
+              </View>
+            </View>
+          </TouchableOpacity>
+        </View>
+
+        {/* Recent Activity Placeholder */}
+        <View className="px-6 pb-6">
+          <ThemedText type="subtitle" className="mb-4">
+            {t('home.recentActivity.title')}
+          </ThemedText>
+          <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
+            <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
+              {t('home.recentActivity.welcomeTitle')}
+            </Text>
+            <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
+              {t('home.recentActivity.welcomeDescription')}
+            </Text>
+          </View>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});

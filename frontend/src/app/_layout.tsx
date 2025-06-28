@@ -9,6 +9,7 @@ import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import '@/i18n';
 import { useAuthStore } from '@/stores';
 import '../../global.css';
 
@@ -31,6 +32,7 @@ export default function RootLayout() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="auth" />
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="profile" />
       </Stack>
     </ThemeProvider>
   );

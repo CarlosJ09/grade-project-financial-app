@@ -150,10 +150,8 @@ export const useAuthStore = create<AuthState>()(
           }
         }
 
-        // Clear auth header
         delete api.defaults.headers.common['Authorization'];
 
-        // Clear state
         set({
           user: null,
           session: null,
@@ -161,7 +159,6 @@ export const useAuthStore = create<AuthState>()(
           error: null,
         });
 
-        // Navigate to auth
         router.replace('/auth/sign-in');
       },
 

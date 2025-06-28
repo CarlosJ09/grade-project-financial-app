@@ -3,19 +3,18 @@ import React from 'react';
 import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
-import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/colors';
 import { useAuthGuard } from '@/hooks/useAuthGuard';
 import { useColorScheme } from '@/hooks/useColorScheme';
 
+import AntDesign from '@expo/vector-icons/AntDesign';
+
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
-  // Require authentication for tab screens
   const { isLoading } = useAuthGuard(true);
 
-  // Show loading or nothing while checking auth
   if (isLoading) {
     return null;
   }
@@ -41,16 +40,34 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <AntDesign size={24} name="home" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="finances"
         options={{
-          title: 'Explore',
+          title: 'Finances',
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <AntDesign size={24} name="creditcard" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="learn"
+        options={{
+          title: 'Learn',
+          tabBarIcon: ({ color }) => (
+            <AntDesign size={24} name="book" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="chat"
+        options={{
+          title: 'AI Chat',
+          tabBarIcon: ({ color }) => (
+            <AntDesign size={24} name="message1" color={color} />
           ),
         }}
       />
