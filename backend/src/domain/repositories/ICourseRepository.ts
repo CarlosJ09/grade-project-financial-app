@@ -1,6 +1,4 @@
-import { Course } from "@/domain/entities/Course";
-import { IBaseRepository } from "./IBaseRepository";
+import { Course } from '@/domain/entities/Course';
+import { IBaseRepository } from './IBaseRepository';
 
-export interface ICourseRepository extends IBaseRepository<Course> {
-
-} 
+export interface ICourseRepository extends IBaseRepository<Course> {}

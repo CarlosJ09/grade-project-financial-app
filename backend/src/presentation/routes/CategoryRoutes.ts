@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresCategoryRepository } from "@/infraestructure/repositories/PostgresCategoryRepository";
-import { GetAllCategories } from "@/use-cases/category/GetAllCategories";
-import { GetCategoryById } from "@/use-cases/category/GetCategoryById";
-import { CreateCategory } from "@/use-cases/category/CreateCategory";
-import { UpdateCategory } from "@/use-cases/category/UpdateCategory";
-import { DeleteCategory } from "@/use-cases/category/DeleteCategory";
-import { CategoryController } from "@/presentation/controllers/CategoryController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresCategoryRepository } from '@/infraestructure/repositories/PostgresCategoryRepository';
+import { GetAllCategories } from '@/use-cases/category/GetAllCategories';
+import { GetCategoryById } from '@/use-cases/category/GetCategoryById';
+import { CreateCategory } from '@/use-cases/category/CreateCategory';
+import { UpdateCategory } from '@/use-cases/category/UpdateCategory';
+import { DeleteCategory } from '@/use-cases/category/DeleteCategory';
+import { CategoryController } from '@/presentation/controllers/CategoryController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getCategoryById = new GetCategoryById(categoryRepository);
 const createCategory = new CreateCategory(categoryRepository);
 const updateCategory = new UpdateCategory(categoryRepository);
 const deleteCategory = new DeleteCategory(categoryRepository);
-const categoryController = new CategoryController(getAllCategories, getCategoryById, createCategory, updateCategory, deleteCategory);
+const categoryController = new CategoryController(
+  getAllCategories,
+  getCategoryById,
+  createCategory,
+  updateCategory,
+  deleteCategory
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const categoryController = new CategoryController(getAllCategories, getCategoryB
  *       401:
  *         description: Unauthorized
  */
-router.get("/categories", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/categories',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return categoryController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/categories", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Category not found
  */
-router.get("/categories/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/categories/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return categoryController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -103,9 +117,13 @@ router.get("/categories/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post("/categories", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/categories',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return categoryController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -146,9 +164,13 @@ router.post("/categories", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/categories/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/categories/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return categoryController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -173,8 +195,12 @@ router.put("/categories/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.delete("/categories/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/categories/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return categoryController.delete(req, res);
-}));
+  })
+);
 
-export { router as categoryRoutes }; 
+export { router as categoryRoutes };

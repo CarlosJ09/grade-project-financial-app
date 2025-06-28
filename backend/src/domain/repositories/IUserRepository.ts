@@ -1,6 +1,4 @@
-import { User } from "@/domain/entities/User";
-import { IBaseRepository } from "./IBaseRepository";
+import { User } from '@/domain/entities/User';
+import { IBaseRepository } from './IBaseRepository';
 
-export interface IUserRepository extends IBaseRepository<User> {
-
-}
+export interface IUserRepository extends IBaseRepository<User> {}

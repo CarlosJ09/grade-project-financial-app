@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresBudgetRepository } from "@/infraestructure/repositories/PostgresBudgetRepository";
-import { GetAllBudgets } from "@/use-cases/budget/GetAllBudgets";
-import { GetBudgetById } from "@/use-cases/budget/GetBudgetById";
-import { CreateBudget } from "@/use-cases/budget/CreateBudget";
-import { UpdateBudget } from "@/use-cases/budget/UpdateBudget";
-import { DeleteBudget } from "@/use-cases/budget/DeleteBudget";
-import { BudgetController } from "@/presentation/controllers/BudgetController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresBudgetRepository } from '@/infraestructure/repositories/PostgresBudgetRepository';
+import { GetAllBudgets } from '@/use-cases/budget/GetAllBudgets';
+import { GetBudgetById } from '@/use-cases/budget/GetBudgetById';
+import { CreateBudget } from '@/use-cases/budget/CreateBudget';
+import { UpdateBudget } from '@/use-cases/budget/UpdateBudget';
+import { DeleteBudget } from '@/use-cases/budget/DeleteBudget';
+import { BudgetController } from '@/presentation/controllers/BudgetController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getBudgetById = new GetBudgetById(budgetRepository);
 const createBudget = new CreateBudget(budgetRepository);
 const updateBudget = new UpdateBudget(budgetRepository);
 const deleteBudget = new DeleteBudget(budgetRepository);
-const budgetController = new BudgetController(getAllBudgets, getBudgetById, createBudget, updateBudget, deleteBudget);
+const budgetController = new BudgetController(
+  getAllBudgets,
+  getBudgetById,
+  createBudget,
+  updateBudget,
+  deleteBudget
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const budgetController = new BudgetController(getAllBudgets, getBudgetById, crea
  *       401:
  *         description: Unauthorized
  */
-router.get("/budgets", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/budgets',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return budgetController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/budgets", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Budget not found
  */
-router.get("/budgets/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/budgets/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return budgetController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -133,9 +147,13 @@ router.get("/budgets/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post("/budgets", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/budgets',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return budgetController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -196,9 +214,13 @@ router.post("/budgets", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/budgets/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/budgets/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return budgetController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -223,8 +245,12 @@ router.put("/budgets/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.delete("/budgets/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/budgets/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return budgetController.delete(req, res);
-}));
+  })
+);
 
-export { router as budgetRoutes }; 
+export { router as budgetRoutes };

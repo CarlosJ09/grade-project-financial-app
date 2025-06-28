@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresPaymentMethodRepository } from "@/infraestructure/repositories/PostgresPaymentMethodRepository";
-import { GetAllPaymentMethods } from "@/use-cases/paymentMethod/GetAllPaymentMethods";
-import { GetPaymentMethodById } from "@/use-cases/paymentMethod/GetPaymentMethodById";
-import { CreatePaymentMethod } from "@/use-cases/paymentMethod/CreatePaymentMethod";
-import { UpdatePaymentMethod } from "@/use-cases/paymentMethod/UpdatePaymentMethod";
-import { DeletePaymentMethod } from "@/use-cases/paymentMethod/DeletePaymentMethod";
-import { PaymentMethodController } from "@/presentation/controllers/PaymentMethodController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresPaymentMethodRepository } from '@/infraestructure/repositories/PostgresPaymentMethodRepository';
+import { GetAllPaymentMethods } from '@/use-cases/paymentMethod/GetAllPaymentMethods';
+import { GetPaymentMethodById } from '@/use-cases/paymentMethod/GetPaymentMethodById';
+import { CreatePaymentMethod } from '@/use-cases/paymentMethod/CreatePaymentMethod';
+import { UpdatePaymentMethod } from '@/use-cases/paymentMethod/UpdatePaymentMethod';
+import { DeletePaymentMethod } from '@/use-cases/paymentMethod/DeletePaymentMethod';
+import { PaymentMethodController } from '@/presentation/controllers/PaymentMethodController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getPaymentMethodById = new GetPaymentMethodById(paymentMethodRepository);
 const createPaymentMethod = new CreatePaymentMethod(paymentMethodRepository);
 const updatePaymentMethod = new UpdatePaymentMethod(paymentMethodRepository);
 const deletePaymentMethod = new DeletePaymentMethod(paymentMethodRepository);
-const paymentMethodController = new PaymentMethodController(getAllPaymentMethods, getPaymentMethodById, createPaymentMethod, updatePaymentMethod, deletePaymentMethod);
+const paymentMethodController = new PaymentMethodController(
+  getAllPaymentMethods,
+  getPaymentMethodById,
+  createPaymentMethod,
+  updatePaymentMethod,
+  deletePaymentMethod
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const paymentMethodController = new PaymentMethodController(getAllPaymentMethods
  *       401:
  *         description: Unauthorized
  */
-router.get("/payment-methods", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/payment-methods',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return paymentMethodController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/payment-methods", authMiddleware, asyncHandler(async (req, res) => 
  *       404:
  *         description: Payment method not found
  */
-router.get("/payment-methods/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/payment-methods/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return paymentMethodController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -99,9 +113,13 @@ router.get("/payment-methods/:id", authMiddleware, asyncHandler(async (req, res)
  *       401:
  *         description: Unauthorized
  */
-router.post("/payment-methods", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/payment-methods',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return paymentMethodController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -139,9 +157,13 @@ router.post("/payment-methods", authMiddleware, asyncHandler(async (req, res) =>
  *       401:
  *         description: Unauthorized
  */
-router.put("/payment-methods/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/payment-methods/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return paymentMethodController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -166,8 +188,12 @@ router.put("/payment-methods/:id", authMiddleware, asyncHandler(async (req, res)
  *       401:
  *         description: Unauthorized
  */
-router.delete("/payment-methods/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/payment-methods/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return paymentMethodController.delete(req, res);
-}));
+  })
+);
 
-export { router as paymentMethodRoutes }; 
+export { router as paymentMethodRoutes };

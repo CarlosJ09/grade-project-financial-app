@@ -8,33 +8,61 @@ import { BankingProductResponseDto } from '@/presentation/dtos/response/BankingP
 import { BaseController } from './BaseController';
 
 export class BankingProductController extends BaseController {
-    constructor(
-        private getAllBankingProducts: GetAllBankingProducts, 
-        private getBankingProductById: GetBankingProductById,
-        private createBankingProduct: CreateBankingProduct,
-        private updateBankingProduct: UpdateBankingProduct,
-        private deleteBankingProduct: DeleteBankingProduct
-    ) {
-        super();
-    }
+  constructor(
+    private getAllBankingProducts: GetAllBankingProducts,
+    private getBankingProductById: GetBankingProductById,
+    private createBankingProduct: CreateBankingProduct,
+    private updateBankingProduct: UpdateBankingProduct,
+    private deleteBankingProduct: DeleteBankingProduct
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllBankingProducts, BankingProductResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllBankingProducts,
+      BankingProductResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getBankingProductById, BankingProductResponseDto, 'BankingProduct');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getBankingProductById,
+      BankingProductResponseDto,
+      'BankingProduct'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createBankingProduct, BankingProductResponseDto, 'BankingProduct');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createBankingProduct,
+      BankingProductResponseDto,
+      'BankingProduct'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateBankingProduct, BankingProductResponseDto, 'BankingProduct');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateBankingProduct,
+      BankingProductResponseDto,
+      'BankingProduct'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteBankingProduct, 'BankingProduct');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(
+      req,
+      res,
+      this.deleteBankingProduct,
+      'BankingProduct'
+    );
+  }
+}

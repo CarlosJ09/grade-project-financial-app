@@ -1,10 +1,10 @@
-import { ICurrencyRepository } from "@/domain/repositories/ICurrencyRepository";
-import { Currency } from "@/domain/entities/Currency";
+import { ICurrencyRepository } from '@/domain/repositories/ICurrencyRepository';
+import { Currency } from '@/domain/entities/Currency';
 
 export class GetCurrencyById {
-    constructor(private currencyRepository: ICurrencyRepository) { }
+  constructor(private currencyRepository: ICurrencyRepository) {}
 
-    async execute(id: string): Promise<Currency | null> {
-        return this.currencyRepository.findById(id);
-    }
-} 
+  async execute(id: string): Promise<Currency | null> {
+    return this.currencyRepository.findById(id);
+  }
+}

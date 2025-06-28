@@ -8,34 +8,51 @@ import { CourseResponseDto } from '@/presentation/dtos/response/CourseResponseDt
 import { BaseController } from './BaseController';
 
 export class CourseController extends BaseController {
-    constructor(
-        private getAllCourses: GetAllCourses, 
-        private getCourseById: GetCourseById,
-        private createCourse: CreateCourse,
-        private updateCourse: UpdateCourse,
-        private deleteCourse: DeleteCourse
-    ) {
-        super();
-    }
+  constructor(
+    private getAllCourses: GetAllCourses,
+    private getCourseById: GetCourseById,
+    private createCourse: CreateCourse,
+    private updateCourse: UpdateCourse,
+    private deleteCourse: DeleteCourse
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllCourses, CourseResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(req, res, this.getAllCourses, CourseResponseDto);
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getCourseById, CourseResponseDto, 'Course');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getCourseById,
+      CourseResponseDto,
+      'Course'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createCourse, CourseResponseDto, 'Course');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createCourse,
+      CourseResponseDto,
+      'Course'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateCourse, CourseResponseDto, 'Course');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateCourse,
+      CourseResponseDto,
+      'Course'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteCourse, 'Course');
-    }
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(req, res, this.deleteCourse, 'Course');
+  }
 }
- 

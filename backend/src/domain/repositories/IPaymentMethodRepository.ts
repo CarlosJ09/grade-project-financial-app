@@ -1,6 +1,5 @@
-import { PaymentMethod } from "@/domain/entities/PaymentMethod";
-import { IBaseRepository } from "./IBaseRepository";
+import { PaymentMethod } from '@/domain/entities/PaymentMethod';
+import { IBaseRepository } from './IBaseRepository';
 
-export interface IPaymentMethodRepository extends IBaseRepository<PaymentMethod> {
-
-} 
+export interface IPaymentMethodRepository
+  extends IBaseRepository<PaymentMethod> {}

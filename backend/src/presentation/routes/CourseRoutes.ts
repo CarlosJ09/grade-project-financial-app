@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresCourseRepository } from "@/infraestructure/repositories/PostgresCourseRepository";
-import { GetAllCourses } from "@/use-cases/course/GetAllCourses";
-import { GetCourseById } from "@/use-cases/course/GetCourseById";
-import { CreateCourse } from "@/use-cases/course/CreateCourse";
-import { UpdateCourse } from "@/use-cases/course/UpdateCourse";
-import { DeleteCourse } from "@/use-cases/course/DeleteCourse";
-import { CourseController } from "@/presentation/controllers/CourseController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresCourseRepository } from '@/infraestructure/repositories/PostgresCourseRepository';
+import { GetAllCourses } from '@/use-cases/course/GetAllCourses';
+import { GetCourseById } from '@/use-cases/course/GetCourseById';
+import { CreateCourse } from '@/use-cases/course/CreateCourse';
+import { UpdateCourse } from '@/use-cases/course/UpdateCourse';
+import { DeleteCourse } from '@/use-cases/course/DeleteCourse';
+import { CourseController } from '@/presentation/controllers/CourseController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getCourseById = new GetCourseById(courseRepository);
 const createCourse = new CreateCourse(courseRepository);
 const updateCourse = new UpdateCourse(courseRepository);
 const deleteCourse = new DeleteCourse(courseRepository);
-const courseController = new CourseController(getAllCourses, getCourseById, createCourse, updateCourse, deleteCourse);
+const courseController = new CourseController(
+  getAllCourses,
+  getCourseById,
+  createCourse,
+  updateCourse,
+  deleteCourse
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const courseController = new CourseController(getAllCourses, getCourseById, crea
  *       401:
  *         description: Unauthorized
  */
-router.get("/courses", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/courses',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/courses", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Course not found
  */
-router.get("/courses/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/courses/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -104,9 +118,13 @@ router.get("/courses/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post("/courses", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/courses',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -148,9 +166,13 @@ router.post("/courses", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/courses/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/courses/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -175,8 +197,12 @@ router.put("/courses/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.delete("/courses/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/courses/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseController.delete(req, res);
-}));
+  })
+);
 
-export { router as courseRoutes }; 
+export { router as courseRoutes };

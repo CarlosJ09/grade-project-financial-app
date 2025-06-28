@@ -1,10 +1,10 @@
-import { IModuleRepository } from "@/domain/repositories/IModuleRepository";
-import { Module } from "@/domain/entities/Module";
+import { IModuleRepository } from '@/domain/repositories/IModuleRepository';
+import { Module } from '@/domain/entities/Module';
 
 export class GetModuleById {
-    constructor(private moduleRepository: IModuleRepository) { }
+  constructor(private moduleRepository: IModuleRepository) {}
 
-    async execute(id: string): Promise<Module | null> {
-        return this.moduleRepository.findById(id);
-    }
-} 
+  async execute(id: string): Promise<Module | null> {
+    return this.moduleRepository.findById(id);
+  }
+}

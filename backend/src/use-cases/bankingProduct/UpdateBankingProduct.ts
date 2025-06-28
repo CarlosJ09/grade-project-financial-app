@@ -1,14 +1,17 @@
-import { IBankingProductRepository } from "@/domain/repositories/IBankingProductRepository";
-import { BankingProduct } from "@/domain/entities/BankingProduct";
+import { IBankingProductRepository } from '@/domain/repositories/IBankingProductRepository';
+import { BankingProduct } from '@/domain/entities/BankingProduct';
 
 export type UpdateBankingProductInput = {
-    bankingProductName?: string;
+  bankingProductName?: string;
 };
 
 export class UpdateBankingProduct {
-    constructor(private bankingProductRepository: IBankingProductRepository) { }
+  constructor(private bankingProductRepository: IBankingProductRepository) {}
 
-    async execute(id: string, input: UpdateBankingProductInput): Promise<BankingProduct> {
-        return this.bankingProductRepository.update(id, input);
-    }
-} 
+  async execute(
+    id: string,
+    input: UpdateBankingProductInput
+  ): Promise<BankingProduct> {
+    return this.bankingProductRepository.update(id, input);
+  }
+}

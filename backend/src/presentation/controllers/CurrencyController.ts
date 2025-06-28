@@ -5,18 +5,29 @@ import { CurrencyResponseDto } from '@/presentation/dtos/response/CurrencyRespon
 import { BaseController } from './BaseController';
 
 export class CurrencyController extends BaseController {
-    constructor(
-        private getAllCurrencies: GetAllCurrencies, 
-        private getCurrencyById: GetCurrencyById
-    ) {
-        super();
-    }
+  constructor(
+    private getAllCurrencies: GetAllCurrencies,
+    private getCurrencyById: GetCurrencyById
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllCurrencies, CurrencyResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllCurrencies,
+      CurrencyResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getCurrencyById, CurrencyResponseDto, 'Currency');
-    }
-} 
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getCurrencyById,
+      CurrencyResponseDto,
+      'Currency'
+    );
+  }
+}

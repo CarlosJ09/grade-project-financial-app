@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresContentItemRepository } from "@/infraestructure/repositories/PostgresContentItemRepository";
-import { GetAllContentItems } from "@/use-cases/contentItem/GetAllContentItems";
-import { GetContentItemById } from "@/use-cases/contentItem/GetContentItemById";
-import { CreateContentItem } from "@/use-cases/contentItem/CreateContentItem";
-import { UpdateContentItem } from "@/use-cases/contentItem/UpdateContentItem";
-import { DeleteContentItem } from "@/use-cases/contentItem/DeleteContentItem";
-import { ContentItemController } from "@/presentation/controllers/ContentItemController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresContentItemRepository } from '@/infraestructure/repositories/PostgresContentItemRepository';
+import { GetAllContentItems } from '@/use-cases/contentItem/GetAllContentItems';
+import { GetContentItemById } from '@/use-cases/contentItem/GetContentItemById';
+import { CreateContentItem } from '@/use-cases/contentItem/CreateContentItem';
+import { UpdateContentItem } from '@/use-cases/contentItem/UpdateContentItem';
+import { DeleteContentItem } from '@/use-cases/contentItem/DeleteContentItem';
+import { ContentItemController } from '@/presentation/controllers/ContentItemController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getContentItemById = new GetContentItemById(contentItemRepository);
 const createContentItem = new CreateContentItem(contentItemRepository);
 const updateContentItem = new UpdateContentItem(contentItemRepository);
 const deleteContentItem = new DeleteContentItem(contentItemRepository);
-const contentItemController = new ContentItemController(getAllContentItems, getContentItemById, createContentItem, updateContentItem, deleteContentItem);
+const contentItemController = new ContentItemController(
+  getAllContentItems,
+  getContentItemById,
+  createContentItem,
+  updateContentItem,
+  deleteContentItem
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const contentItemController = new ContentItemController(getAllContentItems, getC
  *       401:
  *         description: Unauthorized
  */
-router.get("/content-items", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/content-items',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return contentItemController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/content-items", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Content item not found
  */
-router.get("/content-items/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/content-items/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return contentItemController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -124,9 +138,13 @@ router.get("/content-items/:id", authMiddleware, asyncHandler(async (req, res) =
  *       401:
  *         description: Unauthorized
  */
-router.post("/content-items", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/content-items',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return contentItemController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -184,9 +202,13 @@ router.post("/content-items", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/content-items/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/content-items/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return contentItemController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -211,8 +233,12 @@ router.put("/content-items/:id", authMiddleware, asyncHandler(async (req, res) =
  *       401:
  *         description: Unauthorized
  */
-router.delete("/content-items/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/content-items/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return contentItemController.delete(req, res);
-}));
+  })
+);
 
-export { router as contentItemRoutes }; 
+export { router as contentItemRoutes };

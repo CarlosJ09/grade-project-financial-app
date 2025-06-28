@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresTransactionRepository } from "@/infraestructure/repositories/PostgresTransactionRepository";
-import { GetAllTransactions } from "@/use-cases/transaction/GetAllTransactions";
-import { GetTransactionById } from "@/use-cases/transaction/GetTransactionById";
-import { CreateTransaction } from "@/use-cases/transaction/CreateTransaction";
-import { UpdateTransaction } from "@/use-cases/transaction/UpdateTransaction";
-import { DeleteTransaction } from "@/use-cases/transaction/DeleteTransaction";
-import { TransactionController } from "@/presentation/controllers/TransactionController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresTransactionRepository } from '@/infraestructure/repositories/PostgresTransactionRepository';
+import { GetAllTransactions } from '@/use-cases/transaction/GetAllTransactions';
+import { GetTransactionById } from '@/use-cases/transaction/GetTransactionById';
+import { CreateTransaction } from '@/use-cases/transaction/CreateTransaction';
+import { UpdateTransaction } from '@/use-cases/transaction/UpdateTransaction';
+import { DeleteTransaction } from '@/use-cases/transaction/DeleteTransaction';
+import { TransactionController } from '@/presentation/controllers/TransactionController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getTransactionById = new GetTransactionById(transactionRepository);
 const createTransaction = new CreateTransaction(transactionRepository);
 const updateTransaction = new UpdateTransaction(transactionRepository);
 const deleteTransaction = new DeleteTransaction(transactionRepository);
-const transactionController = new TransactionController(getAllTransactions, getTransactionById, createTransaction, updateTransaction, deleteTransaction);
+const transactionController = new TransactionController(
+  getAllTransactions,
+  getTransactionById,
+  createTransaction,
+  updateTransaction,
+  deleteTransaction
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const transactionController = new TransactionController(getAllTransactions, getT
  *       401:
  *         description: Unauthorized
  */
-router.get("/transactions", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/transactions',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return transactionController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/transactions", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Transaction not found
  */
-router.get("/transactions/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/transactions/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return transactionController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -136,9 +150,13 @@ router.get("/transactions/:id", authMiddleware, asyncHandler(async (req, res) =>
  *       401:
  *         description: Unauthorized
  */
-router.post("/transactions", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/transactions',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return transactionController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -203,9 +221,13 @@ router.post("/transactions", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/transactions/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/transactions/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return transactionController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -230,8 +252,12 @@ router.put("/transactions/:id", authMiddleware, asyncHandler(async (req, res) =>
  *       401:
  *         description: Unauthorized
  */
-router.delete("/transactions/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/transactions/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return transactionController.delete(req, res);
-}));
+  })
+);
 
-export { router as transactionRoutes }; 
+export { router as transactionRoutes };

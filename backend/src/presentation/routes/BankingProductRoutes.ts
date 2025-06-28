@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresBankingProductRepository } from "@/infraestructure/repositories/PostgresBankingProductRepository";
-import { GetAllBankingProducts } from "@/use-cases/bankingProduct/GetAllBankingProducts";
-import { GetBankingProductById } from "@/use-cases/bankingProduct/GetBankingProductById";
-import { CreateBankingProduct } from "@/use-cases/bankingProduct/CreateBankingProduct";
-import { UpdateBankingProduct } from "@/use-cases/bankingProduct/UpdateBankingProduct";
-import { DeleteBankingProduct } from "@/use-cases/bankingProduct/DeleteBankingProduct";
-import { BankingProductController } from "@/presentation/controllers/BankingProductController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresBankingProductRepository } from '@/infraestructure/repositories/PostgresBankingProductRepository';
+import { GetAllBankingProducts } from '@/use-cases/bankingProduct/GetAllBankingProducts';
+import { GetBankingProductById } from '@/use-cases/bankingProduct/GetBankingProductById';
+import { CreateBankingProduct } from '@/use-cases/bankingProduct/CreateBankingProduct';
+import { UpdateBankingProduct } from '@/use-cases/bankingProduct/UpdateBankingProduct';
+import { DeleteBankingProduct } from '@/use-cases/bankingProduct/DeleteBankingProduct';
+import { BankingProductController } from '@/presentation/controllers/BankingProductController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -18,12 +18,22 @@ const authMiddleware = createAuthMiddleware(tokenService);
 
 const prisma = Database.getInstance();
 const bankingProductRepository = new PostgresBankingProductRepository(prisma);
-const getAllBankingProducts = new GetAllBankingProducts(bankingProductRepository);
-const getBankingProductById = new GetBankingProductById(bankingProductRepository);
+const getAllBankingProducts = new GetAllBankingProducts(
+  bankingProductRepository
+);
+const getBankingProductById = new GetBankingProductById(
+  bankingProductRepository
+);
 const createBankingProduct = new CreateBankingProduct(bankingProductRepository);
 const updateBankingProduct = new UpdateBankingProduct(bankingProductRepository);
 const deleteBankingProduct = new DeleteBankingProduct(bankingProductRepository);
-const bankingProductController = new BankingProductController(getAllBankingProducts, getBankingProductById, createBankingProduct, updateBankingProduct, deleteBankingProduct);
+const bankingProductController = new BankingProductController(
+  getAllBankingProducts,
+  getBankingProductById,
+  createBankingProduct,
+  updateBankingProduct,
+  deleteBankingProduct
+);
 
 /**
  * @swagger
@@ -39,9 +49,13 @@ const bankingProductController = new BankingProductController(getAllBankingProdu
  *       401:
  *         description: Unauthorized
  */
-router.get("/banking-products", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/banking-products',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankingProductController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +80,13 @@ router.get("/banking-products", authMiddleware, asyncHandler(async (req, res) =>
  *       404:
  *         description: Banking product not found
  */
-router.get("/banking-products/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/banking-products/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankingProductController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -99,9 +117,13 @@ router.get("/banking-products/:id", authMiddleware, asyncHandler(async (req, res
  *       401:
  *         description: Unauthorized
  */
-router.post("/banking-products", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/banking-products',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankingProductController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -139,9 +161,13 @@ router.post("/banking-products", authMiddleware, asyncHandler(async (req, res) =
  *       401:
  *         description: Unauthorized
  */
-router.put("/banking-products/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/banking-products/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankingProductController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -166,8 +192,12 @@ router.put("/banking-products/:id", authMiddleware, asyncHandler(async (req, res
  *       401:
  *         description: Unauthorized
  */
-router.delete("/banking-products/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/banking-products/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankingProductController.delete(req, res);
-}));
+  })
+);
 
-export { router as bankingProductRoutes }; 
+export { router as bankingProductRoutes };

@@ -1,12 +1,12 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresCurrencyRepository } from "@/infraestructure/repositories/PostgresCurrencyRepository";
-import { GetAllCurrencies } from "@/use-cases/currency/GetAllCurrencies";
-import { GetCurrencyById } from "@/use-cases/currency/GetCurrencyById";
-import { CurrencyController } from "@/presentation/controllers/CurrencyController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresCurrencyRepository } from '@/infraestructure/repositories/PostgresCurrencyRepository';
+import { GetAllCurrencies } from '@/use-cases/currency/GetAllCurrencies';
+import { GetCurrencyById } from '@/use-cases/currency/GetCurrencyById';
+import { CurrencyController } from '@/presentation/controllers/CurrencyController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -17,7 +17,10 @@ const prisma = Database.getInstance();
 const currencyRepository = new PostgresCurrencyRepository(prisma);
 const getAllCurrencies = new GetAllCurrencies(currencyRepository);
 const getCurrencyById = new GetCurrencyById(currencyRepository);
-const currencyController = new CurrencyController(getAllCurrencies, getCurrencyById);
+const currencyController = new CurrencyController(
+  getAllCurrencies,
+  getCurrencyById
+);
 
 /**
  * @swagger
@@ -54,9 +57,13 @@ const currencyController = new CurrencyController(getAllCurrencies, getCurrencyB
  *       401:
  *         description: Unauthorized
  */
-router.get("/currencies", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/currencies',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return currencyController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -100,8 +107,12 @@ router.get("/currencies", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Currency not found
  */
-router.get("/currencies/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/currencies/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return currencyController.getById(req, res);
-}));
+  })
+);
 
-export { router as currencyRoutes }; 
+export { router as currencyRoutes };

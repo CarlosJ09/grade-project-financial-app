@@ -1,10 +1,10 @@
-import { IBudgetRepository } from "@/domain/repositories/IBudgetRepository";
-import { Budget } from "@/domain/entities/Budget";
+import { IBudgetRepository } from '@/domain/repositories/IBudgetRepository';
+import { Budget } from '@/domain/entities/Budget';
 
 export class GetAllBudgets {
-    constructor(private budgetRepository: IBudgetRepository) { }
+  constructor(private budgetRepository: IBudgetRepository) {}
 
-    async execute(): Promise<Budget[]> {
-        return this.budgetRepository.findAll();
-    }
-} 
+  async execute(): Promise<Budget[]> {
+    return this.budgetRepository.findAll();
+  }
+}

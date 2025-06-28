@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresExchangeRateRepository } from "@/infraestructure/repositories/PostgresExchangeRateRepository";
-import { GetAllExchangeRates } from "@/use-cases/exchangeRate/GetAllExchangeRates";
-import { GetExchangeRateById } from "@/use-cases/exchangeRate/GetExchangeRateById";
-import { CreateExchangeRate } from "@/use-cases/exchangeRate/CreateExchangeRate";
-import { UpdateExchangeRate } from "@/use-cases/exchangeRate/UpdateExchangeRate";
-import { DeleteExchangeRate } from "@/use-cases/exchangeRate/DeleteExchangeRate";
-import { ExchangeRateController } from "@/presentation/controllers/ExchangeRateController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresExchangeRateRepository } from '@/infraestructure/repositories/PostgresExchangeRateRepository';
+import { GetAllExchangeRates } from '@/use-cases/exchangeRate/GetAllExchangeRates';
+import { GetExchangeRateById } from '@/use-cases/exchangeRate/GetExchangeRateById';
+import { CreateExchangeRate } from '@/use-cases/exchangeRate/CreateExchangeRate';
+import { UpdateExchangeRate } from '@/use-cases/exchangeRate/UpdateExchangeRate';
+import { DeleteExchangeRate } from '@/use-cases/exchangeRate/DeleteExchangeRate';
+import { ExchangeRateController } from '@/presentation/controllers/ExchangeRateController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getExchangeRateById = new GetExchangeRateById(exchangeRateRepository);
 const createExchangeRate = new CreateExchangeRate(exchangeRateRepository);
 const updateExchangeRate = new UpdateExchangeRate(exchangeRateRepository);
 const deleteExchangeRate = new DeleteExchangeRate(exchangeRateRepository);
-const exchangeRateController = new ExchangeRateController(getAllExchangeRates, getExchangeRateById, createExchangeRate, updateExchangeRate, deleteExchangeRate);
+const exchangeRateController = new ExchangeRateController(
+  getAllExchangeRates,
+  getExchangeRateById,
+  createExchangeRate,
+  updateExchangeRate,
+  deleteExchangeRate
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const exchangeRateController = new ExchangeRateController(getAllExchangeRates, g
  *       401:
  *         description: Unauthorized
  */
-router.get("/exchange-rates", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/exchange-rates',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return exchangeRateController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/exchange-rates", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Exchange rate not found
  */
-router.get("/exchange-rates/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/exchange-rates/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return exchangeRateController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -110,9 +124,13 @@ router.get("/exchange-rates/:id", authMiddleware, asyncHandler(async (req, res) 
  *       401:
  *         description: Unauthorized
  */
-router.post("/exchange-rates", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/exchange-rates',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return exchangeRateController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -159,9 +177,13 @@ router.post("/exchange-rates", authMiddleware, asyncHandler(async (req, res) => 
  *       401:
  *         description: Unauthorized
  */
-router.put("/exchange-rates/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/exchange-rates/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return exchangeRateController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -186,8 +208,12 @@ router.put("/exchange-rates/:id", authMiddleware, asyncHandler(async (req, res) 
  *       401:
  *         description: Unauthorized
  */
-router.delete("/exchange-rates/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/exchange-rates/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return exchangeRateController.delete(req, res);
-}));
+  })
+);
 
-export { router as exchangeRateRoutes }; 
+export { router as exchangeRateRoutes };

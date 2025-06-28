@@ -1,10 +1,10 @@
-import { IPaymentMethodRepository } from "@/domain/repositories/IPaymentMethodRepository";
-import { PaymentMethod } from "@/domain/entities/PaymentMethod";
+import { IPaymentMethodRepository } from '@/domain/repositories/IPaymentMethodRepository';
+import { PaymentMethod } from '@/domain/entities/PaymentMethod';
 
 export class GetAllPaymentMethods {
-    constructor(private paymentMethodRepository: IPaymentMethodRepository) { }
+  constructor(private paymentMethodRepository: IPaymentMethodRepository) {}
 
-    async execute(): Promise<PaymentMethod[]> {
-        return this.paymentMethodRepository.findAll();
-    }
-} 
+  async execute(): Promise<PaymentMethod[]> {
+    return this.paymentMethodRepository.findAll();
+  }
+}

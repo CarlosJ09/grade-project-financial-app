@@ -1,12 +1,12 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresUserRepository } from "@/infraestructure/repositories/PostgresUserRepository";
-import { GetAllUsers } from "@/use-cases/user/GetAllUsers";
-import { GetUserById } from "@/use-cases/user/GetUserById";
-import { UserController } from "@/presentation/controllers/UserController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresUserRepository } from '@/infraestructure/repositories/PostgresUserRepository';
+import { GetAllUsers } from '@/use-cases/user/GetAllUsers';
+import { GetUserById } from '@/use-cases/user/GetUserById';
+import { UserController } from '@/presentation/controllers/UserController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -33,9 +33,13 @@ const userController = new UserController(getAllUsers, getUserById);
  *       401:
  *         description: Unauthorized
  */
-router.get("/users", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/users',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return userController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -60,8 +64,12 @@ router.get("/users", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: User not found
  */
-router.get("/users/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/users/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return userController.getById(req, res);
-}));
+  })
+);
 
 export { router as userRoutes };

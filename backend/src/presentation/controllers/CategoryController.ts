@@ -8,33 +8,56 @@ import { CategoryResponseDto } from '@/presentation/dtos/response/CategoryRespon
 import { BaseController } from './BaseController';
 
 export class CategoryController extends BaseController {
-    constructor(
-        private getAllCategories: GetAllCategories, 
-        private getCategoryById: GetCategoryById,
-        private createCategory: CreateCategory,
-        private updateCategory: UpdateCategory,
-        private deleteCategory: DeleteCategory
-    ) {
-        super();
-    }
+  constructor(
+    private getAllCategories: GetAllCategories,
+    private getCategoryById: GetCategoryById,
+    private createCategory: CreateCategory,
+    private updateCategory: UpdateCategory,
+    private deleteCategory: DeleteCategory
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllCategories, CategoryResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllCategories,
+      CategoryResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getCategoryById, CategoryResponseDto, 'Category');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getCategoryById,
+      CategoryResponseDto,
+      'Category'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createCategory, CategoryResponseDto, 'Category');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createCategory,
+      CategoryResponseDto,
+      'Category'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateCategory, CategoryResponseDto, 'Category');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateCategory,
+      CategoryResponseDto,
+      'Category'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteCategory, 'Category');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(req, res, this.deleteCategory, 'Category');
+  }
+}

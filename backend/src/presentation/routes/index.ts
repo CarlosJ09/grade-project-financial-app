@@ -36,4 +36,4 @@ apiRouter.use(moduleRoutes);
 apiRouter.use(contentItemRoutes);
 apiRouter.use(courseEnrollmentRoutes);
 
-export { apiRouter }; 
+export { apiRouter };

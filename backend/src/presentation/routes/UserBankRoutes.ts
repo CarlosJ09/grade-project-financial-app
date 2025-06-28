@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresUserBankRepository } from "@/infraestructure/repositories/PostgresUserBankRepository";
-import { GetAllUserBanks } from "@/use-cases/userBank/GetAllUserBanks";
-import { GetUserBankById } from "@/use-cases/userBank/GetUserBankById";
-import { CreateUserBank } from "@/use-cases/userBank/CreateUserBank";
-import { UpdateUserBank } from "@/use-cases/userBank/UpdateUserBank";
-import { DeleteUserBank } from "@/use-cases/userBank/DeleteUserBank";
-import { UserBankController } from "@/presentation/controllers/UserBankController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresUserBankRepository } from '@/infraestructure/repositories/PostgresUserBankRepository';
+import { GetAllUserBanks } from '@/use-cases/userBank/GetAllUserBanks';
+import { GetUserBankById } from '@/use-cases/userBank/GetUserBankById';
+import { CreateUserBank } from '@/use-cases/userBank/CreateUserBank';
+import { UpdateUserBank } from '@/use-cases/userBank/UpdateUserBank';
+import { DeleteUserBank } from '@/use-cases/userBank/DeleteUserBank';
+import { UserBankController } from '@/presentation/controllers/UserBankController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getUserBankById = new GetUserBankById(userBankRepository);
 const createUserBank = new CreateUserBank(userBankRepository);
 const updateUserBank = new UpdateUserBank(userBankRepository);
 const deleteUserBank = new DeleteUserBank(userBankRepository);
-const userBankController = new UserBankController(getAllUserBanks, getUserBankById, createUserBank, updateUserBank, deleteUserBank);
+const userBankController = new UserBankController(
+  getAllUserBanks,
+  getUserBankById,
+  createUserBank,
+  updateUserBank,
+  deleteUserBank
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const userBankController = new UserBankController(getAllUserBanks, getUserBankBy
  *       401:
  *         description: Unauthorized
  */
-router.get("/user-banks", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/user-banks',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return userBankController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/user-banks", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: User bank connection not found
  */
-router.get("/user-banks/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/user-banks/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return userBankController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -111,9 +125,13 @@ router.get("/user-banks/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post("/user-banks", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/user-banks',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return userBankController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -155,9 +173,13 @@ router.post("/user-banks", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/user-banks/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/user-banks/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return userBankController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -182,8 +204,12 @@ router.put("/user-banks/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.delete("/user-banks/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/user-banks/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return userBankController.delete(req, res);
-}));
+  })
+);
 
-export { router as userBankRoutes }; 
+export { router as userBankRoutes };

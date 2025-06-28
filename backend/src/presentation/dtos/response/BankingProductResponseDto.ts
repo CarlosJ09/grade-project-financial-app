@@ -1,15 +1,15 @@
-import { BankingProduct } from "@/domain/entities/BankingProduct";
+import { BankingProduct } from '@/domain/entities/BankingProduct';
 
 export class BankingProductResponseDto {
-    constructor(
-        public readonly id: string,
-        public readonly bankingProductName: string,
-    ) { }
+  constructor(
+    public readonly id: string,
+    public readonly bankingProductName: string
+  ) {}
 
-    static fromEntity(bankingProduct: BankingProduct): BankingProductResponseDto {
-        return new BankingProductResponseDto(
-            bankingProduct.id,
-            bankingProduct.bankingProductName,
-        );
-    }
-} 
+  static fromEntity(bankingProduct: BankingProduct): BankingProductResponseDto {
+    return new BankingProductResponseDto(
+      bankingProduct.id,
+      bankingProduct.bankingProductName
+    );
+  }
+}

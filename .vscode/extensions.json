@@ -1,0 +1,9 @@
+{
+  "recommendations": [
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "expo.vscode-expo-tools",
+    "ms-vscode.vscode-typescript-next",
+    "prisma.prisma"
+  ]
+} 

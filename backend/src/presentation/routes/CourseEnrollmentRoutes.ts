@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresCourseEnrollmentRepository } from "@/infraestructure/repositories/PostgresCourseEnrollmentRepository";
-import { GetAllCourseEnrollments } from "@/use-cases/courseEnrollment/GetAllCourseEnrollments";
-import { GetCourseEnrollmentById } from "@/use-cases/courseEnrollment/GetCourseEnrollmentById";
-import { CreateCourseEnrollment } from "@/use-cases/courseEnrollment/CreateCourseEnrollment";
-import { UpdateCourseEnrollment } from "@/use-cases/courseEnrollment/UpdateCourseEnrollment";
-import { DeleteCourseEnrollment } from "@/use-cases/courseEnrollment/DeleteCourseEnrollment";
-import { CourseEnrollmentController } from "@/presentation/controllers/CourseEnrollmentController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresCourseEnrollmentRepository } from '@/infraestructure/repositories/PostgresCourseEnrollmentRepository';
+import { GetAllCourseEnrollments } from '@/use-cases/courseEnrollment/GetAllCourseEnrollments';
+import { GetCourseEnrollmentById } from '@/use-cases/courseEnrollment/GetCourseEnrollmentById';
+import { CreateCourseEnrollment } from '@/use-cases/courseEnrollment/CreateCourseEnrollment';
+import { UpdateCourseEnrollment } from '@/use-cases/courseEnrollment/UpdateCourseEnrollment';
+import { DeleteCourseEnrollment } from '@/use-cases/courseEnrollment/DeleteCourseEnrollment';
+import { CourseEnrollmentController } from '@/presentation/controllers/CourseEnrollmentController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -17,13 +17,31 @@ const tokenService = new JwtTokenService();
 const authMiddleware = createAuthMiddleware(tokenService);
 
 const prisma = Database.getInstance();
-const courseEnrollmentRepository = new PostgresCourseEnrollmentRepository(prisma);
-const getAllCourseEnrollments = new GetAllCourseEnrollments(courseEnrollmentRepository);
-const getCourseEnrollmentById = new GetCourseEnrollmentById(courseEnrollmentRepository);
-const createCourseEnrollment = new CreateCourseEnrollment(courseEnrollmentRepository);
-const updateCourseEnrollment = new UpdateCourseEnrollment(courseEnrollmentRepository);
-const deleteCourseEnrollment = new DeleteCourseEnrollment(courseEnrollmentRepository);
-const courseEnrollmentController = new CourseEnrollmentController(getAllCourseEnrollments, getCourseEnrollmentById, createCourseEnrollment, updateCourseEnrollment, deleteCourseEnrollment);
+const courseEnrollmentRepository = new PostgresCourseEnrollmentRepository(
+  prisma
+);
+const getAllCourseEnrollments = new GetAllCourseEnrollments(
+  courseEnrollmentRepository
+);
+const getCourseEnrollmentById = new GetCourseEnrollmentById(
+  courseEnrollmentRepository
+);
+const createCourseEnrollment = new CreateCourseEnrollment(
+  courseEnrollmentRepository
+);
+const updateCourseEnrollment = new UpdateCourseEnrollment(
+  courseEnrollmentRepository
+);
+const deleteCourseEnrollment = new DeleteCourseEnrollment(
+  courseEnrollmentRepository
+);
+const courseEnrollmentController = new CourseEnrollmentController(
+  getAllCourseEnrollments,
+  getCourseEnrollmentById,
+  createCourseEnrollment,
+  updateCourseEnrollment,
+  deleteCourseEnrollment
+);
 
 /**
  * @swagger
@@ -39,9 +57,13 @@ const courseEnrollmentController = new CourseEnrollmentController(getAllCourseEn
  *       401:
  *         description: Unauthorized
  */
-router.get("/course-enrollments", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/course-enrollments',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseEnrollmentController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +88,13 @@ router.get("/course-enrollments", authMiddleware, asyncHandler(async (req, res) 
  *       404:
  *         description: Course enrollment not found
  */
-router.get("/course-enrollments/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/course-enrollments/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseEnrollmentController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -116,9 +142,13 @@ router.get("/course-enrollments/:id", authMiddleware, asyncHandler(async (req, r
  *       401:
  *         description: Unauthorized
  */
-router.post("/course-enrollments", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/course-enrollments',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseEnrollmentController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -171,9 +201,13 @@ router.post("/course-enrollments", authMiddleware, asyncHandler(async (req, res)
  *       401:
  *         description: Unauthorized
  */
-router.put("/course-enrollments/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/course-enrollments/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseEnrollmentController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -198,8 +232,12 @@ router.put("/course-enrollments/:id", authMiddleware, asyncHandler(async (req, r
  *       401:
  *         description: Unauthorized
  */
-router.delete("/course-enrollments/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/course-enrollments/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return courseEnrollmentController.delete(req, res);
-}));
+  })
+);
 
-export { router as courseEnrollmentRoutes }; 
+export { router as courseEnrollmentRoutes };

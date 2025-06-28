@@ -8,33 +8,56 @@ import { ContentItemResponseDto } from '@/presentation/dtos/response/ContentItem
 import { BaseController } from './BaseController';
 
 export class ContentItemController extends BaseController {
-    constructor(
-        private getAllContentItems: GetAllContentItems, 
-        private getContentItemById: GetContentItemById,
-        private createContentItem: CreateContentItem,
-        private updateContentItem: UpdateContentItem,
-        private deleteContentItem: DeleteContentItem
-    ) {
-        super();
-    }
+  constructor(
+    private getAllContentItems: GetAllContentItems,
+    private getContentItemById: GetContentItemById,
+    private createContentItem: CreateContentItem,
+    private updateContentItem: UpdateContentItem,
+    private deleteContentItem: DeleteContentItem
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllContentItems, ContentItemResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllContentItems,
+      ContentItemResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getContentItemById, ContentItemResponseDto, 'ContentItem');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getContentItemById,
+      ContentItemResponseDto,
+      'ContentItem'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createContentItem, ContentItemResponseDto, 'ContentItem');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createContentItem,
+      ContentItemResponseDto,
+      'ContentItem'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateContentItem, ContentItemResponseDto, 'ContentItem');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateContentItem,
+      ContentItemResponseDto,
+      'ContentItem'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteContentItem, 'ContentItem');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(req, res, this.deleteContentItem, 'ContentItem');
+  }
+}

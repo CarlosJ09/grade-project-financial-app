@@ -8,33 +8,56 @@ import { TransactionResponseDto } from '@/presentation/dtos/response/Transaction
 import { BaseController } from './BaseController';
 
 export class TransactionController extends BaseController {
-    constructor(
-        private getAllTransactions: GetAllTransactions, 
-        private getTransactionById: GetTransactionById,
-        private createTransaction: CreateTransaction,
-        private updateTransaction: UpdateTransaction,
-        private deleteTransaction: DeleteTransaction
-    ) {
-        super();
-    }
+  constructor(
+    private getAllTransactions: GetAllTransactions,
+    private getTransactionById: GetTransactionById,
+    private createTransaction: CreateTransaction,
+    private updateTransaction: UpdateTransaction,
+    private deleteTransaction: DeleteTransaction
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllTransactions, TransactionResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllTransactions,
+      TransactionResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getTransactionById, TransactionResponseDto, 'Transaction');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getTransactionById,
+      TransactionResponseDto,
+      'Transaction'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createTransaction, TransactionResponseDto, 'Transaction');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createTransaction,
+      TransactionResponseDto,
+      'Transaction'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateTransaction, TransactionResponseDto, 'Transaction');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateTransaction,
+      TransactionResponseDto,
+      'Transaction'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteTransaction, 'Transaction');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(req, res, this.deleteTransaction, 'Transaction');
+  }
+}

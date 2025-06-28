@@ -1,12 +1,12 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresUserRepository } from "@/infraestructure/repositories/PostgresUserRepository";
-import { BcryptPasswordService } from "@/infraestructure/services/BcryptPasswordService";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { Login } from "@/use-cases/auth/Login";
-import { Register } from "@/use-cases/auth/Register";
-import { AuthController } from "@/presentation/controllers/AuthController";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresUserRepository } from '@/infraestructure/repositories/PostgresUserRepository';
+import { BcryptPasswordService } from '@/infraestructure/services/BcryptPasswordService';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { Login } from '@/use-cases/auth/Login';
+import { Register } from '@/use-cases/auth/Register';
+import { AuthController } from '@/presentation/controllers/AuthController';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -67,9 +67,12 @@ const authController = new AuthController(login, register);
  *       400:
  *         description: Bad request
  */
-router.post("/auth/login", asyncHandler(async (req, res) => {
+router.post(
+  '/auth/login',
+  asyncHandler(async (req, res) => {
     return authController.loginUser(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -133,8 +136,11 @@ router.post("/auth/login", asyncHandler(async (req, res) => {
  *       400:
  *         description: Bad request
  */
-router.post("/auth/register", asyncHandler(async (req, res) => {
+router.post(
+  '/auth/register',
+  asyncHandler(async (req, res) => {
     return authController.registerUser(req, res);
-}));
+  })
+);
 
-export { router as authRoutes }; 
+export { router as authRoutes };

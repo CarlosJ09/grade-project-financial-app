@@ -8,33 +8,61 @@ import { PaymentMethodResponseDto } from '@/presentation/dtos/response/PaymentMe
 import { BaseController } from './BaseController';
 
 export class PaymentMethodController extends BaseController {
-    constructor(
-        private getAllPaymentMethods: GetAllPaymentMethods, 
-        private getPaymentMethodById: GetPaymentMethodById,
-        private createPaymentMethod: CreatePaymentMethod,
-        private updatePaymentMethod: UpdatePaymentMethod,
-        private deletePaymentMethod: DeletePaymentMethod
-    ) {
-        super();
-    }
+  constructor(
+    private getAllPaymentMethods: GetAllPaymentMethods,
+    private getPaymentMethodById: GetPaymentMethodById,
+    private createPaymentMethod: CreatePaymentMethod,
+    private updatePaymentMethod: UpdatePaymentMethod,
+    private deletePaymentMethod: DeletePaymentMethod
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllPaymentMethods, PaymentMethodResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllPaymentMethods,
+      PaymentMethodResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getPaymentMethodById, PaymentMethodResponseDto, 'PaymentMethod');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getPaymentMethodById,
+      PaymentMethodResponseDto,
+      'PaymentMethod'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createPaymentMethod, PaymentMethodResponseDto, 'PaymentMethod');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createPaymentMethod,
+      PaymentMethodResponseDto,
+      'PaymentMethod'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updatePaymentMethod, PaymentMethodResponseDto, 'PaymentMethod');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updatePaymentMethod,
+      PaymentMethodResponseDto,
+      'PaymentMethod'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deletePaymentMethod, 'PaymentMethod');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(
+      req,
+      res,
+      this.deletePaymentMethod,
+      'PaymentMethod'
+    );
+  }
+}

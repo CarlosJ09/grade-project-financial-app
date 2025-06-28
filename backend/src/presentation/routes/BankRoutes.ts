@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresBankRepository } from "@/infraestructure/repositories/PostgresBankRepository";
-import { GetAllBanks } from "@/use-cases/bank/GetAllBanks";
-import { GetBankById } from "@/use-cases/bank/GetBankById";
-import { CreateBank } from "@/use-cases/bank/CreateBank";
-import { UpdateBank } from "@/use-cases/bank/UpdateBank";
-import { DeleteBank } from "@/use-cases/bank/DeleteBank";
-import { BankController } from "@/presentation/controllers/BankController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresBankRepository } from '@/infraestructure/repositories/PostgresBankRepository';
+import { GetAllBanks } from '@/use-cases/bank/GetAllBanks';
+import { GetBankById } from '@/use-cases/bank/GetBankById';
+import { CreateBank } from '@/use-cases/bank/CreateBank';
+import { UpdateBank } from '@/use-cases/bank/UpdateBank';
+import { DeleteBank } from '@/use-cases/bank/DeleteBank';
+import { BankController } from '@/presentation/controllers/BankController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getBankById = new GetBankById(bankRepository);
 const createBank = new CreateBank(bankRepository);
 const updateBank = new UpdateBank(bankRepository);
 const deleteBank = new DeleteBank(bankRepository);
-const bankController = new BankController(getAllBanks, getBankById, createBank, updateBank, deleteBank);
+const bankController = new BankController(
+  getAllBanks,
+  getBankById,
+  createBank,
+  updateBank,
+  deleteBank
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const bankController = new BankController(getAllBanks, getBankById, createBank, 
  *       401:
  *         description: Unauthorized
  */
-router.get("/banks", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/banks',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -64,9 +74,13 @@ router.get("/banks", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.get("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/banks/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -96,9 +110,13 @@ router.get("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post("/banks", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/banks',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -135,9 +153,13 @@ router.post("/banks", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/banks/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -162,8 +184,12 @@ router.put("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.delete("/banks/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/banks/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return bankController.delete(req, res);
-}));
+  })
+);
 
 export { router as bankRoutes };

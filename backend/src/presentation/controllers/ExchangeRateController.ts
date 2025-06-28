@@ -8,33 +8,56 @@ import { ExchangeRateResponseDto } from '@/presentation/dtos/response/ExchangeRa
 import { BaseController } from './BaseController';
 
 export class ExchangeRateController extends BaseController {
-    constructor(
-        private getAllExchangeRates: GetAllExchangeRates, 
-        private getExchangeRateById: GetExchangeRateById,
-        private createExchangeRate: CreateExchangeRate,
-        private updateExchangeRate: UpdateExchangeRate,
-        private deleteExchangeRate: DeleteExchangeRate
-    ) {
-        super();
-    }
+  constructor(
+    private getAllExchangeRates: GetAllExchangeRates,
+    private getExchangeRateById: GetExchangeRateById,
+    private createExchangeRate: CreateExchangeRate,
+    private updateExchangeRate: UpdateExchangeRate,
+    private deleteExchangeRate: DeleteExchangeRate
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllExchangeRates, ExchangeRateResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllExchangeRates,
+      ExchangeRateResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getExchangeRateById, ExchangeRateResponseDto, 'ExchangeRate');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getExchangeRateById,
+      ExchangeRateResponseDto,
+      'ExchangeRate'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createExchangeRate, ExchangeRateResponseDto, 'ExchangeRate');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createExchangeRate,
+      ExchangeRateResponseDto,
+      'ExchangeRate'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateExchangeRate, ExchangeRateResponseDto, 'ExchangeRate');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateExchangeRate,
+      ExchangeRateResponseDto,
+      'ExchangeRate'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteExchangeRate, 'ExchangeRate');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(req, res, this.deleteExchangeRate, 'ExchangeRate');
+  }
+}

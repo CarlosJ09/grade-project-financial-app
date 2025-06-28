@@ -8,33 +8,51 @@ import { BudgetResponseDto } from '@/presentation/dtos/response/BudgetResponseDt
 import { BaseController } from './BaseController';
 
 export class BudgetController extends BaseController {
-    constructor(
-        private getAllBudgets: GetAllBudgets, 
-        private getBudgetById: GetBudgetById,
-        private createBudget: CreateBudget,
-        private updateBudget: UpdateBudget,
-        private deleteBudget: DeleteBudget
-    ) {
-        super();
-    }
+  constructor(
+    private getAllBudgets: GetAllBudgets,
+    private getBudgetById: GetBudgetById,
+    private createBudget: CreateBudget,
+    private updateBudget: UpdateBudget,
+    private deleteBudget: DeleteBudget
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllBudgets, BudgetResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(req, res, this.getAllBudgets, BudgetResponseDto);
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getBudgetById, BudgetResponseDto, 'Budget');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getBudgetById,
+      BudgetResponseDto,
+      'Budget'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createBudget, BudgetResponseDto, 'Budget');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createBudget,
+      BudgetResponseDto,
+      'Budget'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateBudget, BudgetResponseDto, 'Budget');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateBudget,
+      BudgetResponseDto,
+      'Budget'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteBudget, 'Budget');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(req, res, this.deleteBudget, 'Budget');
+  }
+}

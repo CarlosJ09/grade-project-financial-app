@@ -1,15 +1,15 @@
-import { Router } from "express";
-import { Database } from "@/infraestructure/config/Database";
-import { PostgresModuleRepository } from "@/infraestructure/repositories/PostgresModuleRepository";
-import { GetAllModules } from "@/use-cases/module/GetAllModules";
-import { GetModuleById } from "@/use-cases/module/GetModuleById";
-import { CreateModule } from "@/use-cases/module/CreateModule";
-import { UpdateModule } from "@/use-cases/module/UpdateModule";
-import { DeleteModule } from "@/use-cases/module/DeleteModule";
-import { ModuleController } from "@/presentation/controllers/ModuleController";
-import { JwtTokenService } from "@/infraestructure/services/JwtTokenService";
-import { createAuthMiddleware } from "@/presentation/middleware/authMiddleware";
-import { asyncHandler } from "@/presentation/utils/asyncHandler";
+import { Router } from 'express';
+import { Database } from '@/infraestructure/config/Database';
+import { PostgresModuleRepository } from '@/infraestructure/repositories/PostgresModuleRepository';
+import { GetAllModules } from '@/use-cases/module/GetAllModules';
+import { GetModuleById } from '@/use-cases/module/GetModuleById';
+import { CreateModule } from '@/use-cases/module/CreateModule';
+import { UpdateModule } from '@/use-cases/module/UpdateModule';
+import { DeleteModule } from '@/use-cases/module/DeleteModule';
+import { ModuleController } from '@/presentation/controllers/ModuleController';
+import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
+import { asyncHandler } from '@/presentation/utils/asyncHandler';
 
 const router = Router();
 
@@ -23,7 +23,13 @@ const getModuleById = new GetModuleById(moduleRepository);
 const createModule = new CreateModule(moduleRepository);
 const updateModule = new UpdateModule(moduleRepository);
 const deleteModule = new DeleteModule(moduleRepository);
-const moduleController = new ModuleController(getAllModules, getModuleById, createModule, updateModule, deleteModule);
+const moduleController = new ModuleController(
+  getAllModules,
+  getModuleById,
+  createModule,
+  updateModule,
+  deleteModule
+);
 
 /**
  * @swagger
@@ -39,9 +45,13 @@ const moduleController = new ModuleController(getAllModules, getModuleById, crea
  *       401:
  *         description: Unauthorized
  */
-router.get("/modules", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/modules',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return moduleController.getAll(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -66,9 +76,13 @@ router.get("/modules", authMiddleware, asyncHandler(async (req, res) => {
  *       404:
  *         description: Module not found
  */
-router.get("/modules/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.get(
+  '/modules/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return moduleController.getById(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -130,9 +144,13 @@ router.get("/modules/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.post("/modules", authMiddleware, asyncHandler(async (req, res) => {
+router.post(
+  '/modules',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return moduleController.create(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -196,9 +214,13 @@ router.post("/modules", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.put("/modules/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.put(
+  '/modules/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return moduleController.update(req, res);
-}));
+  })
+);
 
 /**
  * @swagger
@@ -223,8 +245,12 @@ router.put("/modules/:id", authMiddleware, asyncHandler(async (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.delete("/modules/:id", authMiddleware, asyncHandler(async (req, res) => {
+router.delete(
+  '/modules/:id',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
     return moduleController.delete(req, res);
-}));
+  })
+);
 
-export { router as moduleRoutes }; 
+export { router as moduleRoutes };

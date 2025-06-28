@@ -1,9 +1,9 @@
 class QuizAttemptAnswer {
-    constructor(
-        public readonly id: string,
-        public readonly quizAttemptId: string,
-        public readonly quizQuestionId: string,
-    ) { }
+  constructor(
+    public readonly id: string,
+    public readonly quizAttemptId: string,
+    public readonly quizQuestionId: string
+  ) {}
 }
 
-export { QuizAttemptAnswer }; 
+export { QuizAttemptAnswer };

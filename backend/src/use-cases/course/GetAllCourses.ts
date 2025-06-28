@@ -1,10 +1,10 @@
-import { ICourseRepository } from "@/domain/repositories/ICourseRepository";
-import { Course } from "@/domain/entities/Course";
+import { ICourseRepository } from '@/domain/repositories/ICourseRepository';
+import { Course } from '@/domain/entities/Course';
 
 export class GetAllCourses {
-    constructor(private courseRepository: ICourseRepository) { }
+  constructor(private courseRepository: ICourseRepository) {}
 
-    async execute(): Promise<Course[]> {
-        return this.courseRepository.findAll();
-    }
-} 
+  async execute(): Promise<Course[]> {
+    return this.courseRepository.findAll();
+  }
+}

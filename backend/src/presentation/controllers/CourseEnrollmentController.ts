@@ -8,33 +8,61 @@ import { CourseEnrollmentResponseDto } from '@/presentation/dtos/response/Course
 import { BaseController } from './BaseController';
 
 export class CourseEnrollmentController extends BaseController {
-    constructor(
-        private getAllCourseEnrollments: GetAllCourseEnrollments, 
-        private getCourseEnrollmentById: GetCourseEnrollmentById,
-        private createCourseEnrollment: CreateCourseEnrollment,
-        private updateCourseEnrollment: UpdateCourseEnrollment,
-        private deleteCourseEnrollment: DeleteCourseEnrollment
-    ) {
-        super();
-    }
+  constructor(
+    private getAllCourseEnrollments: GetAllCourseEnrollments,
+    private getCourseEnrollmentById: GetCourseEnrollmentById,
+    private createCourseEnrollment: CreateCourseEnrollment,
+    private updateCourseEnrollment: UpdateCourseEnrollment,
+    private deleteCourseEnrollment: DeleteCourseEnrollment
+  ) {
+    super();
+  }
 
-    async getAll(req: Request, res: Response) {
-        return this.handleGetAll(req, res, this.getAllCourseEnrollments, CourseEnrollmentResponseDto);
-    }
+  async getAll(req: Request, res: Response) {
+    return this.handleGetAll(
+      req,
+      res,
+      this.getAllCourseEnrollments,
+      CourseEnrollmentResponseDto
+    );
+  }
 
-    async getById(req: Request, res: Response) {
-        return this.handleGetById(req, res, this.getCourseEnrollmentById, CourseEnrollmentResponseDto, 'CourseEnrollment');
-    }
+  async getById(req: Request, res: Response) {
+    return this.handleGetById(
+      req,
+      res,
+      this.getCourseEnrollmentById,
+      CourseEnrollmentResponseDto,
+      'CourseEnrollment'
+    );
+  }
 
-    async create(req: Request, res: Response) {
-        return this.handleCreate(req, res, this.createCourseEnrollment, CourseEnrollmentResponseDto, 'CourseEnrollment');
-    }
+  async create(req: Request, res: Response) {
+    return this.handleCreate(
+      req,
+      res,
+      this.createCourseEnrollment,
+      CourseEnrollmentResponseDto,
+      'CourseEnrollment'
+    );
+  }
 
-    async update(req: Request, res: Response) {
-        return this.handleUpdate(req, res, this.updateCourseEnrollment, CourseEnrollmentResponseDto, 'CourseEnrollment');
-    }
+  async update(req: Request, res: Response) {
+    return this.handleUpdate(
+      req,
+      res,
+      this.updateCourseEnrollment,
+      CourseEnrollmentResponseDto,
+      'CourseEnrollment'
+    );
+  }
 
-    async delete(req: Request, res: Response) {
-        return this.handleDelete(req, res, this.deleteCourseEnrollment, 'CourseEnrollment');
-    }
-} 
+  async delete(req: Request, res: Response) {
+    return this.handleDelete(
+      req,
+      res,
+      this.deleteCourseEnrollment,
+      'CourseEnrollment'
+    );
+  }
+}
