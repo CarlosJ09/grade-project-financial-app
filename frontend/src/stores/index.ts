@@ -29,3 +29,7 @@ export type {
   UserModuleProgress,
 } from '@/types/education';
 export { useEducationStore } from './educationStore';
+
+// Theme Store
+export { useThemeStore } from './themeStore';
+export type { ActiveTheme, ThemeMode } from './themeStore';

@@ -32,6 +32,11 @@ export default {
     copyright: '© 2024 Financial Education App',
   },
 
+  theme: {
+    title: 'Theme',
+    description: 'Choose your preferred theme',
+  },
+
   settings: {
     language: 'Language',
     theme: 'Theme',

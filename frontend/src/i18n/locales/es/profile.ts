@@ -32,6 +32,11 @@ export default {
     copyright: '© 2024 Aplicación de Educación Financiera',
   },
 
+  theme: {
+    title: 'Tema',
+    description: 'Elige tu tema preferido',
+  },
+
   settings: {
     language: 'Idioma',
     theme: 'Tema',

@@ -9,6 +9,8 @@ A React Native app built with Expo for financial education powered by AI.
 - 📚 **Educational Content** - courses, modules, quizzes
 - 🎨 **Modern UI** with NativeWind (Tailwind CSS)
 - 📱 **Cross-platform** - iOS, Android, Web
+- 🎨 **Theme Switching** (Light, Dark, System)
+- 🌍 Multi-language Support (English/Spanish)
 
 ## State Management
 
@@ -50,6 +52,17 @@ import { useEducationStore } from '@/stores';
 const { courses, enrollInCourse, updateProgress } = useEducationStore();
 ```
 
+### Theme Store (`useThemeStore`)
+
+- Theme management and switching
+- Persistent theme preferences
+
+```tsx
+import { useThemeStore } from '@/stores/themeStore';
+
+const { themeMode, setThemeMode } = useThemeStore();
+```
+
 ## Custom Hooks
 
 ### `useAuthGuard(requireAuth: boolean)`
@@ -74,6 +87,23 @@ Quick access to current user data:
 import { useAuthUser } from '@/hooks/useAuthGuard';
 
 const { user, isAuthenticated } = useAuthUser();
+```
+
+### `useTheme()`
+
+Access theme-related functionalities:
+
+```tsx
+import { useTheme } from '@/hooks/useTheme';
+
+const {
+  themeMode,      // Current theme mode setting
+  activeTheme,    // Current active theme (light/dark)
+  setThemeMode,   // Function to change theme
+  isLight,        // Boolean helpers
+  isDark,
+  isSystem
+} = useTheme();
 ```
 
 ## Getting Started
@@ -132,3 +162,71 @@ src/
 - **NativeWind** for styling
 - **Expo Router** for navigation
 - **Expo SecureStore** for secure data storage
+
+## Theme System
+
+The app includes a comprehensive theme switching system with three modes:
+
+### Theme Modes
+
+- **Light**: Force light theme
+- **Dark**: Force dark theme
+- **System**: Follow system preference
+
+### Usage
+
+#### Using the Theme Store
+
+```typescript
+import { useThemeStore } from '@/stores/themeStore';
+
+const { themeMode, setThemeMode } = useThemeStore();
+
+// Change theme
+setThemeMode('dark'); // 'light' | 'dark' | 'system'
+```
+
+#### Using the Theme Hook
+
+```typescript
+import { useTheme } from '@/hooks/useTheme';
+
+const {
+  themeMode,      // Current theme mode setting
+  activeTheme,    // Current active theme (light/dark)
+  setThemeMode,   // Function to change theme
+  isLight,        // Boolean helpers
+  isDark,
+  isSystem
+} = useTheme();
+```
+
+#### Using the Theme Switcher Component
+
+```typescript
+import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
+
+// Compact version (icons only)
+<ThemeSwitcher variant="compact" />
+
+// Full version with labels
+<ThemeSwitcher variant="full" showLabels />
+
+// Full version without labels
+<ThemeSwitcher variant="full" />
+```
+
+#### Using Themed Components
+
+```typescript
+import { ThemedText, ThemedView } from '@/components';
+
+// These components automatically adapt to theme
+<ThemedView>
+  <ThemedText>This text adapts to the current theme</ThemedText>
+</ThemedView>
+```
+
+### Theme Persistence
+
+Theme preferences are automatically persisted using Expo SecureStore and will be restored when the app restarts.

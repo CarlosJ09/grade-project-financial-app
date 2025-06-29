@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemedText } from '@/components/ThemedText';
+import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { useTranslation } from '@/hooks/useTranslation';
 import { useAuthStore } from '@/stores';
 import { logout } from '@/utils/logout';
@@ -89,6 +90,24 @@ export default function ProfileScreen() {
         {/* Language Switcher */}
         <View className="p-4">
           <LanguageSwitcher />
+        </View>
+
+        {/* Theme Switcher */}
+        <View className="px-4 pb-4">
+          <View className="mb-3 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
+            <View className="mb-3 flex-row items-center">
+              <Text className="mr-4 text-2xl">🎨</Text>
+              <View className="flex-1">
+                <Text className="font-medium text-gray-900 dark:text-white">
+                  {t('profile.theme.title')}
+                </Text>
+                <Text className="text-sm text-gray-600 dark:text-gray-400">
+                  {t('profile.theme.description')}
+                </Text>
+              </View>
+            </View>
+            <ThemeSwitcher variant="full" showLabels />
+          </View>
         </View>
 
         {/* Menu Items */}
