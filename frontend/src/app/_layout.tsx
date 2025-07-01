@@ -3,12 +3,12 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
+import { useAppFonts } from '@/hooks/useFonts';
 import '@/i18n';
 import { useAuthStore } from '@/stores';
 import '../../global.css';
@@ -16,13 +16,10 @@ import '../../global.css';
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const { isAuthenticated } = useAuthStore();
-
-  const [loaded] = useFonts({
-    SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
-  });
+  const { fontsLoaded } = useAppFonts();
 
   // Wait for both fonts and auth state to be ready
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 

@@ -2,11 +2,9 @@ import * as Localization from 'expo-localization';
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// Import translation resources
-import en from './locales/en';
-import es from './locales/es';
+import en from '@/i18n/locales/en';
+import es from '@/i18n/locales/es';
 
-// Define available languages
 export const SUPPORTED_LANGUAGES = {
   en: 'English',
   es: 'Español',
@@ -14,10 +12,8 @@ export const SUPPORTED_LANGUAGES = {
 
 export type SupportedLanguage = keyof typeof SUPPORTED_LANGUAGES;
 
-// Get device language or fallback to English
 const getDeviceLanguage = (): SupportedLanguage => {
   try {
-    // Get the primary locale safely
     let locale = 'en';
 
     if (Localization.locale && typeof Localization.locale === 'string') {
@@ -58,26 +54,20 @@ i18n
     // Language to use if translations in current language are not available
     fallbackLng: 'en',
 
-    // Auto-detect device language
     lng: getDeviceLanguage(),
 
-    // Debug mode (disable in production)
     debug: __DEV__,
 
-    // Interpolation options
     interpolation: {
-      escapeValue: false, // React already handles escaping
+      escapeValue: false,
     },
 
-    // React options
     react: {
-      useSuspense: false, // Disable suspense for React Native
+      useSuspense: false,
     },
 
-    // Key separator for nested objects
     keySeparator: '.',
 
-    // Namespace separator
     nsSeparator: ':',
   })
   .catch(error => {

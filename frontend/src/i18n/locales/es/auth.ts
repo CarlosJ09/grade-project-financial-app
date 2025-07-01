@@ -27,7 +27,6 @@ export default {
       'Al registrarte, aceptas nuestros Términos de Servicio y Política de Privacidad',
   },
 
-  // Forgot Password
   forgotPassword: {
     title: 'Restablecer Contraseña',
     subtitle:
@@ -59,7 +58,6 @@ export default {
     serverError: 'Error del servidor. Inténtalo más tarde.',
   },
 
-  // Success Messages
   success: {
     accountCreated: '¡Cuenta creada exitosamente!',
     loginSuccessful: '¡Inicio de sesión exitoso!',

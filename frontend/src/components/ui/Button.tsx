@@ -2,7 +2,7 @@ import { Pressable, PressableProps, Text, useColorScheme } from 'react-native';
 
 interface ButtonProps extends Omit<PressableProps, 'children'> {
   title: string;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'outline' | 'success' | 'error';
   size?: 'small' | 'medium' | 'large';
   containerClassName?: string;
   textClassName?: string;
@@ -20,20 +20,29 @@ export const Button = ({
   const colorScheme = useColorScheme() ?? 'light';
 
   const baseContainerClass = 'items-center justify-center rounded-xl';
-  const baseTextClass = 'font-semibold';
+  const baseTextClass = 'font-poppins-medium';
 
   const variantStyles = {
     primary: {
-      container: 'bg-gray-800 active:bg-gray-900',
+      container: 'bg-primary active:opacity-90',
       text: 'text-white',
     },
     secondary: {
-      container: 'bg-gray-500 active:bg-gray-600',
+      container: 'bg-secondary active:opacity-90',
+      text: 'text-white',
+    },
+    success: {
+      container: 'bg-success active:opacity-90',
+      text: 'text-text-primary',
+    },
+    error: {
+      container: 'bg-error active:opacity-90',
       text: 'text-white',
     },
     outline: {
-      container: 'border-2 border-blue-500 bg-transparent active:bg-blue-50',
-      text: 'text-blue-500',
+      container:
+        'border-2 border-primary bg-transparent active:bg-success-light',
+      text: 'text-primary',
     },
   };
 

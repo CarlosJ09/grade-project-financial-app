@@ -37,7 +37,7 @@ export default function HomeScreen() {
             onPress={() => router.push('/profile')}
           >
             <Text className="text-lg font-bold text-white">
-              {user?.firstName?.[0]?.toUpperCase() || '?'}
+              {user?.firstName?.[0]?.toUpperCase() || 'C'}
             </Text>
           </TouchableOpacity>
         </View>
