@@ -1,6 +1,7 @@
 class User {
   constructor(
     public readonly id: string,
+    public readonly identificationNumber: string,
     public readonly name: string,
     public readonly lastName: string,
     public readonly email: string,

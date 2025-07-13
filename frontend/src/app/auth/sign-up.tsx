@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { TextInput } from '@/components/ui/TextInput';
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuthStore } from '@/stores';
@@ -16,6 +16,7 @@ const SignUp = () => {
     password: '',
     firstName: '',
     lastName: '',
+    birthDate: '',
   });
 
   const [errors, setErrors] = useState<{
@@ -24,12 +25,14 @@ const SignUp = () => {
     password: string;
     firstName: string;
     lastName: string;
+    birthDate: string;
   }>({
     cedula: '',
     email: '',
     password: '',
     firstName: '',
     lastName: '',
+    birthDate: '',
   });
 
   const handleRegister = async () => {
@@ -41,6 +44,7 @@ const SignUp = () => {
       password: '',
       firstName: '',
       lastName: '',
+      birthDate: '',
     });
 
     // Basic validation
@@ -64,13 +68,20 @@ const SignUp = () => {
       setErrors(prev => ({ ...prev, lastName: 'Apellido es requerido' }));
       return;
     }
+    if (!formData.birthDate.trim()) {
+      setErrors(prev => ({
+        ...prev,
+        birthDate: 'Fecha de nacimiento es requerida',
+      }));
+      return;
+    }
 
     await register(formData);
   };
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-slate-600">
-      <View className="flex-1 justify-center p-8">
+      <ScrollView contentContainerStyle={{ padding: 16, paddingTop: 16 }}>
         <View className="mb-8 w-full gap-8">
           <TextInput
             label="Nombre"
@@ -124,6 +135,16 @@ const SignUp = () => {
             }
             error={errors.password}
           />
+
+          <TextInput
+            label="Fecha de Nacimiento"
+            placeholder="DD/MM/YYYY"
+            value={formData.birthDate}
+            onChangeText={text =>
+              setFormData(prev => ({ ...prev, birthDate: text }))
+            }
+            error={errors.birthDate}
+          />
         </View>
 
         {error && (
@@ -146,7 +167,7 @@ const SignUp = () => {
             <Text>Inicia Sesión</Text>
           </Link>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };

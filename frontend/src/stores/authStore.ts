@@ -70,12 +70,13 @@ export const useAuthStore = create<AuthState>()(
 
           const session: AuthSession = response.data;
 
+          console.log(session);
+
           api.defaults.headers.common['Authorization'] =
             `Bearer ${session.token}`;
 
           set({
             user: session.user,
-            session,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -103,31 +104,32 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await AuthService.register(credentials);
 
-          if (response.data?.error) {
+          if (response.status === 200) {
+            const session: AuthSession = response.data;
+
+            // Set auth header for future requests
+            api.defaults.headers.common['Authorization'] =
+              `Bearer ${session.token}`;
+
+            set({
+              user: session.user,
+              session,
+              isAuthenticated: true,
+              isLoading: false,
+              error: null,
+            });
+
+            // Navigate to main app
+            router.replace('/(tabs)');
+            return true;
+          } else if (response.data?.error) {
             set({
               error: { message: response.data.error },
               isLoading: false,
             });
-            return false;
           }
 
-          const session: AuthSession = response.data;
-
-          // Set auth header for future requests
-          api.defaults.headers.common['Authorization'] =
-            `Bearer ${session.token}`;
-
-          set({
-            user: session.user,
-            session,
-            isAuthenticated: true,
-            isLoading: false,
-            error: null,
-          });
-
-          // Navigate to main app
-          router.replace('/(tabs)');
-          return true;
+          return false;
         } catch (error: any) {
           set({
             error: {

@@ -14,6 +14,8 @@ export default function ProfileScreen() {
   const { user, logout: storeLogout } = useAuthStore();
   const { t } = useTranslation();
 
+  console.log(user);
+
   const handleLogout = () => {
     Alert.alert(
       t('profile.logout.confirmTitle'),
@@ -76,7 +78,7 @@ export default function ProfileScreen() {
         <View className="items-center border-b border-gray-200 p-6 dark:border-gray-700">
           <View className="mb-4 h-20 w-20 items-center justify-center rounded-full bg-blue-500">
             <Text className="text-2xl font-bold text-white">
-              {user?.firstName?.[0]?.toUpperCase() || '?'}
+              {user?.firstName?.[0]?.toUpperCase() || 'C'}
             </Text>
           </View>
           <ThemedText type="subtitle" className="mb-1">

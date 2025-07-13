@@ -12,8 +12,11 @@ export type LoginOutput = {
   refreshToken: string;
   user: {
     id: string;
-    name: string;
+    identificationNumber: string;
     email: string;
+    firstName: string;
+    lastName: string;
+    birthDate: string;
   };
 };
 
@@ -48,8 +51,11 @@ export class Login {
       refreshToken,
       user: {
         id: user.id,
-        name: user.name,
+        identificationNumber: user.identificationNumber,
         email: user.email,
+        firstName: user.name,
+        lastName: user.lastName,
+        birthDate: user.dateOfBirth.toISOString(),
       },
     };
   }

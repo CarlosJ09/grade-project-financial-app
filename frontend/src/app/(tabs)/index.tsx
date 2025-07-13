@@ -44,14 +44,14 @@ export default function HomeScreen() {
 
         {/* Financial Overview */}
         <View className="mb-6 px-6">
-          <View className="rounded-2xl bg-gradient-to-r from-blue-500 to-purple-600 p-6">
+          <View className="bg-success rounded-2xl p-6">
             <Text className="mb-2 text-lg font-semibold text-white">
               {t('home.financialOverview.title')}
             </Text>
-            <Text className="mb-1 text-3xl font-bold text-blue-100">
+            <Text className="mb-1 text-3xl font-bold text-white">
               {t('home.financialOverview.noBalance')}
             </Text>
-            <Text className="text-sm text-blue-200">
+            <Text className="text-sm text-white">
               {t('home.financialOverview.totalBalance')}
             </Text>
           </View>

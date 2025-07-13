@@ -29,6 +29,7 @@ export interface RegisterCredentials {
   password: string;
   firstName: string;
   lastName: string;
+  birthDate: string;
 }
 
 export interface AuthError {
