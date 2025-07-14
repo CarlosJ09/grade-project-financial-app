@@ -1,10 +1,55 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
+import { TransactionCard } from '@/components/finances/TransactionCard';
+import { TransactionModal } from '@/components/finances/TransactionModal';
+import { transactionService } from '@/services/transaction';
+import { Transaction } from '@/types/financial';
 
 export default function FinancesScreen() {
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const fetchTransactions = async () => {
+    setLoading(true);
+    try {
+      console.log('Fetching transactions...');
+      const response = await transactionService.getAll();
+      console.log('Transactions response:', response.data);
+      setTransactions(response.data || []);
+    } catch (error) {
+      console.error('Error fetching transactions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleTransactionCreated = () => {
+    // Refresh the transactions list after creating a new one
+    fetchTransactions();
+  };
+
+  const calculateTotals = () => {
+    const income = transactions
+      .filter(t => t.type === 'income')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    const expenses = transactions
+      .filter(t => t.type === 'expense')
+      .reduce((sum, t) => sum + t.amount, 0);
+
+    return { income, expenses };
+  };
+
+  const { income, expenses } = calculateTotals();
+
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
       <ScrollView className="flex-1">
@@ -21,7 +66,7 @@ export default function FinancesScreen() {
                   Income
                 </Text>
                 <Text className="mt-1 text-2xl font-bold text-green-800 dark:text-green-300">
-                  $0.00
+                  ${income.toFixed(2)}
                 </Text>
               </View>
               <View className="flex-1 rounded-xl bg-red-50 p-4 dark:bg-red-900/20">
@@ -29,7 +74,7 @@ export default function FinancesScreen() {
                   Expenses
                 </Text>
                 <Text className="mt-1 text-2xl font-bold text-red-800 dark:text-red-300">
-                  $0.00
+                  ${expenses.toFixed(2)}
                 </Text>
               </View>
             </View>
@@ -41,7 +86,10 @@ export default function FinancesScreen() {
               Quick Actions
             </ThemedText>
             <View className="flex-row gap-3">
-              <TouchableOpacity className="flex-1 rounded-xl bg-blue-500 p-4">
+              <TouchableOpacity
+                className="flex-1 rounded-xl bg-blue-500 p-4"
+                onPress={() => setShowTransactionModal(true)}
+              >
                 <Text className="text-center font-semibold text-white">
                   Add Transaction
                 </Text>
@@ -54,10 +102,43 @@ export default function FinancesScreen() {
             </View>
           </View>
 
+          {/* Transactions List */}
+          <View className="mb-6">
+            <ThemedText type="subtitle" className="mb-4">
+              Recent Transactions
+            </ThemedText>
+
+            {loading ? (
+              <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
+                <Text className="text-center text-gray-600 dark:text-gray-400">
+                  Loading transactions...
+                </Text>
+              </View>
+            ) : transactions.length === 0 ? (
+              <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
+                <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
+                  💰 No transactions yet
+                </Text>
+                <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
+                  Start by adding your first transaction
+                </Text>
+              </View>
+            ) : (
+              <View className="space-y-3">
+                {transactions.map(transaction => (
+                  <TransactionCard
+                    key={transaction.id}
+                    transaction={transaction}
+                  />
+                ))}
+              </View>
+            )}
+          </View>
+
           {/* Placeholder Content */}
           <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
             <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
-              💰 Your Financial Dashboard R{' '}
+              💰 Your Financial Dashboard
             </Text>
             <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
               Track expenses, manage budgets, and achieve your financial goals
@@ -65,6 +146,13 @@ export default function FinancesScreen() {
           </View>
         </View>
       </ScrollView>
+
+      {/* Transaction Modal */}
+      <TransactionModal
+        visible={showTransactionModal}
+        onClose={() => setShowTransactionModal(false)}
+        onSuccess={handleTransactionCreated}
+      />
     </SafeAreaView>
   );
 }

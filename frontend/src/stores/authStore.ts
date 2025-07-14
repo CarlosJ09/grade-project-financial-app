@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import api from '@/interceptor/core-api';
-import { AuthService } from '@/services/auth';
+import { authService } from '@/services/auth';
 import type {
   AuthError,
   AuthSession,
@@ -59,7 +59,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await AuthService.login(credentials);
+          const response = await authService.login(credentials);
           if (response.status !== 200) {
             set({
               error: { message: response.data.message },
@@ -70,13 +70,12 @@ export const useAuthStore = create<AuthState>()(
 
           const session: AuthSession = response.data;
 
-          console.log(session);
-
           api.defaults.headers.common['Authorization'] =
-            `Bearer ${session.token}`;
+            `Bearer ${session.accessToken}`;
 
           set({
             user: session.user,
+            session: session,
             isAuthenticated: true,
             isLoading: false,
             error: null,
@@ -102,14 +101,14 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await AuthService.register(credentials);
+          const response = await authService.register(credentials);
 
           if (response.status === 200) {
             const session: AuthSession = response.data;
 
             // Set auth header for future requests
             api.defaults.headers.common['Authorization'] =
-              `Bearer ${session.token}`;
+              `Bearer ${session.accessToken}`;
 
             set({
               user: session.user,
@@ -144,9 +143,9 @@ export const useAuthStore = create<AuthState>()(
       logout: async (): Promise<void> => {
         const { session } = get();
 
-        if (session?.token) {
+        if (session?.accessToken) {
           try {
-            await api.post('/auth/logout', { token: session.token });
+            await api.post('/auth/logout', { token: session.accessToken });
           } catch (error) {
             console.error('Logout API call failed:', error);
           }
@@ -186,7 +185,7 @@ export const useAuthStore = create<AuthState>()(
 
           // Update auth header
           api.defaults.headers.common['Authorization'] =
-            `Bearer ${newSession.token}`;
+            `Bearer ${newSession.accessToken}`;
 
           set({
             session: newSession,
@@ -227,9 +226,9 @@ export const useAuthStore = create<AuthState>()(
       }),
       // Restore auth header on rehydration
       onRehydrateStorage: () => state => {
-        if (state?.session?.token) {
+        if (state?.session?.accessToken) {
           api.defaults.headers.common['Authorization'] =
-            `Bearer ${state.session.token}`;
+            `Bearer ${state.session.accessToken}`;
         }
       },
     }

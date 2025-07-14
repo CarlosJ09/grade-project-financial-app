@@ -9,7 +9,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "lint": "prettier --check ."
+    "lint": "prettier --check .",
+    "seed": "tsx src/infraestructure/seeds/index.ts seed",
+    "seed:clear": "tsx src/infraestructure/seeds/index.ts clear"
   },
   "author": "CarlosJ09",
   "license": "ISC",

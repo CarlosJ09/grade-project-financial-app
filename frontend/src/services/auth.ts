@@ -1,8 +1,8 @@
 import api from '@/interceptor/core-api';
 import { LoginCredentials, RegisterCredentials } from '@/types/auth';
 
-export class AuthService {
-  static async login(credentials: LoginCredentials) {
+class AuthService {
+  async login(credentials: LoginCredentials) {
     try {
       const response = await api.post('/auth/login', credentials);
       return response;
@@ -12,7 +12,7 @@ export class AuthService {
     }
   }
 
-  static async register(payload: RegisterCredentials) {
+  async register(payload: RegisterCredentials) {
     try {
       const response = await api.post('/auth/register', payload);
       return response;
@@ -22,3 +22,5 @@ export class AuthService {
     }
   }
 }
+
+export const authService = new AuthService();

@@ -16,15 +16,30 @@ export interface Currency {
 
 export interface Transaction {
   id: string;
+  userId: string;
   amount: number;
-  description: string;
+  currencyId: string;
+  exchangeRateId: string | null;
   type: 'income' | 'expense';
   categoryId: string;
   paymentMethodId: string;
-  userId: string;
-  date: string;
+  place: string;
+  bankingProductId: string | null;
+  transactionDate: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface CreateTransactionInput {
+  amount: number;
+  currencyId: string;
+  type: 'income' | 'expense';
+  categoryId: string;
+  paymentMethodId: string;
+  place: string;
+  transactionDate: string;
+  exchangeRateId?: string;
+  bankingProductId?: string;
 }
 
 export interface Budget {

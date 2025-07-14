@@ -12,7 +12,7 @@ export interface User {
 }
 
 export interface AuthSession {
-  token: string;
+  accessToken: string;
   refreshToken: string;
   expiresAt: string;
   user: User;
