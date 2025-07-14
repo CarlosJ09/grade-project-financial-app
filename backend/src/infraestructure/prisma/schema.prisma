@@ -40,13 +40,13 @@ model User {
 }
 
 model Budget {
-  id            String   @id @default(uuid())
+  id            String   @id @default(uuid()) 
   userId        String
   name          String   @db.VarChar(25)
   description   String
   currentAmount Decimal  @db.Decimal(18, 4)
   goalAmount    Decimal  @db.Decimal(18, 4)
-  currencyId    String
+  currencyId    Int      
   startDate     DateTime
   finishedDate  DateTime
   state         String // Enum: active, inactive, completed
@@ -63,16 +63,16 @@ model Budget {
 }
 
 model BudgetCategory {
-  id         String @id @default(uuid())
+  id         Int @id @default(autoincrement()) 
   budgetId   String
-  categoryId String
+  categoryId Int 
 
   // Relations (assuming many-to-many relationship)
   @@map("budget_categories")
 }
 
 model BudgetLineMovement {
-  id           String   @id @default(uuid())
+  id           Int      @id @default(autoincrement()) 
   budgetId     String
   transactionId String
   movementType String // Enum: allocation, actual
@@ -87,16 +87,16 @@ model BudgetLineMovement {
 }
 
 model Transaction {
-  id                    String    @id @default(uuid())
+  id                    String    @id @default(uuid()) 
   userId                String
   amount                Decimal   @db.Decimal(18, 4)
-  currencyId            String
-  exchangeRateId        String?
+  currencyId            Int       
+  exchangeRateId        Int?      
   type                  String // Enum: expense, income
-  categoryId            String
-  paymentMethodId       String
+  categoryId            Int       
+  paymentMethodId       Int       
   place                 String    @db.VarChar(25)
-  bankingProductId      String?
+  bankingProductId      Int?      
   transactionDate       DateTime
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
@@ -115,7 +115,7 @@ model Transaction {
 }
 
 model PaymentMethod {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement()) 
   paymentMethod String // Enum
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -127,7 +127,7 @@ model PaymentMethod {
 }
 
 model Category {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement()) 
   name      String   @db.VarChar(25) @unique
   kind      String // Enum: expense, income, budget
   createdAt DateTime @default(now())
@@ -140,7 +140,7 @@ model Category {
 }
 
 model Currency {
-  id       String @id @default(uuid())
+  id       Int    @id @default(autoincrement()) 
   currency String @db.VarChar(3)
 
   // Relations
@@ -152,8 +152,8 @@ model Currency {
 }
 
 model ExchangeRate {
-  id         String   @id @default(uuid())
-  currencyId String
+  id         Int      @id @default(autoincrement()) 
+  currencyId Int      
   rate       Decimal  @db.Decimal(18, 8)
   rateDate   DateTime
 
@@ -165,7 +165,7 @@ model ExchangeRate {
 }
 
 model Bank {
-  id        String   @id @default(uuid())
+  id        Int      @id @default(autoincrement()) 
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -178,9 +178,9 @@ model Bank {
 }
 
 model UserBank {
-  id         String    @id @default(uuid())
+  id         String    @id @default(uuid()) // Keep UUID for privacy
   userId     String
-  bankId     String
+  bankId     Int       
   alias      String
   lastSyncAt DateTime?
 
@@ -192,7 +192,7 @@ model UserBank {
 }
 
 model BankingProduct {
-  id                  String @id @default(uuid())
+  id                  Int    @id @default(autoincrement()) 
   bankingProductName String // Enum
 
   // Relations
@@ -203,9 +203,9 @@ model BankingProduct {
 }
 
 model BankBankingProduct {
-  id               String @id @default(uuid())
-  bankId           String
-  bankingProductId String
+  id               Int @id @default(autoincrement()) 
+  bankId           Int 
+  bankingProductId Int 
 
   // Relations
   bank           Bank           @relation(fields: [bankId], references: [id])
@@ -215,9 +215,9 @@ model BankBankingProduct {
 }
 
 model CourseEnrollment {
-  id         String    @id @default(uuid())
+  id         Int       @id @default(autoincrement()) 
   userId     String
-  courseId   String
+  courseId   Int       
   enrolledAt DateTime
   unenrolledAt DateTime?
 
@@ -229,7 +229,7 @@ model CourseEnrollment {
 }
 
 model Course {
-  id          String @id @default(uuid())
+  id          Int    @id @default(autoincrement()) 
   name        String
   description String
   createdAt   DateTime @default(now())
@@ -243,9 +243,9 @@ model Course {
 }
 
 model UserModuleProgress {
-  id              String    @id @default(uuid())
+  id              Int       @id @default(autoincrement()) 
   userId          String
-  moduleId        String
+  moduleId        Int       
   status          String // Enum
   progressPercent Decimal   @db.Decimal(3, 2)
   startedAt       DateTime
@@ -259,14 +259,14 @@ model UserModuleProgress {
 }
 
 model Module {
-  id               String @id @default(uuid())
-  courseId         String
+  id               Int    @id @default(autoincrement()) 
+  courseId         Int    
   contentItem      String
   sequence         Int
   summary          String
   estimatedMinutes Int
   releaseAt        DateTime
-  prerequisiteModuleId String?
+  prerequisiteModuleId Int? 
 
   // Relations
   course             Course               @relation(fields: [courseId], references: [id])
@@ -277,9 +277,9 @@ model Module {
 }
 
 model ContentItem {
-  id          String @id @default(uuid())
+  id          Int    @id @default(autoincrement()) 
   sectionId   String
-  moduleId    String
+  moduleId    Int    
   sequence    Int
   title       String
   fileUrl     String
@@ -292,8 +292,8 @@ model ContentItem {
 }
 
 model QuizQuestion {
-  id           String @id @default(uuid())
-  contentItemId String
+  id           Int    @id @default(autoincrement()) 
+  contentItemId Int   
   questionText String
   questionType String
   explanation  String
@@ -305,8 +305,8 @@ model QuizQuestion {
 }
 
 model QuizOption {
-  id             String  @id @default(uuid())
-  quizQuestionId String
+  id             Int     @id @default(autoincrement()) 
+  quizQuestionId Int     
   optionText     String
   isCorrect      Boolean
 
@@ -318,9 +318,9 @@ model QuizOption {
 }
 
 model QuizAttempt {
-  id          String    @id @default(uuid())
+  id          Int       @id @default(autoincrement()) 
   userId      String
-  contentItemId String
+  contentItemId Int     
   attemptNo   Int
   status      String // Enum
   startedAt   DateTime
@@ -335,9 +335,9 @@ model QuizAttempt {
 }
 
 model QuizAttemptAnswer {
-  id            String @id @default(uuid())
-  quizAttemptId String
-  quizQuestionId String
+  id            Int @id @default(autoincrement()) 
+  quizAttemptId Int 
+  quizQuestionId Int 
 
   // Relations
   quizAttempt  QuizAttempt  @relation(fields: [quizAttemptId], references: [id])
@@ -347,7 +347,7 @@ model QuizAttemptAnswer {
 }
 
 model ChatSession {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) // Keep UUID for privacy
   userId    String
   startedAt DateTime
   closedAt  DateTime?
@@ -362,7 +362,7 @@ model ChatSession {
 }
 
 model ChatMessage {
-  id           String @id @default(uuid())
+  id           String @id @default(uuid()) // Keep UUID for privacy
   sessionId    String
   role         String // Enum
   message      String
@@ -376,7 +376,7 @@ model ChatMessage {
 }
 
 model ChatFeedback {
-  id        String  @id @default(uuid())
+  id        Int     @id @default(autoincrement()) 
   chatId    String
   sessionId String
   score     Int
@@ -389,7 +389,7 @@ model ChatFeedback {
 }
 
 model ChatEmbedding {
-  id        String @id @default(uuid())
+  id        Int    @id @default(autoincrement()) 
   messageId String
   vector    String // pgvector type in production
 
@@ -397,7 +397,7 @@ model ChatEmbedding {
 }
 
 model Recommendation {
-  id         String   @id @default(uuid())
+  id         Int      @id @default(autoincrement()) 
   sessionId  String
   type       String // Enum
   message    String

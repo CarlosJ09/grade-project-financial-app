@@ -61,7 +61,7 @@ const refreshToken = async () => {
     const success = await useAuthStore.getState().refreshToken();
     if (success) {
       const { session } = useAuthStore.getState();
-      return session?.token;
+      return session?.accessToken;
     }
     return null;
   } catch (error) {

@@ -9,9 +9,9 @@ export interface Bank {
 
 export interface Currency {
   id: string;
-  code: string;
-  name: string;
-  symbol: string;
+  currency: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Transaction {

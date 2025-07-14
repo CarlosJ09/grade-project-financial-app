@@ -57,7 +57,6 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
       setPaymentMethods(paymentMethodsRes.data || []);
       setCurrencies(currenciesRes.data || []);
 
-      // Set default currency if available
       if (currenciesRes.data && currenciesRes.data.length > 0) {
         setFormData(prev => ({
           ...prev,
@@ -220,7 +219,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
                       : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
-                  {currency.code} - {currency.name}
+                  {currency.currency}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -233,29 +232,27 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
             Category
           </Text>
           <View className="rounded-lg border border-gray-300 dark:border-gray-600">
-            {categories
-              .filter(cat => cat.type === formData.type)
-              .map(category => (
-                <TouchableOpacity
-                  key={category.id}
-                  className={`border-b border-gray-200 p-3 dark:border-gray-700 ${
+            {categories.map(category => (
+              <TouchableOpacity
+                key={category.id}
+                className={`border-b border-gray-200 p-3 dark:border-gray-700 ${
+                  formData.categoryId === category.id
+                    ? 'bg-blue-50 dark:bg-blue-900/20'
+                    : ''
+                }`}
+                onPress={() => updateFormData('categoryId', category.id)}
+              >
+                <Text
+                  className={`font-medium ${
                     formData.categoryId === category.id
-                      ? 'bg-blue-50 dark:bg-blue-900/20'
-                      : ''
+                      ? 'text-blue-600 dark:text-blue-400'
+                      : 'text-gray-700 dark:text-gray-300'
                   }`}
-                  onPress={() => updateFormData('categoryId', category.id)}
                 >
-                  <Text
-                    className={`font-medium ${
-                      formData.categoryId === category.id
-                        ? 'text-blue-600 dark:text-blue-400'
-                        : 'text-gray-700 dark:text-gray-300'
-                    }`}
-                  >
-                    {category.name}
-                  </Text>
-                </TouchableOpacity>
-              ))}
+                  {category.name}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
         </View>
 
@@ -314,14 +311,16 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           <Button
             title="Cancel"
             onPress={onCancel}
-            variant="outline"
             className="flex-1"
+            variant="outline"
           />
+
           <Button
             title="Create Transaction"
             onPress={handleSubmit}
             disabled={loading}
             className="flex-1"
+            variant="outline"
           />
         </View>
       </View>
