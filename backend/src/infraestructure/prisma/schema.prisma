@@ -47,9 +47,9 @@ model Budget {
   currentAmount Decimal  @db.Decimal(18, 4)
   goalAmount    Decimal  @db.Decimal(18, 4)
   currencyId    Int      
+  statusId      Int      // Foreign key to BudgetStatus
   startDate     DateTime
   finishedDate  DateTime
-  state         String // Enum: active, inactive, completed
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
   deletedAt     DateTime?
@@ -57,9 +57,23 @@ model Budget {
   // Relations
   user                User                  @relation(fields: [userId], references: [id])
   currency            Currency              @relation(fields: [currencyId], references: [id])
+  status              BudgetStatus          @relation(fields: [statusId], references: [id])
   budgetLineMovements BudgetLineMovement[]
 
   @@map("budgets")
+}
+
+model BudgetStatus {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(20) // active, inactive, completed
+  description String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  budgets Budget[]
+
+  @@map("budget_statuses")
 }
 
 model BudgetCategory {

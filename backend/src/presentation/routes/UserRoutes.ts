@@ -132,12 +132,6 @@ router.get(
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: object
- *                   properties:
  *                     totalBalance:
  *                       type: number
  *                       example: 1250.50

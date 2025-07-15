@@ -3,6 +3,7 @@ import { IPasswordService } from '@/domain/services/IPasswordService';
 import { ITokenService } from '@/domain/services/ITokenService';
 
 export type RegisterInput = {
+  identificationNumber: string;
   name: string;
   lastName: string;
   email: string;
@@ -13,6 +14,7 @@ export type RegisterInput = {
 export type RegisterOutput = {
   accessToken: string;
   refreshToken: string;
+  expiresAt: string;
   user: {
     id: string;
     name: string;
@@ -38,6 +40,7 @@ export class Register {
     const passwordHash = await this.passwordService.hash(input.password);
 
     const newUser = await this.userRepository.create({
+      identificationNumber: input.identificationNumber,
       name: input.name,
       lastName: input.lastName,
       email: input.email,
@@ -49,9 +52,13 @@ export class Register {
     const accessToken = this.tokenService.generateAccessToken(newUser.id);
     const refreshToken = this.tokenService.generateRefreshToken(newUser.id);
 
+    // Calculate expiration time (15 minutes for access token)
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+
     return {
       accessToken,
       refreshToken,
+      expiresAt,
       user: {
         id: newUser.id,
         name: newUser.name,

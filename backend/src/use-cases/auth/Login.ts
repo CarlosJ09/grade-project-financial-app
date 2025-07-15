@@ -10,6 +10,7 @@ export type LoginInput = {
 export type LoginOutput = {
   accessToken: string;
   refreshToken: string;
+  expiresAt: string;
   user: {
     id: string;
     identificationNumber: string;
@@ -46,9 +47,13 @@ export class Login {
     const accessToken = this.tokenService.generateAccessToken(user.id);
     const refreshToken = this.tokenService.generateRefreshToken(user.id);
 
+    // Calculate expiration time (15 minutes for access token)
+    const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
+
     return {
       accessToken,
       refreshToken,
+      expiresAt,
       user: {
         id: user.id,
         identificationNumber: user.identificationNumber,

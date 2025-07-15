@@ -1,12 +1,16 @@
-import { Request, Response } from 'express';
 import { Login } from '@/use-cases/auth/Login';
+import { Logout } from '@/use-cases/auth/Logout';
+import { RefreshToken } from '@/use-cases/auth/RefreshToken';
 import { Register } from '@/use-cases/auth/Register';
+import { Request, Response } from 'express';
 import { BaseController } from './BaseController';
 
 export class AuthController extends BaseController {
   constructor(
     private login: Login,
-    private register: Register
+    private register: Register,
+    private refreshTokenUseCase: RefreshToken,
+    private logout: Logout
   ) {
     super();
   }
@@ -37,13 +41,28 @@ export class AuthController extends BaseController {
     return this.executeOperation(
       res,
       async () => {
-        const { name, lastName, email, password, dateOfBirth } = req.body;
+        const {
+          identificationNumber,
+          name,
+          lastName,
+          email,
+          password,
+          dateOfBirth,
+        } = req.body;
 
-        if (!name || !lastName || !email || !password || !dateOfBirth) {
+        if (
+          !identificationNumber ||
+          !name ||
+          !lastName ||
+          !email ||
+          !password ||
+          !dateOfBirth
+        ) {
           return this.badRequest(res, 'All fields are required');
         }
 
         const result = await this.register.execute({
+          identificationNumber,
           name,
           lastName,
           email,
@@ -58,6 +77,50 @@ export class AuthController extends BaseController {
         return this.created(res, result);
       },
       'Error during registration'
+    );
+  }
+
+  async refreshToken(req: Request, res: Response) {
+    return this.executeOperation(
+      res,
+      async () => {
+        const { refreshToken } = req.body;
+
+        if (!refreshToken) {
+          return this.badRequest(res, 'Refresh token is required');
+        }
+
+        const result = await this.refreshTokenUseCase.execute({ refreshToken });
+
+        if (!result) {
+          return this.unauthorized(res, 'Invalid refresh token');
+        }
+
+        return this.ok(res, result);
+      },
+      'Error during token refresh'
+    );
+  }
+
+  async logoutUser(req: Request, res: Response) {
+    return this.executeOperation(
+      res,
+      async () => {
+        const { token } = req.body;
+
+        if (!token) {
+          return this.badRequest(res, 'Token is required');
+        }
+
+        const result = await this.logout.execute({ token });
+
+        if (!result.success) {
+          return this.badRequest(res, result.message);
+        }
+
+        return this.ok(res, result);
+      },
+      'Error during logout'
     );
   }
 }
