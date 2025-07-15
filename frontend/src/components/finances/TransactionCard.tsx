@@ -1,4 +1,5 @@
 import { Transaction } from '@/types/financial';
+import { formatCurrency } from '@/utils/formatCurrency';
 import React from 'react';
 import { Text, View } from 'react-native';
 
@@ -31,7 +32,8 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
                 : 'text-red-600 dark:text-red-400'
             }`}
           >
-            {isIncome ? '+' : '-'}${transaction.amount.toFixed(2)}
+            {isIncome ? '+' : '-'}
+            {formatCurrency(transaction.amount)}
           </Text>
         </View>
       </View>

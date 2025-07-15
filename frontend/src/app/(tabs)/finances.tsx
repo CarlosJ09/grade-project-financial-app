@@ -7,6 +7,7 @@ import { TransactionCard } from '@/components/finances/TransactionCard';
 import { TransactionModal } from '@/components/finances/TransactionModal';
 import { transactionService } from '@/services/transaction';
 import { Transaction } from '@/types/financial';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function FinancesScreen() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
@@ -32,7 +33,6 @@ export default function FinancesScreen() {
   };
 
   const handleTransactionCreated = () => {
-    // Refresh the transactions list after creating a new one
     fetchTransactions();
   };
 
@@ -66,7 +66,7 @@ export default function FinancesScreen() {
                   Income
                 </Text>
                 <Text className="mt-1 text-2xl font-bold text-green-800 dark:text-green-300">
-                  ${income.toFixed(2)}
+                  {formatCurrency(income)}
                 </Text>
               </View>
               <View className="flex-1 rounded-xl bg-red-50 p-4 dark:bg-red-900/20">
@@ -74,7 +74,7 @@ export default function FinancesScreen() {
                   Expenses
                 </Text>
                 <Text className="mt-1 text-2xl font-bold text-red-800 dark:text-red-300">
-                  ${expenses.toFixed(2)}
+                  {formatCurrency(expenses)}
                 </Text>
               </View>
             </View>
@@ -87,14 +87,14 @@ export default function FinancesScreen() {
             </ThemedText>
             <View className="flex-row gap-3">
               <TouchableOpacity
-                className="flex-1 rounded-xl bg-blue-500 p-4"
+                className="flex-1 rounded-xl bg-secondary p-4"
                 onPress={() => setShowTransactionModal(true)}
               >
                 <Text className="text-center font-semibold text-white">
                   Add Transaction
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity className="flex-1 rounded-xl bg-purple-500 p-4">
+              <TouchableOpacity className="flex-1 rounded-xl bg-primary p-4">
                 <Text className="text-center font-semibold text-white">
                   Create Budget
                 </Text>
@@ -124,7 +124,7 @@ export default function FinancesScreen() {
                 </Text>
               </View>
             ) : (
-              <View className="space-y-3">
+              <View className="gap-4">
                 {transactions.map(transaction => (
                   <TransactionCard
                     key={transaction.id}
@@ -133,16 +133,6 @@ export default function FinancesScreen() {
                 ))}
               </View>
             )}
-          </View>
-
-          {/* Placeholder Content */}
-          <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
-            <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
-              💰 Your Financial Dashboard
-            </Text>
-            <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
-              Track expenses, manage budgets, and achieve your financial goals
-            </Text>
           </View>
         </View>
       </ScrollView>

@@ -171,9 +171,13 @@ export const useAuthStore = create<AuthState>()(
           return false;
         }
 
+        api.defaults.headers.common['Authorization'] =
+          `Bearer ${session.refreshToken}`;
+
         try {
-          const response = await api.post('/auth/refresh-token', {
-            token: session.refreshToken,
+          const response = await authService.login({
+            email: session.user.email,
+            password: session.refreshToken,
           });
 
           if (response.data?.error) {

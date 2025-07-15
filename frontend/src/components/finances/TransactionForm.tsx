@@ -279,7 +279,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
                       : 'text-gray-700 dark:text-gray-300'
                   }`}
                 >
-                  {method.name}
+                  {method.paymentMethod}
                 </Text>
               </TouchableOpacity>
             ))}

@@ -1,15 +1,22 @@
 import { router } from 'expo-router';
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
 import { useTranslation } from '@/hooks/useTranslation';
+import { userService } from '@/services/user';
 import { useAuthStore } from '@/stores';
+import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function HomeScreen() {
   const { user } = useAuthStore();
   const { t } = useTranslation();
+  const [balance, setBalance] = useState<number>(0);
+
+  useEffect(() => {
+    fetchBalance();
+  }, [user?.id]);
 
   // Get current time for greeting
   const currentHour = new Date().getHours();
@@ -17,6 +24,13 @@ export default function HomeScreen() {
     if (currentHour < 12) return t('home.greeting.goodMorning');
     if (currentHour < 18) return t('home.greeting.goodAfternoon');
     return t('home.greeting.goodEvening');
+  };
+
+  const fetchBalance = async () => {
+    if (!user?.id) return;
+
+    const balance = await userService.getUserBalance(user?.id);
+    setBalance(balance.totalBalance);
   };
 
   return (
@@ -44,12 +58,14 @@ export default function HomeScreen() {
 
         {/* Financial Overview */}
         <View className="mb-6 px-6">
-          <View className="bg-success rounded-2xl p-6">
+          <View className="rounded-2xl bg-success p-6">
             <Text className="mb-2 text-lg font-semibold text-white">
               {t('home.financialOverview.title')}
             </Text>
             <Text className="mb-1 text-3xl font-bold text-white">
-              {t('home.financialOverview.noBalance')}
+              {balance
+                ? formatCurrency(balance)
+                : t('home.financialOverview.noBalance')}
             </Text>
             <Text className="text-sm text-white">
               {t('home.financialOverview.totalBalance')}

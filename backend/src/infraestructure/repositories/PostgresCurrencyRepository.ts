@@ -12,17 +12,27 @@ export class PostgresCurrencyRepository implements ICurrencyRepository {
       },
     });
     return currencies.map(
-      currency => new Currency(currency.id, currency.currency)
+      currency => new Currency(currency.id.toString(), currency.currency)
     );
   }
 
   async findById(id: string): Promise<Currency | null> {
+    const currency = await this.prisma.currency.findUnique({
+      where: { id: parseInt(id) },
+    });
+
+    if (!currency) return null;
+
+    return new Currency(currency.id.toString(), currency.currency);
+  }
+
+  async findByIdInt(id: number): Promise<Currency | null> {
     const currency = await this.prisma.currency.findUnique({
       where: { id },
     });
 
     if (!currency) return null;
 
-    return new Currency(currency.id, currency.currency);
+    return new Currency(currency.id.toString(), currency.currency);
   }
 }

@@ -67,9 +67,7 @@ export interface Category {
 
 export interface PaymentMethod {
   id: string;
-  name: string;
-  type: 'cash' | 'card' | 'bank_transfer' | 'digital_wallet';
-  userId: string;
+  paymentMethod: string;
   createdAt: string;
   updatedAt: string;
 }
