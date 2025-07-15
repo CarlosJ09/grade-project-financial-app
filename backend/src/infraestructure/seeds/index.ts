@@ -1,6 +1,7 @@
 import { Database } from '@/infraestructure/config/Database';
 import { seedBanks } from '@/infraestructure/seeds/BankSeeder';
 import { seedBankingProducts } from '@/infraestructure/seeds/BankingProductSeeder';
+import { seedBudgetStatuses } from '@/infraestructure/seeds/BudgetStatusSeeder';
 import { seedCategories } from '@/infraestructure/seeds/CategorySeeder';
 import { seedCurrencies } from '@/infraestructure/seeds/CurrencySeeder';
 import { seedPaymentMethods } from '@/infraestructure/seeds/PaymentMethodSeeder';
@@ -20,6 +21,7 @@ export async function seedDatabase(): Promise<void> {
     await seedCategories(prisma);
     await seedBanks(prisma);
     await seedBankingProducts(prisma);
+    await seedBudgetStatuses(prisma);
 
     console.log('✅ Database seeding completed successfully');
   } catch (error) {

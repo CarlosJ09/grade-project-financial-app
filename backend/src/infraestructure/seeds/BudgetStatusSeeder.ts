@@ -1,39 +1,37 @@
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 
-export class BudgetStatusSeeder {
-  constructor(private readonly prisma: PrismaClient) {}
+const budgetStatuses = [
+  {
+    name: 'active',
+    description: 'Presupuesto activo y en uso',
+  },
+  {
+    name: 'inactive',
+    description: 'Presupuesto inactivo pero no eliminado',
+  },
+  {
+    name: 'completed',
+    description: 'Presupuesto completado y alcanzó su objetivo',
+  },
+];
 
-  async seed(): Promise<void> {
+export async function seedBudgetStatuses(prisma: PrismaClient): Promise<void> {
+  try {
     console.log('🌱 Seeding budget statuses...');
 
-    const budgetStatuses = [
-      {
-        name: 'active',
-        description: 'Budget is currently active and being used',
-      },
-      {
-        name: 'inactive',
-        description: 'Budget is temporarily inactive but not deleted',
-      },
-      {
-        name: 'completed',
-        description: 'Budget has been completed and reached its goal',
-      },
-    ];
-
     for (const budgetStatus of budgetStatuses) {
-      await this.prisma.budgetStatus.upsert({
+      await prisma.budgetStatus.upsert({
         where: { name: budgetStatus.name },
         update: {
           description: budgetStatus.description,
         },
-        create: {
-          name: budgetStatus.name,
-          description: budgetStatus.description,
-        },
+        create: budgetStatus,
       });
     }
 
     console.log('✅ Budget statuses seeded successfully');
+  } catch (error) {
+    console.error('❌ Failed to seed budget statuses:', error);
+    throw error;
   }
 }
