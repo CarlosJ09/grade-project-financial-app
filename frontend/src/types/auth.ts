@@ -1,14 +1,14 @@
 export interface User {
   id: string;
-  cedula: string;
+  identificationNumber: string;
   email: string;
   firstName: string;
   lastName: string;
-  birthDate?: string;
+  birthDate: string;
   phone?: string;
   profilePicture?: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface AuthSession {
@@ -24,15 +24,21 @@ export interface LoginCredentials {
 }
 
 export interface RegisterCredentials {
-  cedula: string;
+  identificationNumber: string;
   email: string;
   password: string;
-  firstName: string;
+  name: string;
   lastName: string;
-  birthDate: string;
+  dateOfBirth: string;
 }
 
 export interface AuthError {
   message: string;
   field?: string;
+}
+
+export interface RefreshTokenResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresAt: string;
 }

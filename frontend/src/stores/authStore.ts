@@ -103,7 +103,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await authService.register(credentials);
 
-          if (response.status === 200) {
+          if (response.status === 200 || response.status === 201) {
             const session: AuthSession = response.data;
 
             // Set auth header for future requests
@@ -145,7 +145,7 @@ export const useAuthStore = create<AuthState>()(
 
         if (session?.accessToken) {
           try {
-            await api.post('/auth/logout', { token: session.accessToken });
+            await authService.logout(session.accessToken);
           } catch (error) {
             console.error('Logout API call failed:', error);
           }
@@ -171,34 +171,36 @@ export const useAuthStore = create<AuthState>()(
           return false;
         }
 
-        api.defaults.headers.common['Authorization'] =
-          `Bearer ${session.refreshToken}`;
-
         try {
-          const response = await authService.login({
-            email: session.user.email,
-            password: session.refreshToken,
-          });
+          console.log('Refreshing token...');
 
-          if (response.data?.error) {
-            get().logout();
-            return false;
-          }
+          const newTokens = await authService.refreshToken(
+            session.refreshToken
+          );
 
-          const newSession: AuthSession = response.data;
+          console.log('Token refreshed successfully');
 
           // Update auth header
           api.defaults.headers.common['Authorization'] =
-            `Bearer ${newSession.accessToken}`;
+            `Bearer ${newTokens.accessToken}`;
+
+          // Update session with new tokens
+          const updatedSession: AuthSession = {
+            ...session,
+            accessToken: newTokens.accessToken,
+            refreshToken: newTokens.refreshToken,
+            expiresAt: newTokens.expiresAt,
+          };
 
           set({
-            session: newSession,
-            user: newSession.user,
+            session: updatedSession,
           });
 
           return true;
-        } catch (error) {
+        } catch (error: any) {
           console.error('Token refresh failed:', error);
+
+          // If refresh fails, logout the user
           get().logout();
           return false;
         }

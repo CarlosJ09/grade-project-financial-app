@@ -8,7 +8,7 @@ export interface Bank {
 }
 
 export interface Currency {
-  id: string;
+  id: number;
   currency: string;
   createdAt: string;
   updatedAt: string;
@@ -18,7 +18,7 @@ export interface Transaction {
   id: string;
   userId: string;
   amount: number;
-  currencyId: string;
+  currencyId: number;
   exchangeRateId: string | null;
   type: 'income' | 'expense';
   categoryId: string;
@@ -32,7 +32,7 @@ export interface Transaction {
 
 export interface CreateTransactionInput {
   amount: number;
-  currencyId: string;
+  currencyId: number;
   type: 'income' | 'expense';
   categoryId: string;
   paymentMethodId: string;
@@ -40,18 +40,22 @@ export interface CreateTransactionInput {
   transactionDate: string;
   exchangeRateId?: string;
   bankingProductId?: string;
+  userId: string;
 }
+
+export type BudgetState = 'active' | 'finished';
 
 export interface Budget {
   id: string;
-  name: string;
-  totalAmount: number;
-  spentAmount: number;
-  startDate: string;
-  endDate: string;
   userId: string;
-  createdAt: string;
-  updatedAt: string;
+  name: string;
+  description: string;
+  currentAmount: number;
+  goalAmount: number;
+  currencyId: string;
+  startDate: string;
+  finishedDate: string;
+  state: BudgetState;
 }
 
 export interface Category {

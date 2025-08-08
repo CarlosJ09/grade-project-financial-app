@@ -1,5 +1,7 @@
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
+import { DatePicker } from '@/components/ui/DatePicker';
+import { Dropdown, DropdownOption } from '@/components/ui/Dropdown';
 import { TextInput } from '@/components/ui/TextInput';
 import { categoryService } from '@/services/category';
 import { currencyService } from '@/services/currency';
@@ -25,16 +27,20 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
-  // Form data
-  const [formData, setFormData] = useState<CreateTransactionInput>({
+  // Form data with separate date state
+  const [formData, setFormData] = useState<
+    Omit<CreateTransactionInput, 'transactionDate'>
+  >({
     amount: 0,
-    currencyId: '',
+    currencyId: 0,
     type: 'expense',
     categoryId: '',
     paymentMethodId: '',
     place: '',
-    transactionDate: new Date().toISOString().split('T')[0],
+    userId: '',
   });
+
+  const [transactionDate, setTransactionDate] = useState<Date>(new Date());
 
   const [categories, setCategories] = useState<Category[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
@@ -97,11 +103,12 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
 
     setLoading(true);
     try {
-      // Add userId and convert date to ISO string
-      const transactionData = {
+      // Combine form data with date
+      const transactionData: CreateTransactionInput = {
         ...formData,
+        currencyId: Number(formData.currencyId),
+        transactionDate: transactionDate.toISOString(),
         userId: user.id,
-        transactionDate: new Date(formData.transactionDate).toISOString(),
       };
 
       await transactionService.create(transactionData);
@@ -115,9 +122,23 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
     }
   };
 
-  const updateFormData = (field: keyof CreateTransactionInput, value: any) => {
+  const updateFormData = (
+    field: keyof Omit<CreateTransactionInput, 'transactionDate' | 'userId'>,
+    value: any
+  ) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
+
+  // Convert arrays to dropdown options
+  const categoryOptions: DropdownOption[] = categories.map(category => ({
+    label: category.name,
+    value: category.id,
+  }));
+
+  const paymentMethodOptions: DropdownOption[] = paymentMethods.map(method => ({
+    label: method.paymentMethod,
+    value: method.id,
+  }));
 
   if (loadingData) {
     return (
@@ -179,11 +200,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           </View>
         </View>
 
-        {/* Amount */}
         <View className="mb-4">
-          <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Amount
-          </Text>
           <TextInput
             label="Amount"
             value={formData.amount.toString()}
@@ -196,7 +213,6 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           />
         </View>
 
-        {/* Currency */}
         <View className="mb-4">
           <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
             Currency
@@ -226,65 +242,23 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           </View>
         </View>
 
-        {/* Category */}
-        <View className="mb-4">
-          <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Category
-          </Text>
-          <View className="rounded-lg border border-gray-300 dark:border-gray-600">
-            {categories.map(category => (
-              <TouchableOpacity
-                key={category.id}
-                className={`border-b border-gray-200 p-3 dark:border-gray-700 ${
-                  formData.categoryId === category.id
-                    ? 'bg-blue-50 dark:bg-blue-900/20'
-                    : ''
-                }`}
-                onPress={() => updateFormData('categoryId', category.id)}
-              >
-                <Text
-                  className={`font-medium ${
-                    formData.categoryId === category.id
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  {category.name}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <Dropdown
+          label="Category"
+          value={formData.categoryId}
+          options={categoryOptions}
+          onSelect={value => updateFormData('categoryId', value)}
+          placeholder="Select a category"
+          className="mb-4"
+        />
 
-        {/* Payment Method */}
-        <View className="mb-4">
-          <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Payment Method
-          </Text>
-          <View className="rounded-lg border border-gray-300 dark:border-gray-600">
-            {paymentMethods.map(method => (
-              <TouchableOpacity
-                key={method.id}
-                className={`border-b border-gray-200 p-3 dark:border-gray-700 ${
-                  formData.paymentMethodId === method.id
-                    ? 'bg-blue-50 dark:bg-blue-900/20'
-                    : ''
-                }`}
-                onPress={() => updateFormData('paymentMethodId', method.id)}
-              >
-                <Text
-                  className={`font-medium ${
-                    formData.paymentMethodId === method.id
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  {method.paymentMethod}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <Dropdown
+          label="Payment Method"
+          value={formData.paymentMethodId}
+          options={paymentMethodOptions}
+          onSelect={value => updateFormData('paymentMethodId', value)}
+          placeholder="Select a payment method"
+          className="mb-4"
+        />
 
         <View className="mb-4">
           <TextInput
@@ -296,31 +270,24 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           />
         </View>
 
-        <View className="mb-6">
-          <TextInput
-            label="Date"
-            value={formData.transactionDate}
-            onChangeText={value => updateFormData('transactionDate', value)}
-            placeholder="YYYY-MM-DD"
-            className="w-full"
-          />
-        </View>
+        <DatePicker
+          label="Date"
+          value={transactionDate}
+          onChange={setTransactionDate}
+          className="mb-6"
+          maximumDate={new Date()}
+          placeholder="Select transaction date"
+        />
 
         {/* Buttons */}
-        <View className="flex-row gap-3">
-          <Button
-            title="Cancel"
-            onPress={onCancel}
-            className="flex-1"
-            variant="outline"
-          />
+        <View className="flex-row justify-between">
+          <Button title="Cancel" onPress={onCancel} variant="outline" />
 
           <Button
             title="Create Transaction"
             onPress={handleSubmit}
             disabled={loading}
-            className="flex-1"
-            variant="outline"
+            variant="primary"
           />
         </View>
       </View>
