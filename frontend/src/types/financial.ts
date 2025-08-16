@@ -43,7 +43,7 @@ export interface CreateTransactionInput {
   userId: string;
 }
 
-export type BudgetState = 'active' | 'finished';
+export type BudgetState = 'active' | 'inactive' | 'completed';
 
 export interface Budget {
   id: string;

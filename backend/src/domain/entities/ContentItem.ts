@@ -1,6 +1,6 @@
 class ContentItem {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly sectionId: string,
     public readonly moduleId: string,
     public readonly sequence: number,

@@ -2,7 +2,7 @@ import { PaymentMethod } from '@/domain/entities/PaymentMethod';
 
 export class PaymentMethodResponseDto {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly paymentMethod: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date

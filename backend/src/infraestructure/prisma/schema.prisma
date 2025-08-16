@@ -17,6 +17,7 @@ datasource db {
 
 model User {
   id           String   @id @default(uuid())
+  identificationNumber String @unique
   name         String
   lastName     String
   email        String   @unique
@@ -206,7 +207,7 @@ model UserBank {
 }
 
 model BankingProduct {
-  id                  Int    @id @default(autoincrement()) 
+  id                  Int    @id @default(autoincrement())
   bankingProductName String // Enum
 
   // Relations

@@ -7,4 +7,4 @@ class BudgetService extends BaseService<Budget> {
   }
 }
 
-export const categoryService = new BudgetService();
+export const budgetService = new BudgetService();

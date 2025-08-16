@@ -1,6 +1,6 @@
 class ChatFeedback {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly chatId: string,
     public readonly sessionId: string,
     public readonly score: number,

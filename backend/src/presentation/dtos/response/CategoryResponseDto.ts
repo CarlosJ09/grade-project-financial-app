@@ -2,7 +2,7 @@ import { Category } from '@/domain/entities/Category';
 
 export class CategoryResponseDto {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly name: string,
     public readonly kind: string,
     public readonly createdAt: Date,

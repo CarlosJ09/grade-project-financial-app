@@ -2,7 +2,7 @@ import { BankingProduct } from '@/domain/entities/BankingProduct';
 
 export class BankingProductResponseDto {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly bankingProductName: string
   ) {}
 

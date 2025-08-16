@@ -3,8 +3,9 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
-import { TransactionCard } from '@/components/finances/TransactionCard';
-import { TransactionModal } from '@/components/finances/TransactionModal';
+import { BudgetModal } from '@/components/finances/budget/BudgetModal';
+import { TransactionCard } from '@/components/finances/transaction/TransactionCard';
+import { TransactionModal } from '@/components/finances/transaction/TransactionModal';
 import { transactionService } from '@/services/transaction';
 import { Transaction } from '@/types/financial';
 import { formatCurrency } from '@/utils/formatCurrency';
@@ -12,6 +13,7 @@ import { formatCurrency } from '@/utils/formatCurrency';
 export default function FinancesScreen() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
+  const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -94,7 +96,10 @@ export default function FinancesScreen() {
                   Add Transaction
                 </Text>
               </TouchableOpacity>
-              <TouchableOpacity className="flex-1 rounded-xl bg-primary p-4">
+              <TouchableOpacity
+                className="flex-1 rounded-xl bg-primary p-4"
+                onPress={() => setShowBudgetModal(true)}
+              >
                 <Text className="text-center font-semibold text-white">
                   Create Budget
                 </Text>
@@ -141,6 +146,13 @@ export default function FinancesScreen() {
       <TransactionModal
         visible={showTransactionModal}
         onClose={() => setShowTransactionModal(false)}
+        onSuccess={handleTransactionCreated}
+      />
+
+      {/* Budget Modal */}
+      <BudgetModal
+        visible={showBudgetModal}
+        onClose={() => setShowBudgetModal(false)}
         onSuccess={handleTransactionCreated}
       />
     </SafeAreaView>

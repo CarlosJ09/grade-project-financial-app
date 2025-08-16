@@ -1,6 +1,6 @@
 class Category {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly name: string,
     public readonly kind: string, // expense, income, budget
     public readonly createdAt: Date,

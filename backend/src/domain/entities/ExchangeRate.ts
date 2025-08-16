@@ -1,7 +1,7 @@
 class ExchangeRate {
   constructor(
-    public readonly id: string,
-    public readonly currencyId: string,
+    public readonly id: number,
+    public readonly currencyId: number,
     public readonly rate: number,
     public readonly rateDate: Date
   ) {}

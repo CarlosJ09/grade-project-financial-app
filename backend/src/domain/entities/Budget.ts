@@ -7,7 +7,7 @@ class Budget {
     public readonly currentAmount: number,
     public readonly goalAmount: number,
     public readonly currencyId: string,
-    public readonly statusId: number,
+    public readonly state: string,
     public readonly startDate: Date,
     public readonly finishedDate: Date,
     public readonly createdAt: Date,

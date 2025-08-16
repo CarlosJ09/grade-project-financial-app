@@ -1,6 +1,6 @@
 class Recommendation {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly sessionId: string,
     public readonly type: string, // budget_suggestion, investment_tip, etc.
     public readonly message: string,

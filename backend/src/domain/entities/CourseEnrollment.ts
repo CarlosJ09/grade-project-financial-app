@@ -1,6 +1,6 @@
 class CourseEnrollment {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly userId: string,
     public readonly courseId: string,
     public readonly enrolledAt: Date,

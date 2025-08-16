@@ -1,6 +1,6 @@
 class BudgetLineMovement {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly budgetId: string,
     public readonly transactionId: string,
     public readonly movementType: string, // allocation, actual

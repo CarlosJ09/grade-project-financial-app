@@ -2,7 +2,7 @@ import { CourseEnrollment } from '@/domain/entities/CourseEnrollment';
 
 export class CourseEnrollmentResponseDto {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly userId: string,
     public readonly courseId: string,
     public readonly enrolledAt: Date,

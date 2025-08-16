@@ -2,7 +2,7 @@ import { Currency } from '@/domain/entities/Currency';
 
 export class CurrencyResponseDto {
   constructor(
-    public readonly id: string,
+    public readonly id: number,
     public readonly currency: string
   ) {}
 

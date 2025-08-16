@@ -1,7 +1,7 @@
+import { TransactionForm } from '@/components/finances/transaction/TransactionForm';
 import React from 'react';
 import { Modal, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { TransactionForm } from './TransactionForm';
 
 interface TransactionModalProps {
   visible: boolean;
