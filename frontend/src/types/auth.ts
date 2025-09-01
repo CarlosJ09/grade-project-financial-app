@@ -2,13 +2,11 @@ export interface User {
   id: string;
   identificationNumber: string;
   email: string;
-  firstName: string;
+  name: string;
   lastName: string;
-  birthDate: string;
-  phone?: string;
-  profilePicture?: string;
-  createdAt?: string;
-  updatedAt?: string;
+  dateOfBirth: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface AuthSession {

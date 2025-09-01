@@ -11,45 +11,48 @@ const SignUp = () => {
   const { register, isLoading, error, clearError } = useAuthStore();
 
   const [formData, setFormData] = useState({
-    cedula: '',
+    identificationNumber: '',
     email: '',
     password: '',
-    firstName: '',
+    name: '',
     lastName: '',
-    birthDate: '',
+    dateOfBirth: '',
   });
 
   const [errors, setErrors] = useState<{
-    cedula: string;
+    identificationNumber: string;
     email: string;
     password: string;
-    firstName: string;
+    name: string;
     lastName: string;
-    birthDate: string;
+    dateOfBirth: string;
   }>({
-    cedula: '',
+    identificationNumber: '',
     email: '',
     password: '',
-    firstName: '',
+    name: '',
     lastName: '',
-    birthDate: '',
+    dateOfBirth: '',
   });
 
   const handleRegister = async () => {
     // Clear previous errors
     clearError();
     setErrors({
-      cedula: '',
+      identificationNumber: '',
       email: '',
       password: '',
-      firstName: '',
+      name: '',
       lastName: '',
-      birthDate: '',
+      dateOfBirth: '',
     });
 
     // Basic validation
-    if (!formData.cedula.trim()) {
-      setErrors(prev => ({ ...prev, cedula: 'Cédula es requerida' }));
+    if (!formData.identificationNumber.trim()) {
+      setErrors(prev => ({
+        ...prev,
+        identificationNumber: 'Cédula es requerida',
+      }));
       return;
     }
     if (!formData.email.trim()) {
@@ -60,18 +63,18 @@ const SignUp = () => {
       setErrors(prev => ({ ...prev, password: 'Contraseña es requerida' }));
       return;
     }
-    if (!formData.firstName.trim()) {
-      setErrors(prev => ({ ...prev, firstName: 'Nombre es requerido' }));
+    if (!formData.name.trim()) {
+      setErrors(prev => ({ ...prev, name: 'Nombre es requerido' }));
       return;
     }
     if (!formData.lastName.trim()) {
       setErrors(prev => ({ ...prev, lastName: 'Apellido es requerido' }));
       return;
     }
-    if (!formData.birthDate.trim()) {
+    if (!formData.dateOfBirth.trim()) {
       setErrors(prev => ({
         ...prev,
-        birthDate: 'Fecha de nacimiento es requerida',
+        dateOfBirth: 'Fecha de nacimiento es requerida',
       }));
       return;
     }
@@ -86,11 +89,11 @@ const SignUp = () => {
           <TextInput
             label="Nombre"
             placeholder="Juan"
-            value={formData.firstName}
+            value={formData.name}
             onChangeText={text =>
-              setFormData(prev => ({ ...prev, firstName: text }))
+              setFormData(prev => ({ ...prev, name: text }))
             }
-            error={errors.firstName}
+            error={errors.name}
           />
 
           <TextInput
@@ -107,11 +110,11 @@ const SignUp = () => {
             label="Cédula"
             placeholder="000-0000000-0"
             keyboardType="numeric"
-            value={formData.cedula}
+            value={formData.identificationNumber}
             onChangeText={text =>
-              setFormData(prev => ({ ...prev, cedula: text }))
+              setFormData(prev => ({ ...prev, identificationNumber: text }))
             }
-            error={errors.cedula}
+            error={errors.identificationNumber}
           />
 
           <TextInput
@@ -139,11 +142,11 @@ const SignUp = () => {
           <TextInput
             label="Fecha de Nacimiento"
             placeholder="DD/MM/YYYY"
-            value={formData.birthDate}
+            value={formData.dateOfBirth}
             onChangeText={text =>
-              setFormData(prev => ({ ...prev, birthDate: text }))
+              setFormData(prev => ({ ...prev, dateOfBirth: text }))
             }
-            error={errors.birthDate}
+            error={errors.dateOfBirth}
           />
         </View>
 

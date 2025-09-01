@@ -103,6 +103,8 @@ export const useAuthStore = create<AuthState>()(
         try {
           const response = await authService.register(credentials);
 
+          console.log(response);
+
           if (response.status === 200 || response.status === 201) {
             const session: AuthSession = response.data;
 
