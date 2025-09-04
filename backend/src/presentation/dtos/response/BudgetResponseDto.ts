@@ -8,10 +8,11 @@ export class BudgetResponseDto {
     public readonly description: string,
     public readonly currentAmount: number,
     public readonly goalAmount: number,
-    public readonly currencyId: string,
+    public readonly currencyId: number,
+    public readonly categoryId: number,
+    public readonly statusId: number,
     public readonly startDate: Date,
     public readonly finishedDate: Date,
-    public readonly state: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date
   ) {}
@@ -25,9 +26,10 @@ export class BudgetResponseDto {
       budget.currentAmount,
       budget.goalAmount,
       budget.currencyId,
+      budget.categoryId,
+      budget.statusId,
       budget.startDate,
       budget.finishedDate,
-      budget.state,
       budget.createdAt,
       budget.updatedAt
     );

@@ -3,21 +3,25 @@ import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
+import { BudgetCard } from '@/components/finances/budget/BudgetCard';
 import { BudgetModal } from '@/components/finances/budget/BudgetModal';
 import { TransactionCard } from '@/components/finances/transaction/TransactionCard';
 import { TransactionModal } from '@/components/finances/transaction/TransactionModal';
+import { budgetService } from '@/services/budget';
 import { transactionService } from '@/services/transaction';
-import { Transaction } from '@/types/financial';
+import { Budget, Transaction } from '@/types/financial';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function FinancesScreen() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [budgets, setBudgets] = useState<Budget[]>([]);
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchTransactions();
+    fetchBudgets();
   }, []);
 
   const fetchTransactions = async () => {
@@ -29,6 +33,20 @@ export default function FinancesScreen() {
       setTransactions(response.data || []);
     } catch (error) {
       console.error('Error fetching transactions:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchBudgets = async () => {
+    setLoading(true);
+    try {
+      console.log('Fetching budgets...');
+      const response = await budgetService.getAll();
+      console.log('Budgets response:', response.data);
+      setBudgets(response.data || []);
+    } catch (error) {
+      console.error('Error fetching budgets:', error);
     } finally {
       setLoading(false);
     }
@@ -61,7 +79,15 @@ export default function FinancesScreen() {
           </ThemedText>
 
           {/* Financial Summary */}
-          <View className="mb-6">
+          <View className="mb-6 gap-4">
+            <View className="flex-1 rounded-xl bg-primary p-4 dark:bg-primary">
+              <Text className="text-sm font-medium text-white dark:text-white">
+                Current Balance
+              </Text>
+              <Text className="mt-1 text-2xl font-bold text-white dark:text-white">
+                {formatCurrency(income)}
+              </Text>
+            </View>
             <View className="flex-row gap-4">
               <View className="flex-1 rounded-xl bg-green-50 p-4 dark:bg-green-900/20">
                 <Text className="text-sm font-medium text-green-600 dark:text-green-400">
@@ -105,6 +131,36 @@ export default function FinancesScreen() {
                 </Text>
               </TouchableOpacity>
             </View>
+          </View>
+
+          {/* Budgets List */}
+          <View className="mb-6">
+            <ThemedText type="subtitle" className="mb-4">
+              Budgets
+            </ThemedText>
+
+            {loading ? (
+              <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
+                <Text className="text-center text-gray-600 dark:text-gray-400">
+                  Loading budgets...
+                </Text>
+              </View>
+            ) : transactions.length === 0 ? (
+              <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
+                <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
+                  💰 No budgets yet
+                </Text>
+                <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
+                  Start by adding your first budget
+                </Text>
+              </View>
+            ) : (
+              <View className="gap-4">
+                {budgets.map(budget => (
+                  <BudgetCard key={budget.id} budget={budget} />
+                ))}
+              </View>
+            )}
           </View>
 
           {/* Transactions List */}

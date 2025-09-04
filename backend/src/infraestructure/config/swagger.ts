@@ -10,7 +10,7 @@ export const swaggerOptions: SwaggerOptions = {
     },
     servers: [
       {
-        url: `http://localhost:${process.env.BACKEND_PORT}/api`,
+        url: `http://localhost:${process.env.PORT}/api`,
         description: 'Development server',
       },
     ],

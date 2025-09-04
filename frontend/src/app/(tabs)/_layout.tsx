@@ -45,12 +45,18 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="finances"
+        name="finances/index"
         options={{
           title: 'Finances',
           tabBarIcon: ({ color }) => (
             <AntDesign size={24} name="creditcard" color={color} />
           ),
+        }}
+      />
+      <Tabs.Screen
+        name="finances/balance"
+        options={{
+          href: null,
         }}
       />
       <Tabs.Screen

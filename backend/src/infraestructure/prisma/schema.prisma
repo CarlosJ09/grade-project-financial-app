@@ -16,16 +16,16 @@ datasource db {
 }
 
 model User {
-  id           String   @id @default(uuid())
-  identificationNumber String @unique
-  name         String
-  lastName     String
-  email        String   @unique
-  dateOfBirth  DateTime
-  passwordHash String
-  status       Boolean
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  id                   String   @id @default(uuid())
+  identificationNumber String   @unique
+  name                 String
+  lastName             String
+  email                String   @unique
+  dateOfBirth          DateTime
+  passwordHash         String
+  status               Boolean
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
 
   // Relations
   budgets            Budget[]
@@ -41,24 +41,26 @@ model User {
 }
 
 model Budget {
-  id            String   @id @default(uuid()) 
+  id            String    @id @default(uuid())
   userId        String
-  name          String   @db.VarChar(25)
+  name          String    @db.VarChar(25)
   description   String
-  currentAmount Decimal  @db.Decimal(18, 4)
-  goalAmount    Decimal  @db.Decimal(18, 4)
-  currencyId    Int      
-  statusId      Int      // Foreign key to BudgetStatus
+  currentAmount Decimal   @db.Decimal(18, 4)
+  goalAmount    Decimal   @db.Decimal(18, 4)
+  currencyId    Int // Foreign key to Currency
+  statusId      Int // Foreign key to BudgetStatus
+  categoryId    Int // Foreign key to Category
   startDate     DateTime
   finishedDate  DateTime
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
 
   // Relations
-  user                User                  @relation(fields: [userId], references: [id])
-  currency            Currency              @relation(fields: [currencyId], references: [id])
-  status              BudgetStatus          @relation(fields: [statusId], references: [id])
+  user                User                 @relation(fields: [userId], references: [id])
+  currency            Currency             @relation(fields: [currencyId], references: [id])
+  status              BudgetStatus         @relation(fields: [statusId], references: [id])
+  category            Category             @relation(fields: [categoryId], references: [id])
   budgetLineMovements BudgetLineMovement[]
 
   @@map("budgets")
@@ -77,22 +79,13 @@ model BudgetStatus {
   @@map("budget_statuses")
 }
 
-model BudgetCategory {
-  id         Int @id @default(autoincrement()) 
-  budgetId   String
-  categoryId Int 
-
-  // Relations (assuming many-to-many relationship)
-  @@map("budget_categories")
-}
-
 model BudgetLineMovement {
-  id           Int      @id @default(autoincrement()) 
-  budgetId     String
+  id            Int      @id @default(autoincrement())
+  budgetId      String
   transactionId String
-  movementType String // Enum: allocation, actual
-  amount       Decimal  @db.Decimal(18, 4)
-  dateMovement DateTime
+  movementType  String // Enum: allocation, actual
+  amount        Decimal  @db.Decimal(18, 4)
+  dateMovement  DateTime
 
   // Relations
   budget      Budget      @relation(fields: [budgetId], references: [id])
@@ -102,20 +95,20 @@ model BudgetLineMovement {
 }
 
 model Transaction {
-  id                    String    @id @default(uuid()) 
-  userId                String
-  amount                Decimal   @db.Decimal(18, 4)
-  currencyId            Int       
-  exchangeRateId        Int?      
-  type                  String // Enum: expense, income
-  categoryId            Int       
-  paymentMethodId       Int       
-  place                 String    @db.VarChar(25)
-  bankingProductId      Int?      
-  transactionDate       DateTime
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
-  deletedAt             DateTime?
+  id               String    @id @default(uuid())
+  userId           String
+  amount           Decimal   @db.Decimal(18, 4)
+  currencyId       Int
+  exchangeRateId   Int?
+  type             String // Enum: expense, income
+  categoryId       Int
+  paymentMethodId  Int
+  place            String    @db.VarChar(25)
+  bankingProductId Int?
+  transactionDate  DateTime
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
 
   // Relations
   user                User                 @relation(fields: [userId], references: [id])
@@ -130,10 +123,10 @@ model Transaction {
 }
 
 model PaymentMethod {
-  id        Int      @id @default(autoincrement()) 
+  id            Int      @id @default(autoincrement())
   paymentMethod String // Enum
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
   // Relations
   transactions Transaction[]
@@ -142,20 +135,21 @@ model PaymentMethod {
 }
 
 model Category {
-  id        Int      @id @default(autoincrement()) 
-  name      String   @db.VarChar(25) @unique
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(25)
   kind      String // Enum: expense, income, budget
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
   transactions Transaction[]
+  Budget       Budget[]
 
   @@map("categories")
 }
 
 model Currency {
-  id       Int    @id @default(autoincrement()) 
+  id       Int    @id @default(autoincrement())
   currency String @db.VarChar(3)
 
   // Relations
@@ -167,8 +161,8 @@ model Currency {
 }
 
 model ExchangeRate {
-  id         Int      @id @default(autoincrement()) 
-  currencyId Int      
+  id         Int      @id @default(autoincrement())
+  currencyId Int
   rate       Decimal  @db.Decimal(18, 8)
   rateDate   DateTime
 
@@ -180,13 +174,13 @@ model ExchangeRate {
 }
 
 model Bank {
-  id        Int      @id @default(autoincrement()) 
+  id        Int      @id @default(autoincrement())
   name      String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
   // Relations
-  userBanks         UserBank[]
+  userBanks          UserBank[]
   bankBankingProduct BankBankingProduct[]
 
   @@map("banks")
@@ -195,7 +189,7 @@ model Bank {
 model UserBank {
   id         String    @id @default(uuid()) // Keep UUID for privacy
   userId     String
-  bankId     Int       
+  bankId     Int
   alias      String
   lastSyncAt DateTime?
 
@@ -207,7 +201,7 @@ model UserBank {
 }
 
 model BankingProduct {
-  id                  Int    @id @default(autoincrement())
+  id                 Int    @id @default(autoincrement())
   bankingProductName String // Enum
 
   // Relations
@@ -218,9 +212,9 @@ model BankingProduct {
 }
 
 model BankBankingProduct {
-  id               Int @id @default(autoincrement()) 
-  bankId           Int 
-  bankingProductId Int 
+  id               Int @id @default(autoincrement())
+  bankId           Int
+  bankingProductId Int
 
   // Relations
   bank           Bank           @relation(fields: [bankId], references: [id])
@@ -230,10 +224,10 @@ model BankBankingProduct {
 }
 
 model CourseEnrollment {
-  id         Int       @id @default(autoincrement()) 
-  userId     String
-  courseId   Int       
-  enrolledAt DateTime
+  id           Int       @id @default(autoincrement())
+  userId       String
+  courseId     Int
+  enrolledAt   DateTime
   unenrolledAt DateTime?
 
   // Relations
@@ -244,23 +238,23 @@ model CourseEnrollment {
 }
 
 model Course {
-  id          Int    @id @default(autoincrement()) 
+  id          Int      @id @default(autoincrement())
   name        String
   description String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now()) @updatedAt
 
   // Relations
-  courseEnrollments  CourseEnrollment[]
-  modules            Module[]
+  courseEnrollments CourseEnrollment[]
+  modules           Module[]
 
   @@map("courses")
 }
 
 model UserModuleProgress {
-  id              Int       @id @default(autoincrement()) 
+  id              Int       @id @default(autoincrement())
   userId          String
-  moduleId        Int       
+  moduleId        Int
   status          String // Enum
   progressPercent Decimal   @db.Decimal(3, 2)
   startedAt       DateTime
@@ -274,14 +268,14 @@ model UserModuleProgress {
 }
 
 model Module {
-  id               Int    @id @default(autoincrement()) 
-  courseId         Int    
-  contentItem      String
-  sequence         Int
-  summary          String
-  estimatedMinutes Int
-  releaseAt        DateTime
-  prerequisiteModuleId Int? 
+  id                   Int      @id @default(autoincrement())
+  courseId             Int
+  contentItem          String
+  sequence             Int
+  summary              String
+  estimatedMinutes     Int
+  releaseAt            DateTime
+  prerequisiteModuleId Int?
 
   // Relations
   course             Course               @relation(fields: [courseId], references: [id])
@@ -292,12 +286,12 @@ model Module {
 }
 
 model ContentItem {
-  id          Int    @id @default(autoincrement()) 
-  sectionId   String
-  moduleId    Int    
-  sequence    Int
-  title       String
-  fileUrl     String
+  id           Int    @id @default(autoincrement())
+  sectionId    String
+  moduleId     Int
+  sequence     Int
+  title        String
+  fileUrl      String
   markdownBody String
 
   // Relations
@@ -307,11 +301,11 @@ model ContentItem {
 }
 
 model QuizQuestion {
-  id           Int    @id @default(autoincrement()) 
-  contentItemId Int   
-  questionText String
-  questionType String
-  explanation  String
+  id            Int    @id @default(autoincrement())
+  contentItemId Int
+  questionText  String
+  questionType  String
+  explanation   String
 
   // Relations
   quizOptions QuizOption[]
@@ -320,27 +314,27 @@ model QuizQuestion {
 }
 
 model QuizOption {
-  id             Int     @id @default(autoincrement()) 
-  quizQuestionId Int     
+  id             Int     @id @default(autoincrement())
+  quizQuestionId Int
   optionText     String
   isCorrect      Boolean
 
   // Relations
-  quizQuestion        QuizQuestion         @relation(fields: [quizQuestionId], references: [id])
-  quizAttemptAnswers  QuizAttemptAnswer[]
+  quizQuestion       QuizQuestion        @relation(fields: [quizQuestionId], references: [id])
+  quizAttemptAnswers QuizAttemptAnswer[]
 
   @@map("quiz_options")
 }
 
 model QuizAttempt {
-  id          Int       @id @default(autoincrement()) 
-  userId      String
-  contentItemId Int     
-  attemptNo   Int
-  status      String // Enum
-  startedAt   DateTime
-  finishedAt  DateTime?
-  score       Decimal
+  id            Int       @id @default(autoincrement())
+  userId        String
+  contentItemId Int
+  attemptNo     Int
+  status        String // Enum
+  startedAt     DateTime
+  finishedAt    DateTime?
+  score         Decimal
 
   // Relations
   user               User                @relation(fields: [userId], references: [id])
@@ -350,23 +344,23 @@ model QuizAttempt {
 }
 
 model QuizAttemptAnswer {
-  id            Int @id @default(autoincrement()) 
-  quizAttemptId Int 
-  quizQuestionId Int 
+  id             Int @id @default(autoincrement())
+  quizAttemptId  Int
+  quizQuestionId Int
 
   // Relations
-  quizAttempt  QuizAttempt  @relation(fields: [quizAttemptId], references: [id])
-  quizOption   QuizOption   @relation(fields: [quizQuestionId], references: [id])
+  quizAttempt QuizAttempt @relation(fields: [quizAttemptId], references: [id])
+  quizOption  QuizOption  @relation(fields: [quizQuestionId], references: [id])
 
   @@map("quiz_attempt_answers")
 }
 
 model ChatSession {
-  id        String   @id @default(uuid()) // Keep UUID for privacy
+  id        String    @id @default(uuid()) // Keep UUID for privacy
   userId    String
   startedAt DateTime
   closedAt  DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime  @default(now())
 
   // Relations
   user         User           @relation(fields: [userId], references: [id])
@@ -377,12 +371,12 @@ model ChatSession {
 }
 
 model ChatMessage {
-  id           String @id @default(uuid()) // Keep UUID for privacy
-  sessionId    String
-  role         String // Enum
-  message      String
-  tokenCount   Int
-  createdAt    DateTime @default(now())
+  id         String   @id @default(uuid()) // Keep UUID for privacy
+  sessionId  String
+  role       String // Enum
+  message    String
+  tokenCount Int
+  createdAt  DateTime @default(now())
 
   // Relations
   session ChatSession @relation(fields: [sessionId], references: [id])
@@ -391,7 +385,7 @@ model ChatMessage {
 }
 
 model ChatFeedback {
-  id        Int     @id @default(autoincrement()) 
+  id        Int     @id @default(autoincrement())
   chatId    String
   sessionId String
   score     Int
@@ -404,7 +398,7 @@ model ChatFeedback {
 }
 
 model ChatEmbedding {
-  id        Int    @id @default(autoincrement()) 
+  id        Int    @id @default(autoincrement())
   messageId String
   vector    String // pgvector type in production
 
@@ -412,7 +406,7 @@ model ChatEmbedding {
 }
 
 model Recommendation {
-  id         Int      @id @default(autoincrement()) 
+  id         Int       @id @default(autoincrement())
   sessionId  String
   type       String // Enum
   message    String
@@ -425,4 +419,3 @@ model Recommendation {
 
   @@map("recommendations")
 }
-

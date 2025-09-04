@@ -52,10 +52,14 @@ export interface Budget {
   description: string;
   currentAmount: number;
   goalAmount: number;
-  currencyId: string;
+  currencyId: number;
   startDate: string;
   finishedDate: string;
   state: BudgetState;
+  currency: Currency;
+  category: Category;
+  statusId: number;
+  categoryId: number;
 }
 
 export interface Category {

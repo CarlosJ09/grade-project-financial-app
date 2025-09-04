@@ -7,7 +7,7 @@ export class PostgresBudgetRepository implements IBudgetRepository {
 
   async findAll(): Promise<Budget[]> {
     const budgets = await this.prisma.budget.findMany({
-      include: { currency: true, status: true },
+      include: { currency: true, status: true, category: true },
     });
     return budgets.map(
       budget =>
@@ -18,8 +18,9 @@ export class PostgresBudgetRepository implements IBudgetRepository {
           budget.description,
           budget.currentAmount.toNumber(),
           budget.goalAmount.toNumber(),
-          budget.currency.currency,
-          budget.status.name,
+          budget.categoryId,
+          budget.currencyId,
+          budget.statusId,
           budget.startDate,
           budget.finishedDate,
           budget.createdAt,
@@ -32,10 +33,14 @@ export class PostgresBudgetRepository implements IBudgetRepository {
   async findById(id: string): Promise<Budget | null> {
     const budget = await this.prisma.budget.findUnique({
       where: { id },
-      include: { currency: true, status: true },
+      include: { currency: true, status: true, category: true },
     });
 
-    if (!budget) return null;
+    const category = await this.prisma.category.findUnique({
+      where: { id: budget?.categoryId },
+    });
+
+    if (!budget || !category) return null;
 
     return new Budget(
       budget.id,
@@ -44,8 +49,9 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.description,
       budget.currentAmount.toNumber(),
       budget.goalAmount.toNumber(),
-      budget.currency.currency,
-      budget.status.name,
+      budget.categoryId,
+      budget.currencyId,
+      budget.statusId,
       budget.startDate,
       budget.finishedDate,
       budget.createdAt,
@@ -61,7 +67,7 @@ export class PostgresBudgetRepository implements IBudgetRepository {
     // - currencyId: map currency code to Currency.id
     // - state: map to BudgetStatus.id via name
     const currency = await this.prisma.currency.findFirst({
-      where: { currency: entity.currencyId },
+      where: { id: entity.currencyId },
     });
 
     if (!currency) {
@@ -69,11 +75,11 @@ export class PostgresBudgetRepository implements IBudgetRepository {
     }
 
     const status = await this.prisma.budgetStatus.findUnique({
-      where: { name: (entity as any).state },
+      where: { id: entity.statusId },
     });
 
     if (!status) {
-      throw new Error(`Budget status not found for state: ${(entity as any).state}`);
+      throw new Error(`Budget status not found for id: ${entity.statusId}`);
     }
 
     const budget = await this.prisma.budget.create({
@@ -83,6 +89,7 @@ export class PostgresBudgetRepository implements IBudgetRepository {
         description: entity.description,
         currentAmount: entity.currentAmount,
         goalAmount: entity.goalAmount,
+        category: { connect: { id: entity.categoryId } },
         currency: { connect: { id: currency.id } },
         status: { connect: { id: status.id } },
         startDate: entity.startDate,
@@ -98,8 +105,9 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.description,
       budget.currentAmount.toNumber(),
       budget.goalAmount.toNumber(),
-      budget.currency.currency,
-      budget.status.name,
+      budget.currencyId,
+      budget.categoryId,
+      budget.statusId,
       budget.startDate,
       budget.finishedDate,
       budget.createdAt,
@@ -123,24 +131,22 @@ export class PostgresBudgetRepository implements IBudgetRepository {
     if (entity.finishedDate !== undefined)
       data.finishedDate = entity.finishedDate;
 
-    if ((entity as any).currencyId) {
+    if (entity.currencyId) {
       const currency = await this.prisma.currency.findFirst({
-        where: { currency: (entity as any).currencyId },
+        where: { id: entity.currencyId },
       });
       if (!currency) {
-        throw new Error(
-          `Currency not found for code: ${(entity as any).currencyId}`
-        );
+        throw new Error(`Currency not found for code: ${entity.currencyId}`);
       }
       data.currency = { connect: { id: currency.id } };
     }
 
-    if ((entity as any).state) {
+    if (entity.statusId) {
       const status = await this.prisma.budgetStatus.findUnique({
-        where: { name: (entity as any).state },
+        where: { id: entity.statusId },
       });
       if (!status) {
-        throw new Error(`Budget status not found for state: ${(entity as any).state}`);
+        throw new Error(`Budget status not found for id: ${entity.statusId}`);
       }
       data.status = { connect: { id: status.id } };
     }
@@ -158,8 +164,9 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.description,
       budget.currentAmount.toNumber(),
       budget.goalAmount.toNumber(),
-      budget.currency.currency,
-      budget.status.name,
+      budget.currencyId,
+      budget.categoryId,
+      budget.statusId,
       budget.startDate,
       budget.finishedDate,
       budget.createdAt,

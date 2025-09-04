@@ -6,13 +6,14 @@ class Budget {
     public readonly description: string,
     public readonly currentAmount: number,
     public readonly goalAmount: number,
-    public readonly currencyId: string,
-    public readonly state: string,
+    public readonly currencyId: number,
+    public readonly categoryId: number,
+    public readonly statusId: number,
     public readonly startDate: Date,
     public readonly finishedDate: Date,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
-    public readonly deletedAt?: Date
+    public readonly deletedAt?: Date | undefined
   ) {}
 }
 
