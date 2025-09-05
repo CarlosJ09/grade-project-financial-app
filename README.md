@@ -6,26 +6,13 @@
 - Node.js (for local development)
 - npm or yarn package manager
 
-## Environment Setup
-
-1. Create a `.env` file in the root directory with the following variables:
-```env
-POSTGRES_USER=your_db_user
-POSTGRES_PASSWORD=your_db_password
-POSTGRES_DB=financial_app
-POSTGRES_PORT=5432
-DATABASE_URL=postgresql://your_db_user:your_db_password@db:5432/financial_app
-BACKEND_PORT=4000
-JWT_SECRET=your_jwt_secret
-```
-
 ## Running the Application
 
 ### Using Docker (Recommended)
 
-1. Install backend dependencies:
+1. Install core API dependencies:
 ```bash
-cd backend
+cd core-api
 npm i
 ```
 
@@ -52,11 +39,11 @@ This will start:
 
 ### Running Locally
 
-#### Backend Setup
+#### Core API Setup
 
-1. Navigate to the backend directory:
+1. Navigate to the core-api directory:
 ```bash
-cd backend
+cd core-api
 ```
 
 2. Install dependencies:

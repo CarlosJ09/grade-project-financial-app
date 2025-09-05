@@ -3,25 +3,25 @@ services:
     image: postgres:16
     container_name: financial_app_db
     env_file:
-      - ./backend/.env
+      - ./core-api/.env
     ports:
       - "${POSTGRES_PORT}:${POSTGRES_PORT}"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  backend:
+  core-api:
     build:
-      context: ./backend
-      dockerfile: backend.dockerfile
-    container_name: financial_app_backend
+      context: ./core-api
+      dockerfile: core-api.dockerfile
+    container_name: financial_app_core-api
     depends_on:
       - db
     env_file:
-      - ./backend/.env
+      - ./core-api/.env
     ports:
       - "${PORT}:${PORT}"
     volumes:
-      - ./backend:/app
+      - ./core-api:/app
       - /app/node_modules
     command: ["npm", "run", "dev"]
 
