@@ -10,6 +10,8 @@ interface BudgetCardProps {
 export function BudgetCard({ budget }: BudgetCardProps) {
   const isActive = budget.state === 'active';
 
+  console.log(budget);
+
   return (
     <View className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-700 dark:bg-gray-800">
       <View className="mb-2 flex-row items-start justify-between">
@@ -50,7 +52,7 @@ export function BudgetCard({ budget }: BudgetCardProps) {
                 : 'text-red-800 dark:text-red-300'
             }`}
           >
-            {budget.state}
+            {budget.statusId}
           </Text>
         </View>
 

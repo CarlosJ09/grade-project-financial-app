@@ -12,24 +12,37 @@ export class PostgresTransactionRepository implements ITransactionRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findAll(): Promise<Transaction[]> {
-    const transactions = await this.prisma.transaction.findMany();
+    const transactions = await this.prisma.transaction.findMany({
+      include: {
+        currency: true,
+        exchangeRate: true,
+        category: true,
+        paymentMethod: true,
+        bankingProduct: true,
+      },
+    });
     return transactions.map(
       transaction =>
         new Transaction(
           transaction.id,
           transaction.userId,
-          transaction.amount.toNumber(),
-          transaction.currencyId.toString(),
-          transaction.exchangeRateId?.toString() || null,
+          transaction.amount,
+          transaction.currencyId,
+          transaction.exchangeRateId || null,
           transaction.type,
-          transaction.categoryId.toString(),
-          transaction.paymentMethodId.toString(),
+          transaction.categoryId,
+          transaction.paymentMethodId,
           transaction.place,
-          transaction.bankingProductId?.toString() || null,
+          transaction.bankingProductId || null,
           transaction.transactionDate,
           transaction.createdAt,
           transaction.updatedAt,
-          transaction.deletedAt || undefined
+          transaction.deletedAt || undefined,
+          transaction.currency,
+          transaction.exchangeRate || undefined,
+          transaction.category,
+          transaction.paymentMethod,
+          transaction.bankingProduct || undefined
         )
     );
   }
@@ -37,6 +50,13 @@ export class PostgresTransactionRepository implements ITransactionRepository {
   async findById(id: string): Promise<Transaction | null> {
     const transaction = await this.prisma.transaction.findUnique({
       where: { id },
+      include: {
+        currency: true,
+        exchangeRate: true,
+        category: true,
+        paymentMethod: true,
+        bankingProduct: true,
+      },
     });
 
     if (!transaction) return null;
@@ -44,18 +64,23 @@ export class PostgresTransactionRepository implements ITransactionRepository {
     return new Transaction(
       transaction.id,
       transaction.userId,
-      transaction.amount.toNumber(),
-      transaction.currencyId.toString(),
-      transaction.exchangeRateId?.toString() || null,
+      transaction.amount,
+      transaction.currencyId,
+      transaction.exchangeRateId || null,
       transaction.type,
-      transaction.categoryId.toString(),
-      transaction.paymentMethodId.toString(),
+      transaction.categoryId,
+      transaction.paymentMethodId,
       transaction.place,
-      transaction.bankingProductId?.toString() || null,
+      transaction.bankingProductId || null,
       transaction.transactionDate,
       transaction.createdAt,
       transaction.updatedAt,
-      transaction.deletedAt || undefined
+      transaction.deletedAt || undefined,
+      transaction.currency,
+      transaction.exchangeRate || undefined,
+      transaction.category,
+      transaction.paymentMethod,
+      transaction.bankingProduct || undefined
     );
   }
 
@@ -90,6 +115,13 @@ export class PostgresTransactionRepository implements ITransactionRepository {
       orderBy: {
         transactionDate: 'desc',
       },
+      include: {
+        currency: true,
+        exchangeRate: true,
+        category: true,
+        paymentMethod: true,
+        bankingProduct: true,
+      },
     });
 
     return transactions.map(
@@ -97,24 +129,39 @@ export class PostgresTransactionRepository implements ITransactionRepository {
         new Transaction(
           transaction.id,
           transaction.userId,
-          transaction.amount.toNumber(),
-          transaction.currencyId.toString(),
-          transaction.exchangeRateId?.toString() || null,
+          transaction.amount,
+          transaction.currencyId,
+          transaction.exchangeRateId || null,
           transaction.type,
-          transaction.categoryId.toString(),
-          transaction.paymentMethodId.toString(),
+          transaction.categoryId,
+          transaction.paymentMethodId,
           transaction.place,
-          transaction.bankingProductId?.toString() || null,
+          transaction.bankingProductId || null,
           transaction.transactionDate,
           transaction.createdAt,
           transaction.updatedAt,
-          transaction.deletedAt || undefined
+          transaction.deletedAt || undefined,
+          transaction.currency,
+          transaction.exchangeRate || undefined,
+          transaction.category,
+          transaction.paymentMethod,
+          transaction.bankingProduct || undefined
         )
     );
   }
 
   async create(
-    entity: Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>
+    entity: Omit<
+      Transaction,
+      | 'id'
+      | 'createdAt'
+      | 'updatedAt'
+      | 'currency'
+      | 'exchangeRate'
+      | 'category'
+      | 'paymentMethod'
+      | 'bankingProduct'
+    >
   ): Promise<Transaction> {
     const transaction = await this.prisma.transaction.create({
       data: entity,
@@ -123,24 +170,35 @@ export class PostgresTransactionRepository implements ITransactionRepository {
     return new Transaction(
       transaction.id,
       transaction.userId,
-      transaction.amount.toNumber(),
-      transaction.currencyId.toString(),
-      transaction.exchangeRateId?.toString() || null,
+      transaction.amount,
+      transaction.currencyId,
+      transaction.exchangeRateId || null,
       transaction.type,
-      transaction.categoryId.toString(),
-      transaction.paymentMethodId.toString(),
+      transaction.categoryId,
+      transaction.paymentMethodId,
       transaction.place,
-      transaction.bankingProductId?.toString() || null,
+      transaction.bankingProductId || null,
       transaction.transactionDate,
       transaction.createdAt,
-      transaction.updatedAt,
-      transaction.deletedAt || undefined
+      transaction.updatedAt
     );
   }
 
   async update(
     id: string,
-    entity: Partial<Omit<Transaction, 'id' | 'createdAt' | 'updatedAt'>>
+    entity: Partial<
+      Omit<
+        Transaction,
+        | 'id'
+        | 'createdAt'
+        | 'updatedAt'
+        | 'currency'
+        | 'exchangeRate'
+        | 'category'
+        | 'paymentMethod'
+        | 'bankingProduct'
+      >
+    >
   ): Promise<Transaction> {
     const transaction = await this.prisma.transaction.update({
       where: { id },
@@ -150,18 +208,17 @@ export class PostgresTransactionRepository implements ITransactionRepository {
     return new Transaction(
       transaction.id,
       transaction.userId,
-      transaction.amount.toNumber(),
-      transaction.currencyId.toString(),
-      transaction.exchangeRateId?.toString() || null,
+      transaction.amount,
+      transaction.currencyId,
+      transaction.exchangeRateId || null,
       transaction.type,
-      transaction.categoryId.toString(),
-      transaction.paymentMethodId.toString(),
+      transaction.categoryId,
+      transaction.paymentMethodId,
       transaction.place,
-      transaction.bankingProductId?.toString() || null,
+      transaction.bankingProductId || null,
       transaction.transactionDate,
       transaction.createdAt,
-      transaction.updatedAt,
-      transaction.deletedAt || undefined
+      transaction.updatedAt
     );
   }
 

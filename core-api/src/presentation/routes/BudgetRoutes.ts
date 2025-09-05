@@ -1,15 +1,15 @@
-import { Router } from 'express';
 import { Database } from '@/infraestructure/config/Database';
 import { PostgresBudgetRepository } from '@/infraestructure/repositories/PostgresBudgetRepository';
-import { GetAllBudgets } from '@/use-cases/budget/GetAllBudgets';
-import { GetBudgetById } from '@/use-cases/budget/GetBudgetById';
-import { CreateBudget } from '@/use-cases/budget/CreateBudget';
-import { UpdateBudget } from '@/use-cases/budget/UpdateBudget';
-import { DeleteBudget } from '@/use-cases/budget/DeleteBudget';
-import { BudgetController } from '@/presentation/controllers/BudgetController';
 import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { BudgetController } from '@/presentation/controllers/BudgetController';
 import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
 import { asyncHandler } from '@/presentation/utils/asyncHandler';
+import { CreateBudget } from '@/use-cases/budget/CreateBudget';
+import { DeleteBudget } from '@/use-cases/budget/DeleteBudget';
+import { GetAllBudgets } from '@/use-cases/budget/GetAllBudgets';
+import { GetBudgetById } from '@/use-cases/budget/GetBudgetById';
+import { UpdateBudget } from '@/use-cases/budget/UpdateBudget';
+import { Router } from 'express';
 
 const router = Router();
 
@@ -105,9 +105,10 @@ router.get(
  *               - currentAmount
  *               - goalAmount
  *               - currencyId
+ *               - statusId
+ *               - categoryId
  *               - startDate
  *               - finishedDate
- *               - state
  *             properties:
  *               userId:
  *                 type: string
@@ -127,6 +128,13 @@ router.get(
  *               currencyId:
  *                 type: string
  *                 example: "USD"
+ *               statusId:
+ *                 type: number
+ *                 enum: [1, 2, 3]
+ *                 example: "1"
+ *               categoryId:
+ *                 type: number
+ *                 example: "1"
  *               startDate:
  *                 type: string
  *                 format: date-time
@@ -135,10 +143,6 @@ router.get(
  *                 type: string
  *                 format: date-time
  *                 example: "2024-12-31T23:59:59Z"
- *               state:
- *                 type: string
- *                 enum: [active, inactive, completed]
- *                 example: "active"
  *     responses:
  *       201:
  *         description: Budget created successfully

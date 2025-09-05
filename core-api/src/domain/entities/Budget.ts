@@ -1,3 +1,7 @@
+import { BudgetStatus } from '@/domain/entities/BudgetStatus';
+import { Category } from '@/domain/entities/Category';
+import { Currency } from '@/domain/entities/Currency';
+
 class Budget {
   constructor(
     public readonly id: string,
@@ -13,6 +17,9 @@ class Budget {
     public readonly finishedDate: Date,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
+    public readonly status?: BudgetStatus,
+    public readonly category?: Category,
+    public readonly currency?: Currency,
     public readonly deletedAt?: Date | undefined
   ) {}
 }

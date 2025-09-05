@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken';
 import { ITokenService } from '@/domain/services/ITokenService';
+import jwt from 'jsonwebtoken';
 
 /**
  * JWT implementation of token service
@@ -8,7 +8,7 @@ import { ITokenService } from '@/domain/services/ITokenService';
 export class JwtTokenService implements ITokenService {
   private readonly accessTokenSecret: string;
   private readonly refreshTokenSecret: string;
-  private readonly accessTokenExpiry = '15m'; // 15 minutes
+  private readonly accessTokenExpiry = '60m'; // 60 minutes
   private readonly refreshTokenExpiry = '7d'; // 7 days
 
   constructor() {

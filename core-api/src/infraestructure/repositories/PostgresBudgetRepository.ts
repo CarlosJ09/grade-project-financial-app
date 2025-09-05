@@ -2,6 +2,12 @@ import { Budget } from '@/domain/entities/Budget';
 import { IBudgetRepository } from '@/domain/repositories/IBudgetRepository';
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 
+interface BudgetFilters {
+  fromDate?: Date;
+  toDate?: Date;
+  excludeDeleted?: boolean;
+}
+
 export class PostgresBudgetRepository implements IBudgetRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
@@ -25,7 +31,9 @@ export class PostgresBudgetRepository implements IBudgetRepository {
           budget.finishedDate,
           budget.createdAt,
           budget.updatedAt,
-          budget.deletedAt || undefined
+          budget.status,
+          budget.category,
+          budget.currency
         )
     );
   }
@@ -56,12 +64,78 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.finishedDate,
       budget.createdAt,
       budget.updatedAt,
-      budget.deletedAt || undefined
+      budget.status,
+      budget.category,
+      budget.currency
+    );
+  }
+
+  async findByUserId(
+    userId: string,
+    filters?: BudgetFilters
+  ): Promise<Budget[]> {
+    const whereClause: any = {
+      userId,
+    };
+
+    if (filters?.excludeDeleted) {
+      whereClause.deletedAt = null;
+    }
+
+    if (filters?.fromDate) {
+      whereClause.transactionDate = {
+        ...whereClause.transactionDate,
+        gte: filters.fromDate,
+      };
+    }
+
+    if (filters?.toDate) {
+      whereClause.transactionDate = {
+        ...whereClause.transactionDate,
+        lte: filters.toDate,
+      };
+    }
+
+    const budgets = await this.prisma.budget.findMany({
+      where: whereClause,
+      orderBy: {
+        createdAt: 'desc',
+      },
+      include: {
+        currency: true,
+        category: true,
+        status: true,
+      },
+    });
+
+    return budgets.map(
+      budget =>
+        new Budget(
+          budget.id,
+          budget.userId,
+          budget.name,
+          budget.description,
+          budget.currentAmount.toNumber(),
+          budget.goalAmount.toNumber(),
+          budget.categoryId,
+          budget.currencyId,
+          budget.statusId,
+          budget.startDate,
+          budget.finishedDate,
+          budget.createdAt,
+          budget.updatedAt,
+          budget.status,
+          budget.category,
+          budget.currency
+        )
     );
   }
 
   async create(
-    entity: Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>
+    entity: Omit<
+      Budget,
+      'id' | 'createdAt' | 'updatedAt' | 'currency' | 'status' | 'category'
+    >
   ): Promise<Budget> {
     // Map incoming entity to Prisma schema requirements
     // - currencyId: map currency code to Currency.id
@@ -111,14 +185,18 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.startDate,
       budget.finishedDate,
       budget.createdAt,
-      budget.updatedAt,
-      budget.deletedAt || undefined
+      budget.updatedAt
     );
   }
 
   async update(
     id: string,
-    entity: Partial<Omit<Budget, 'id' | 'createdAt' | 'updatedAt'>>
+    entity: Partial<
+      Omit<
+        Budget,
+        'id' | 'createdAt' | 'updatedAt' | 'currency' | 'status' | 'category'
+      >
+    >
   ): Promise<Budget> {
     // Build Prisma update data without passing FK scalars directly
     const data: any = {};
@@ -170,8 +248,7 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.startDate,
       budget.finishedDate,
       budget.createdAt,
-      budget.updatedAt,
-      budget.deletedAt || undefined
+      budget.updatedAt
     );
   }
 

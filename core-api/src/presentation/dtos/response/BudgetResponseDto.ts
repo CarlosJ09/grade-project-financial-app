@@ -1,4 +1,7 @@
 import { Budget } from '@/domain/entities/Budget';
+import { BudgetStatus } from '@/domain/entities/BudgetStatus';
+import { Category } from '@/domain/entities/Category';
+import { Currency } from '@/domain/entities/Currency';
 
 export class BudgetResponseDto {
   constructor(
@@ -14,7 +17,10 @@ export class BudgetResponseDto {
     public readonly startDate: Date,
     public readonly finishedDate: Date,
     public readonly createdAt: Date,
-    public readonly updatedAt: Date
+    public readonly updatedAt: Date,
+    public readonly status?: BudgetStatus,
+    public readonly category?: Category,
+    public readonly currency?: Currency
   ) {}
 
   static fromEntity(budget: Budget): BudgetResponseDto {
@@ -31,7 +37,10 @@ export class BudgetResponseDto {
       budget.startDate,
       budget.finishedDate,
       budget.createdAt,
-      budget.updatedAt
+      budget.updatedAt,
+      budget.status,
+      budget.category,
+      budget.currency
     );
   }
 }
