@@ -4,7 +4,7 @@ export class CategoryResponseDto {
   constructor(
     public readonly id: number,
     public readonly name: string,
-    public readonly kind: string,
+    public readonly type: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date
   ) {}
@@ -13,7 +13,7 @@ export class CategoryResponseDto {
     return new CategoryResponseDto(
       category.id,
       category.name,
-      category.kind,
+      category.type,
       category.createdAt,
       category.updatedAt
     );

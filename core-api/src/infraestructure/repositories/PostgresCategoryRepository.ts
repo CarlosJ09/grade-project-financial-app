@@ -12,7 +12,7 @@ export class PostgresCategoryRepository implements ICategoryRepository {
         new Category(
           category.id,
           category.name,
-          category.kind,
+          category.type,
           category.createdAt,
           category.updatedAt
         )
@@ -29,7 +29,7 @@ export class PostgresCategoryRepository implements ICategoryRepository {
     return new Category(
       category.id,
       category.name,
-      category.kind,
+      category.type,
       category.createdAt,
       category.updatedAt
     );
@@ -45,7 +45,7 @@ export class PostgresCategoryRepository implements ICategoryRepository {
     return new Category(
       category.id,
       category.name,
-      category.kind,
+      category.type,
       category.createdAt,
       category.updatedAt
     );
@@ -63,7 +63,7 @@ export class PostgresCategoryRepository implements ICategoryRepository {
     return new Category(
       category.id,
       category.name,
-      category.kind,
+      category.type,
       category.createdAt,
       category.updatedAt
     );

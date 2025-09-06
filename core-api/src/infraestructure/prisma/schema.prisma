@@ -137,7 +137,7 @@ model PaymentMethod {
 model Category {
   id        Int      @id @default(autoincrement())
   name      String   @unique @db.VarChar(25)
-  kind      String // Enum: expense, income, budget
+  type      String // Enum: expense, income, budget
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

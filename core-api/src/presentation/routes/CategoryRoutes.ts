@@ -1,15 +1,15 @@
-import { Router } from 'express';
 import { Database } from '@/infraestructure/config/Database';
 import { PostgresCategoryRepository } from '@/infraestructure/repositories/PostgresCategoryRepository';
-import { GetAllCategories } from '@/use-cases/category/GetAllCategories';
-import { GetCategoryById } from '@/use-cases/category/GetCategoryById';
-import { CreateCategory } from '@/use-cases/category/CreateCategory';
-import { UpdateCategory } from '@/use-cases/category/UpdateCategory';
-import { DeleteCategory } from '@/use-cases/category/DeleteCategory';
-import { CategoryController } from '@/presentation/controllers/CategoryController';
 import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { CategoryController } from '@/presentation/controllers/CategoryController';
 import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
 import { asyncHandler } from '@/presentation/utils/asyncHandler';
+import { CreateCategory } from '@/use-cases/category/CreateCategory';
+import { DeleteCategory } from '@/use-cases/category/DeleteCategory';
+import { GetAllCategories } from '@/use-cases/category/GetAllCategories';
+import { GetCategoryById } from '@/use-cases/category/GetCategoryById';
+import { UpdateCategory } from '@/use-cases/category/UpdateCategory';
+import { Router } from 'express';
 
 const router = Router();
 
@@ -100,12 +100,12 @@ router.get(
  *             type: object
  *             required:
  *               - name
- *               - kind
+ *               - type
  *             properties:
  *               name:
  *                 type: string
  *                 example: "Food & Dining"
- *               kind:
+ *               type:
  *                 type: string
  *                 enum: [expense, income, budget]
  *                 example: "expense"
@@ -150,7 +150,7 @@ router.post(
  *               name:
  *                 type: string
  *                 example: "Updated Food & Dining"
- *               kind:
+ *               type:
  *                 type: string
  *                 enum: [expense, income, budget]
  *                 example: "expense"
