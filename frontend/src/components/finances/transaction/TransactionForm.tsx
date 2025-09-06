@@ -8,12 +8,8 @@ import { currencyService } from '@/services/currency';
 import { paymentMethodService } from '@/services/paymentMethod';
 import { transactionService } from '@/services/transaction';
 import { useAuthStore } from '@/stores/authStore';
-import {
-  Category,
-  CreateTransactionInput,
-  Currency,
-  PaymentMethod,
-} from '@/types/financial';
+import { Category, Currency, PaymentMethod } from '@/types/financial/shared';
+import { CreateTransactionInput } from '@/types/financial/transaction';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
@@ -34,8 +30,8 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
     amount: 0,
     currencyId: 0,
     type: 'expense',
-    categoryId: '',
-    paymentMethodId: '',
+    categoryId: 0,
+    paymentMethodId: 0,
     place: '',
     userId: '',
   });
@@ -107,7 +103,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
       const transactionData: CreateTransactionInput = {
         ...formData,
         currencyId: Number(formData.currencyId),
-        transactionDate: transactionDate.toISOString(),
+        transactionDate: transactionDate,
         userId: user.id,
       };
 
@@ -244,7 +240,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
 
         <Dropdown
           label="Category"
-          value={formData.categoryId}
+          value={formData.categoryId.toString()}
           options={categoryOptions}
           onSelect={value => updateFormData('categoryId', value)}
           placeholder="Select a category"
@@ -253,7 +249,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
 
         <Dropdown
           label="Payment Method"
-          value={formData.paymentMethodId}
+          value={formData.paymentMethodId.toString()}
           options={paymentMethodOptions}
           onSelect={value => updateFormData('paymentMethodId', value)}
           placeholder="Select a payment method"

@@ -9,7 +9,8 @@ import { TransactionCard } from '@/components/finances/transaction/TransactionCa
 import { TransactionModal } from '@/components/finances/transaction/TransactionModal';
 import { budgetService } from '@/services/budget';
 import { transactionService } from '@/services/transaction';
-import { Budget, Transaction } from '@/types/financial';
+import { Budget } from '@/types/financial/budget';
+import { Transaction } from '@/types/financial/transaction';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function FinancesScreen() {

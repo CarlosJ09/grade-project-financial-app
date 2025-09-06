@@ -1,4 +1,4 @@
-import { Transaction } from '@/types/financial';
+import { Transaction } from '@/types/financial/transaction';
 import { formatCurrency } from '@/utils/formatCurrency';
 import React from 'react';
 import { Text, View } from 'react-native';

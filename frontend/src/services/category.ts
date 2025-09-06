@@ -1,5 +1,5 @@
 import { BaseService } from '@/services/base';
-import { Category } from '@/types/financial';
+import { Category } from '@/types/financial/shared';
 
 class CategoryService extends BaseService<Category> {
   constructor() {

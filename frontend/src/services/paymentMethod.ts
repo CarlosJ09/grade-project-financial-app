@@ -1,5 +1,5 @@
 import { BaseService } from '@/services/base';
-import { PaymentMethod } from '@/types/financial';
+import { PaymentMethod } from '@/types/financial/shared';
 
 class PaymentMethodService extends BaseService<PaymentMethod> {
   constructor() {

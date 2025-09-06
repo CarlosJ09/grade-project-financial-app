@@ -1,11 +1,13 @@
 import { ThemedText } from '@/components/ThemedText';
 import { Button } from '@/components/ui/Button';
 import { DatePicker } from '@/components/ui/DatePicker';
+import { Dropdown, DropdownOption } from '@/components/ui/Dropdown';
 import { TextInput } from '@/components/ui/TextInput';
 import { budgetService } from '@/services/budget';
+import { categoryService } from '@/services/category';
 import { currencyService } from '@/services/currency';
 import { useAuthStore } from '@/stores/authStore';
-import { BudgetState, Currency } from '@/types/financial';
+import { Currency } from '@/types/financial/shared';
 import { useEffect, useState } from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 
@@ -19,10 +21,11 @@ type FormState = {
   description: string;
   currentAmount: number;
   goalAmount: number;
-  currencyId: string; // currency code like 'USD'
+  currencyId: number;
+  categoryId: number;
   startDate: Date;
   finishedDate: Date;
-  state: BudgetState;
+  statusId: number;
 };
 
 export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
@@ -31,36 +34,54 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   const [loadingData, setLoadingData] = useState(true);
 
   const [currencies, setCurrencies] = useState<Currency[]>([]);
-
+  const [categories, setCategories] = useState<DropdownOption[]>([]);
   const [form, setForm] = useState<FormState>({
     name: '',
     description: '',
     currentAmount: 0,
     goalAmount: 0,
-    currencyId: '',
+    currencyId: 0,
+    categoryId: 0,
     startDate: new Date(),
     finishedDate: new Date(),
-    state: 'active',
+    statusId: 1,
   });
 
   useEffect(() => {
-    const load = async () => {
-      try {
-        const res = await currencyService.getAll();
-        setCurrencies(res.data || []);
-        if (res.data && res.data.length > 0) {
-          // Use currency code (e.g., 'USD') for budgets API
-          setForm(prev => ({ ...prev, currencyId: res.data[0].currency }));
-        }
-      } catch (error) {
-        console.error('Error loading currencies:', error);
-        Alert.alert('Error', 'Failed to load currencies');
-      } finally {
-        setLoadingData(false);
-      }
-    };
-    load();
+    loadCategories();
+    loadCurrencies();
   }, []);
+
+  const loadCategories = async () => {
+    const res = await categoryService.getAll();
+    const categories = res.data
+      .filter(category => category.type === 'budget')
+      .map(category => {
+        return {
+          label: category.name,
+          value: category.id,
+        };
+      });
+
+    console.log(res.data);
+    setCategories(categories);
+  };
+
+  const loadCurrencies = async () => {
+    try {
+      const res = await currencyService.getAll();
+      setCurrencies(res.data || []);
+      if (res.data && res.data.length > 0) {
+        // Use currency code (e.g., 'USD') for budgets API
+        setForm(prev => ({ ...prev, currencyId: res.data[0].id }));
+      }
+    } catch (error) {
+      console.error('Error loading currencies:', error);
+      Alert.alert('Error', 'Failed to load currencies');
+    } finally {
+      setLoadingData(false);
+    }
+  };
 
   const update = <K extends keyof FormState>(key: K, value: FormState[K]) => {
     setForm(prev => ({ ...prev, [key]: value }));
@@ -99,15 +120,16 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
         currentAmount: Number(form.currentAmount) || 0,
         goalAmount: Number(form.goalAmount),
         currencyId: form.currencyId, // currency code e.g., 'USD'
-        startDate: form.startDate.toISOString(),
-        finishedDate: form.finishedDate.toISOString(),
-        state: 'active',
+        startDate: form.startDate,
+        finishedDate: form.finishedDate,
+        statusId: form.statusId,
+        categoryId: form.categoryId,
       });
-      console.log('-----------------------------');
-      console.log(res);
-      console.log('-----------------------------');
-      Alert.alert('Success', 'Budget created successfully');
-      onSuccess();
+
+      if (res.status === 201) {
+        Alert.alert('Success', 'Budget created successfully');
+        onSuccess();
+      }
     } catch (error) {
       console.error('Error creating budget:', error);
       Alert.alert('Error', 'Failed to create budget');
@@ -175,6 +197,14 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
           />
         </View>
 
+        <Dropdown
+          label="Category"
+          value={form.categoryId.toString()}
+          options={categories}
+          onSelect={value => update('categoryId', Number(value))}
+          placeholder="Select a category"
+        />
+
         {/* Currency selector (use currency code) */}
         <View className="mb-4">
           <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -185,15 +215,15 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
               <TouchableOpacity
                 key={currency.id}
                 className={`border-b border-gray-200 p-3 dark:border-gray-700 ${
-                  form.currencyId === currency.currency
+                  form.currencyId === currency.id
                     ? 'bg-blue-50 dark:bg-blue-900/20'
                     : ''
                 }`}
-                onPress={() => update('currencyId', currency.currency)}
+                onPress={() => update('currencyId', currency.id)}
               >
                 <Text
                   className={`font-medium ${
-                    form.currencyId === currency.currency
+                    form.currencyId === currency.id
                       ? 'text-blue-600 dark:text-blue-400'
                       : 'text-gray-700 dark:text-gray-300'
                   }`}
