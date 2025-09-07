@@ -15,7 +15,7 @@ export class PostgresBankingProductRepository
     );
   }
 
-  async findById(id: string): Promise<BankingProduct | null> {
+  async findById(id: number): Promise<BankingProduct | null> {
     const bankingProduct = await this.prisma.bankingProduct.findUnique({
       where: { id },
     });
@@ -40,7 +40,7 @@ export class PostgresBankingProductRepository
   }
 
   async update(
-    id: string,
+    id: number,
     entity: Partial<Omit<BankingProduct, 'id'>>
   ): Promise<BankingProduct> {
     const bankingProduct = await this.prisma.bankingProduct.update({
@@ -54,7 +54,7 @@ export class PostgresBankingProductRepository
     );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.bankingProduct.delete({
       where: { id },
     });

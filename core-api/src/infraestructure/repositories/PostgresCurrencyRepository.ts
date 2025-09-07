@@ -12,7 +12,7 @@ export class PostgresCurrencyRepository implements ICurrencyRepository {
       },
     });
     return currencies.map(
-      currency => new Currency(currency.id.toString(), currency.currency)
+      currency => new Currency(currency.id, currency.currency)
     );
   }
 
@@ -23,7 +23,7 @@ export class PostgresCurrencyRepository implements ICurrencyRepository {
 
     if (!currency) return null;
 
-    return new Currency(currency.id.toString(), currency.currency);
+    return new Currency(currency.id, currency.currency);
   }
 
   async findByIdInt(id: number): Promise<Currency | null> {
@@ -33,6 +33,6 @@ export class PostgresCurrencyRepository implements ICurrencyRepository {
 
     if (!currency) return null;
 
-    return new Currency(currency.id.toString(), currency.currency);
+    return new Currency(currency.id, currency.currency);
   }
 }

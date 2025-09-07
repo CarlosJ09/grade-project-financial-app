@@ -9,7 +9,7 @@ export class PostgresBankRepository implements IBankRepository {
     return this.prisma.bank.findMany();
   }
 
-  async findById(id: string): Promise<Bank | null> {
+  async findById(id: number): Promise<Bank | null> {
     return this.prisma.bank.findUnique({
       where: { id },
     });
@@ -24,7 +24,7 @@ export class PostgresBankRepository implements IBankRepository {
   }
 
   async update(
-    id: string,
+    id: number,
     entity: Partial<Omit<Bank, 'id' | 'createdAt' | 'updatedAt'>>
   ): Promise<Bank> {
     return this.prisma.bank.update({
@@ -33,7 +33,7 @@ export class PostgresBankRepository implements IBankRepository {
     });
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.bank.delete({
       where: { id },
     });

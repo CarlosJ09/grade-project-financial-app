@@ -10,25 +10,25 @@ export class PostgresExchangeRateRepository implements IExchangeRateRepository {
     return exchangeRates.map(
       exchangeRate =>
         new ExchangeRate(
-          exchangeRate.id.toString(),
-          exchangeRate.currencyId.toString(),
-          exchangeRate.rate.toNumber(),
+          exchangeRate.id,
+          exchangeRate.currencyId,
+          exchangeRate.rate,
           exchangeRate.rateDate
         )
     );
   }
 
-  async findById(id: string): Promise<ExchangeRate | null> {
+  async findById(id: number): Promise<ExchangeRate | null> {
     const exchangeRate = await this.prisma.exchangeRate.findUnique({
-      where: { id: parseInt(id) },
+      where: { id: id },
     });
 
     if (!exchangeRate) return null;
 
     return new ExchangeRate(
-      exchangeRate.id.toString(),
-      exchangeRate.currencyId.toString(),
-      exchangeRate.rate.toNumber(),
+      exchangeRate.id,
+      exchangeRate.currencyId,
+      exchangeRate.rate,
       exchangeRate.rateDate
     );
   }
@@ -59,9 +59,9 @@ export class PostgresExchangeRateRepository implements IExchangeRateRepository {
     if (!exchangeRate) return null;
 
     return new ExchangeRate(
-      exchangeRate.id.toString(),
-      exchangeRate.currencyId.toString(),
-      exchangeRate.rate.toNumber(),
+      exchangeRate.id,
+      exchangeRate.currencyId,
+      exchangeRate.rate,
       exchangeRate.rateDate
     );
   }
@@ -69,28 +69,28 @@ export class PostgresExchangeRateRepository implements IExchangeRateRepository {
   async create(entity: Omit<ExchangeRate, 'id'>): Promise<ExchangeRate> {
     const exchangeRate = await this.prisma.exchangeRate.create({
       data: {
-        currencyId: parseInt(entity.currencyId),
+        currencyId: entity.currencyId,
         rate: entity.rate,
         rateDate: entity.rateDate,
       },
     });
 
     return new ExchangeRate(
-      exchangeRate.id.toString(),
-      exchangeRate.currencyId.toString(),
-      exchangeRate.rate.toNumber(),
+      exchangeRate.id,
+      exchangeRate.currencyId,
+      exchangeRate.rate,
       exchangeRate.rateDate
     );
   }
 
   async update(
-    id: string,
+    id: number,
     entity: Partial<Omit<ExchangeRate, 'id'>>
   ): Promise<ExchangeRate> {
     const updateData: any = {};
 
     if (entity.currencyId !== undefined) {
-      updateData.currencyId = parseInt(entity.currencyId);
+      updateData.currencyId = entity.currencyId;
     }
     if (entity.rate !== undefined) {
       updateData.rate = entity.rate;
@@ -100,21 +100,21 @@ export class PostgresExchangeRateRepository implements IExchangeRateRepository {
     }
 
     const exchangeRate = await this.prisma.exchangeRate.update({
-      where: { id: parseInt(id) },
+      where: { id: id },
       data: updateData,
     });
 
     return new ExchangeRate(
-      exchangeRate.id.toString(),
-      exchangeRate.currencyId.toString(),
-      exchangeRate.rate.toNumber(),
+      exchangeRate.id,
+      exchangeRate.currencyId,
+      exchangeRate.rate,
       exchangeRate.rateDate
     );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.exchangeRate.delete({
-      where: { id: parseInt(id) },
+      where: { id: id },
     });
   }
 }

@@ -19,7 +19,7 @@ export class PostgresCategoryRepository implements ICategoryRepository {
     );
   }
 
-  async findById(id: string): Promise<Category | null> {
+  async findById(id: number): Promise<Category | null> {
     const category = await this.prisma.category.findUnique({
       where: { id },
     });
@@ -52,7 +52,7 @@ export class PostgresCategoryRepository implements ICategoryRepository {
   }
 
   async update(
-    id: string,
+    id: number,
     entity: Partial<Omit<Category, 'id' | 'createdAt' | 'updatedAt'>>
   ): Promise<Category> {
     const category = await this.prisma.category.update({
@@ -69,7 +69,7 @@ export class PostgresCategoryRepository implements ICategoryRepository {
     );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.category.delete({
       where: { id },
     });

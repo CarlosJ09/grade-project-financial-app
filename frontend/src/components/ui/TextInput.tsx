@@ -1,4 +1,5 @@
 import {
+  Platform,
   TextInput as RNTextInput,
   TextInputProps as RNTextInputProps,
   Text,
@@ -21,7 +22,7 @@ export const TextInput = (props: TextInputProps) => {
       </Text>
 
       <View
-        className={`w-full rounded-xl border border-gray-200 p-2 ${props.inputClassName}`}
+        className={`w-full rounded-xl border border-gray-200 p-2 ${props.inputClassName} ${Platform.OS === 'ios' ? 'py-4' : ''}`}
       >
         <RNTextInput {...props} />
       </View>

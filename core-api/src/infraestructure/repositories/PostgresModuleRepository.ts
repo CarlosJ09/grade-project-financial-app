@@ -22,7 +22,7 @@ export class PostgresModuleRepository implements IModuleRepository {
     );
   }
 
-  async findById(id: string): Promise<Module | null> {
+  async findById(id: number): Promise<Module | null> {
     const module = await this.prisma.module.findUnique({
       where: { id },
     });
@@ -62,7 +62,7 @@ export class PostgresModuleRepository implements IModuleRepository {
   }
 
   async update(
-    id: string,
+    id: number,
     entity: Partial<Omit<Module, 'id'>>
   ): Promise<Module> {
     const updateData: any = { ...entity };
@@ -89,7 +89,7 @@ export class PostgresModuleRepository implements IModuleRepository {
     );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.module.delete({
       where: { id },
     });

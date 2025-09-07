@@ -110,7 +110,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
       Alert.alert('Error', 'Finished date must be after start date');
       return;
     }
-
+    console.log('form', form);
     setLoading(true);
     try {
       const res = await budgetService.create({
@@ -203,6 +203,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
           options={categories}
           onSelect={value => update('categoryId', Number(value))}
           placeholder="Select a category"
+          className="mb-4"
         />
 
         {/* Currency selector (use currency code) */}

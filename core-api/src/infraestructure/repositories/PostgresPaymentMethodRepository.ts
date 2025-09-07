@@ -20,7 +20,7 @@ export class PostgresPaymentMethodRepository
     );
   }
 
-  async findById(id: string): Promise<PaymentMethod | null> {
+  async findById(id: number): Promise<PaymentMethod | null> {
     const paymentMethod = await this.prisma.paymentMethod.findUnique({
       where: { id },
     });
@@ -51,7 +51,7 @@ export class PostgresPaymentMethodRepository
   }
 
   async update(
-    id: string,
+    id: number,
     entity: Partial<Omit<PaymentMethod, 'id' | 'createdAt' | 'updatedAt'>>
   ): Promise<PaymentMethod> {
     const paymentMethod = await this.prisma.paymentMethod.update({
@@ -67,7 +67,7 @@ export class PostgresPaymentMethodRepository
     );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.paymentMethod.delete({
       where: { id },
     });
