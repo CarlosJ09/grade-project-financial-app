@@ -180,7 +180,7 @@ model Merchant {
   id         Int      @id @default(autoincrement())
   name       String   @unique @db.VarChar(25)
   categoryId Int
-  website    String?  @db.varchar(50)
+  website    String?  @db.VarChar(50)
   location   String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -216,20 +216,6 @@ model PaymentMethod {
   @@map("payment_methods")
 }
 
-model Category {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique @db.VarChar(25)
-  type      String // Enum: expense, income, budget
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  // Relations
-  transactions Transaction[]
-  Budget       Budget[]
-
-  @@map("categories")
-}
-
 model Currency {
   id     Int    @id @default(autoincrement())
   code   String @db.VarChar(3)
@@ -237,9 +223,10 @@ model Currency {
   symbol String @db.VarChar(3)
 
   // Relations
-  budgets       Budget[]
-  transactions  Transaction[]
-  exchangeRates ExchangeRate[]
+  budgets            Budget[]
+  transactions       Transaction[]
+  exchangeRates      ExchangeRate[]
+  UserBankingProduct UserBankingProduct[]
 
   @@map("currencies")
 }
