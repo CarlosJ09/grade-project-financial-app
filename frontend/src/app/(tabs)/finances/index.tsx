@@ -105,6 +105,7 @@ export default function FinancesScreen() {
                 <Text className="mt-1 text-2xl font-bold text-red-800 dark:text-red-300">
                   {formatCurrency(expenses)}
                 </Text>
+                x
               </View>
             </View>
           </View>

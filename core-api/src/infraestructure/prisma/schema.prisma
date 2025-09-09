@@ -28,42 +28,73 @@ model User {
   updatedAt            DateTime @updatedAt
 
   // Relations
-  budgets            Budget[]
-  transactions       Transaction[]
-  userBanks          UserBank[]
-  courseEnrollments  CourseEnrollment[]
-  userModuleProgress UserModuleProgress[]
-  chatSessions       ChatSession[]
-  quizAttempts       QuizAttempt[]
-  recommendations    Recommendation[]
+  budgets             Budget[]
+  transactions        Transaction[]
+  userBanks           UserBank[]
+  courseEnrollments   CourseEnrollment[]
+  userModuleProgress  UserModuleProgress[]
+  chatSessions        ChatSession[]
+  quizAttempts        QuizAttempt[]
+  recommendations     Recommendation[]
+  userBankingProducts UserBankingProduct[]
 
   @@map("users")
 }
 
 model Budget {
-  id            String    @id @default(uuid())
-  userId        String
-  name          String    @db.VarChar(25)
-  description   String
-  currentAmount Decimal   @db.Decimal(18, 4)
-  goalAmount    Decimal   @db.Decimal(18, 4)
-  currencyId    Int // Foreign key to Currency
-  statusId      Int // Foreign key to BudgetStatus
-  categoryId    Int // Foreign key to Category
-  startDate     DateTime
-  finishedDate  DateTime
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
+  id                 String    @id @default(uuid())
+  userId             String
+  name               String    @db.VarChar(25)
+  description        String
+  currentAmount      Decimal   @db.Decimal(18, 4)
+  goalAmount         Decimal   @db.Decimal(18, 4)
+  currencyId         Int // Foreign key to Currency
+  statusId           Int // Foreign key to BudgetStatus
+  categoryId         Int // Foreign key to Category
+  budgetAllocationId Int // Foreign key to BudgetAllocation
+  budgetExecutionId  Int // Foreign key to BudgetExecution
+  startedDate        DateTime
+  finishedDate       DateTime
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
 
   // Relations
-  user                User                 @relation(fields: [userId], references: [id])
-  currency            Currency             @relation(fields: [currencyId], references: [id])
-  status              BudgetStatus         @relation(fields: [statusId], references: [id])
-  category            Category             @relation(fields: [categoryId], references: [id])
-  budgetLineMovements BudgetLineMovement[]
+  user              User               @relation(fields: [userId], references: [id])
+  currency          Currency           @relation(fields: [currencyId], references: [id])
+  status            BudgetStatus       @relation(fields: [statusId], references: [id])
+  category          BudgetCategory     @relation(fields: [categoryId], references: [id])
+  budgetAllocations BudgetAllocation[]
+  budgetExecutions  BudgetExecution[]
 
   @@map("budgets")
+}
+
+model BudgetAllocation {
+  id        Int      @id @default(autoincrement())
+  budgetId  String
+  amount    Decimal  @db.Decimal(18, 4)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  budget Budget @relation(fields: [budgetId], references: [id])
+
+  @@map("budget_allocations")
+}
+
+model BudgetExecution {
+  id            Int      @id @default(autoincrement())
+  budgetId      String
+  transactionId String // Foreign key to Transaction
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  // Relations
+  budget      Budget      @relation(fields: [budgetId], references: [id])
+  transaction Transaction @relation(fields: [transactionId], references: [id])
+
+  @@map("budget_executions")
 }
 
 model BudgetStatus {
@@ -76,50 +107,101 @@ model BudgetStatus {
   // Relations
   budgets Budget[]
 
-  @@map("budget_statuses")
+  @@map("budget_status")
 }
 
-model BudgetLineMovement {
-  id            Int      @id @default(autoincrement())
-  budgetId      String
-  transactionId String
-  movementType  String // Enum: allocation, actual
-  amount        Decimal  @db.Decimal(18, 4)
-  dateMovement  DateTime
+model BudgetCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(25)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
-  budget      Budget      @relation(fields: [budgetId], references: [id])
-  transaction Transaction @relation(fields: [transactionId], references: [id])
+  budgets Budget[]
 
-  @@map("budget_line_movements")
+  @@map("budget_categories")
 }
 
 model Transaction {
-  id               String    @id @default(uuid())
-  userId           String
-  amount           Decimal   @db.Decimal(18, 4)
-  currencyId       Int
-  exchangeRateId   Int?
-  type             String // Enum: expense, income
-  categoryId       Int
-  paymentMethodId  Int
-  place            String    @db.VarChar(25)
-  bankingProductId Int?
-  transactionDate  DateTime
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-  deletedAt        DateTime?
+  id                   String    @id @default(uuid())
+  userId               String
+  amount               Decimal   @db.Decimal(18, 4)
+  currencyId           Int
+  exchangeRateId       Int?
+  transactionTypeId    Int
+  categoryId           Int
+  merchantId           Int
+  userBankingProductId String?
+  paymentMethodId      Int
+  transactionDate      DateTime
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+  deletedAt            DateTime?
 
   // Relations
-  user                User                 @relation(fields: [userId], references: [id])
-  currency            Currency             @relation(fields: [currencyId], references: [id])
-  exchangeRate        ExchangeRate?        @relation(fields: [exchangeRateId], references: [id])
-  category            Category             @relation(fields: [categoryId], references: [id])
-  paymentMethod       PaymentMethod        @relation(fields: [paymentMethodId], references: [id])
-  bankingProduct      BankingProduct?      @relation(fields: [bankingProductId], references: [id])
-  budgetLineMovements BudgetLineMovement[]
+  user               User                @relation(fields: [userId], references: [id])
+  currency           Currency            @relation(fields: [currencyId], references: [id])
+  exchangeRate       ExchangeRate?       @relation(fields: [exchangeRateId], references: [id])
+  category           TransactionCategory @relation(fields: [categoryId], references: [id])
+  transactionType    TransactionType     @relation(fields: [transactionTypeId], references: [id])
+  paymentMethod      PaymentMethod       @relation(fields: [paymentMethodId], references: [id])
+  merchant           Merchant?           @relation(fields: [merchantId], references: [id])
+  userBankingProduct UserBankingProduct? @relation(fields: [userBankingProductId], references: [id])
+  budgetExecutions   BudgetExecution[]
 
   @@map("transactions")
+}
+
+model TransactionCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(25)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  transactions Transaction[]
+
+  @@map("transaction_categories")
+}
+
+model TransactionType {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(25)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  transactions Transaction[]
+
+  @@map("transaction_types")
+}
+
+model Merchant {
+  id         Int      @id @default(autoincrement())
+  name       String   @unique @db.VarChar(25)
+  categoryId Int
+  website    String?  @db.varchar(50)
+  location   String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  category     MerchantCategory @relation(fields: [categoryId], references: [id])
+  transactions Transaction[]
+
+  @@map("merchants")
+}
+
+model MerchantCategory {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique @db.VarChar(25)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  merchants Merchant[]
+
+  @@map("merchant_categories")
 }
 
 model PaymentMethod {
@@ -149,8 +231,10 @@ model Category {
 }
 
 model Currency {
-  id       Int    @id @default(autoincrement())
-  currency String @db.VarChar(3)
+  id     Int    @id @default(autoincrement())
+  code   String @db.VarChar(3)
+  name   String @db.VarChar(50)
+  symbol String @db.VarChar(3)
 
   // Relations
   budgets       Budget[]
@@ -180,18 +264,19 @@ model Bank {
   updatedAt DateTime @updatedAt
 
   // Relations
-  userBanks          UserBank[]
-  bankBankingProduct BankBankingProduct[]
+  userBanks           UserBank[]
+  bankBankingProducts BankBankingProduct[]
 
   @@map("banks")
 }
 
 model UserBank {
-  id         String    @id @default(uuid()) // Keep UUID for privacy
-  userId     String
-  bankId     Int
-  alias      String
-  lastSyncAt DateTime?
+  id        String   @id @default(uuid())
+  userId    String
+  bankId    Int
+  alias     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   user User @relation(fields: [userId], references: [id])
@@ -201,11 +286,10 @@ model UserBank {
 }
 
 model BankingProduct {
-  id                 Int    @id @default(autoincrement())
-  bankingProductName String // Enum
+  id   Int    @id @default(autoincrement())
+  name String @db.VarChar(50)
 
   // Relations
-  transactions       Transaction[]
   bankBankingProduct BankBankingProduct[]
 
   @@map("banking_products")
@@ -217,10 +301,30 @@ model BankBankingProduct {
   bankingProductId Int
 
   // Relations
-  bank           Bank           @relation(fields: [bankId], references: [id])
-  bankingProduct BankingProduct @relation(fields: [bankingProductId], references: [id])
+  userBankingProducts UserBankingProduct[]
+  bank                Bank                 @relation(fields: [bankId], references: [id])
+  bankingProduct      BankingProduct       @relation(fields: [bankingProductId], references: [id])
 
   @@map("bank_banking_products")
+}
+
+model UserBankingProduct {
+  id                   String   @id @default(uuid())
+  userId               String
+  bankBankingProductId Int
+  referenceNumber      String
+  label                String
+  currencyId           Int
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  // Relations
+  transactions       Transaction[]
+  user               User               @relation(fields: [userId], references: [id])
+  bankBankingProduct BankBankingProduct @relation(fields: [bankBankingProductId], references: [id])
+  currency           Currency           @relation(fields: [currencyId], references: [id])
+
+  @@map("user_banking_products")
 }
 
 model CourseEnrollment {

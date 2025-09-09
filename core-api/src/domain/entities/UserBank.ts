@@ -4,7 +4,8 @@ class UserBank {
     public readonly userId: string,
     public readonly bankId: number,
     public readonly alias: string,
-    public readonly lastSyncAt?: Date
+    public readonly createdAt: Date,
+    public readonly updatedAt: Date
   ) {}
 }
 
