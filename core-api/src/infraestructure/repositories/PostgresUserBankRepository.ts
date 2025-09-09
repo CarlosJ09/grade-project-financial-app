@@ -14,7 +14,8 @@ export class PostgresUserBankRepository implements IUserBankRepository {
           userBank.userId,
           userBank.bankId,
           userBank.alias,
-          userBank.lastSyncAt || undefined
+          userBank.createdAt,
+          userBank.updatedAt
         )
     );
   }
@@ -31,7 +32,8 @@ export class PostgresUserBankRepository implements IUserBankRepository {
       userBank.userId,
       userBank.bankId,
       userBank.alias,
-      userBank.lastSyncAt || undefined
+      userBank.createdAt,
+      userBank.updatedAt
     );
   }
 
@@ -47,7 +49,8 @@ export class PostgresUserBankRepository implements IUserBankRepository {
       userBank.userId,
       userBank.bankId,
       userBank.alias,
-      userBank.lastSyncAt || undefined
+      userBank.createdAt,
+      userBank.updatedAt
     );
   }
 
@@ -65,7 +68,8 @@ export class PostgresUserBankRepository implements IUserBankRepository {
       userBank.userId,
       userBank.bankId,
       userBank.alias,
-      userBank.lastSyncAt || undefined
+      userBank.createdAt,
+      userBank.updatedAt
     );
   }
 

@@ -2,19 +2,19 @@ import { Budget } from '@/domain/entities/Budget';
 import { IBudgetRepository } from '@/domain/repositories/IBudgetRepository';
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 
-interface BudgetFilters {
-  fromDate?: Date;
-  toDate?: Date;
-  excludeDeleted?: boolean;
-}
-
 export class PostgresBudgetRepository implements IBudgetRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findAll(): Promise<Budget[]> {
     const budgets = await this.prisma.budget.findMany({
-      include: { currency: true, status: true, category: true },
+      include: {
+        currency: true,
+        status: true,
+        category: true,
+        budgetType: true,
+      },
     });
+
     return budgets.map(
       budget =>
         new Budget(
@@ -22,18 +22,23 @@ export class PostgresBudgetRepository implements IBudgetRepository {
           budget.userId,
           budget.name,
           budget.description,
-          budget.currentAmount.toNumber(),
-          budget.goalAmount.toNumber(),
-          budget.categoryId,
+          budget.currentAmount,
+          budget.goalAmount,
           budget.currencyId,
           budget.statusId,
-          budget.startDate,
+          budget.categoryId,
+          budget.budgetAllocationId,
+          budget.budgetExecutionId,
+          budget.budgetTypeId,
+          budget.startedDate,
           budget.finishedDate,
           budget.createdAt,
           budget.updatedAt,
+          budget.deletedAt || undefined,
+          budget.currency,
           budget.status,
           budget.category,
-          budget.currency
+          budget.budgetType
         )
     );
   }
@@ -41,93 +46,38 @@ export class PostgresBudgetRepository implements IBudgetRepository {
   async findById(id: string): Promise<Budget | null> {
     const budget = await this.prisma.budget.findUnique({
       where: { id },
-      include: { currency: true, status: true, category: true },
+      include: {
+        currency: true,
+        status: true,
+        category: true,
+        budgetType: true,
+      },
     });
 
-    const category = await this.prisma.category.findUnique({
-      where: { id: budget?.categoryId },
-    });
-
-    if (!budget || !category) return null;
+    if (!budget) return null;
 
     return new Budget(
       budget.id,
       budget.userId,
       budget.name,
       budget.description,
-      budget.currentAmount.toNumber(),
-      budget.goalAmount.toNumber(),
-      budget.categoryId,
+      budget.currentAmount,
+      budget.goalAmount,
       budget.currencyId,
       budget.statusId,
-      budget.startDate,
+      budget.categoryId,
+      budget.budgetAllocationId,
+      budget.budgetExecutionId,
+      budget.budgetTypeId,
+      budget.startedDate,
       budget.finishedDate,
       budget.createdAt,
       budget.updatedAt,
+      budget.deletedAt || undefined,
+      budget.currency,
       budget.status,
       budget.category,
-      budget.currency
-    );
-  }
-
-  async findByUserId(
-    userId: string,
-    filters?: BudgetFilters
-  ): Promise<Budget[]> {
-    const whereClause: any = {
-      userId,
-    };
-
-    if (filters?.excludeDeleted) {
-      whereClause.deletedAt = null;
-    }
-
-    if (filters?.fromDate) {
-      whereClause.transactionDate = {
-        ...whereClause.transactionDate,
-        gte: filters.fromDate,
-      };
-    }
-
-    if (filters?.toDate) {
-      whereClause.transactionDate = {
-        ...whereClause.transactionDate,
-        lte: filters.toDate,
-      };
-    }
-
-    const budgets = await this.prisma.budget.findMany({
-      where: whereClause,
-      orderBy: {
-        createdAt: 'desc',
-      },
-      include: {
-        currency: true,
-        category: true,
-        status: true,
-      },
-    });
-
-    return budgets.map(
-      budget =>
-        new Budget(
-          budget.id,
-          budget.userId,
-          budget.name,
-          budget.description,
-          budget.currentAmount.toNumber(),
-          budget.goalAmount.toNumber(),
-          budget.categoryId,
-          budget.currencyId,
-          budget.statusId,
-          budget.startDate,
-          budget.finishedDate,
-          budget.createdAt,
-          budget.updatedAt,
-          budget.status,
-          budget.category,
-          budget.currency
-        )
+      budget.budgetType
     );
   }
 
@@ -137,39 +87,29 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       'id' | 'createdAt' | 'updatedAt' | 'currency' | 'status' | 'category'
     >
   ): Promise<Budget> {
-    // Map incoming entity to Prisma schema requirements
-    // - currencyId: map currency code to Currency.id
-    // - state: map to BudgetStatus.id via name
-    const currency = await this.prisma.currency.findFirst({
-      where: { id: entity.currencyId },
-    });
-
-    if (!currency) {
-      throw new Error(`Currency not found for code: ${entity.currencyId}`);
-    }
-
-    const status = await this.prisma.budgetStatus.findUnique({
-      where: { id: entity.statusId },
-    });
-
-    if (!status) {
-      throw new Error(`Budget status not found for id: ${entity.statusId}`);
-    }
-
     const budget = await this.prisma.budget.create({
       data: {
-        user: { connect: { id: entity.userId } },
+        userId: entity.userId,
         name: entity.name,
         description: entity.description,
         currentAmount: entity.currentAmount,
         goalAmount: entity.goalAmount,
-        category: { connect: { id: entity.categoryId } },
-        currency: { connect: { id: currency.id } },
-        status: { connect: { id: status.id } },
-        startDate: entity.startDate,
+        currencyId: entity.currencyId,
+        statusId: entity.statusId,
+        categoryId: entity.categoryId,
+        budgetAllocationId: entity.budgetAllocationId,
+        budgetExecutionId: entity.budgetExecutionId,
+        budgetTypeId: entity.budgetTypeId,
+        startedDate: entity.startedDate,
         finishedDate: entity.finishedDate,
+        deletedAt: entity.deletedAt,
       },
-      include: { currency: true, status: true },
+      include: {
+        currency: true,
+        status: true,
+        category: true,
+        budgetType: true,
+      },
     });
 
     return new Budget(
@@ -177,15 +117,23 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.userId,
       budget.name,
       budget.description,
-      budget.currentAmount.toNumber(),
-      budget.goalAmount.toNumber(),
+      budget.currentAmount,
+      budget.goalAmount,
       budget.currencyId,
-      budget.categoryId,
       budget.statusId,
-      budget.startDate,
+      budget.categoryId,
+      budget.budgetAllocationId,
+      budget.budgetExecutionId,
+      budget.budgetTypeId,
+      budget.startedDate,
       budget.finishedDate,
       budget.createdAt,
-      budget.updatedAt
+      budget.updatedAt,
+      budget.deletedAt || undefined,
+      budget.currency,
+      budget.status,
+      budget.category,
+      budget.budgetType
     );
   }
 
@@ -198,41 +146,42 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       >
     >
   ): Promise<Budget> {
-    // Build Prisma update data without passing FK scalars directly
-    const data: any = {};
-    if (entity.name !== undefined) data.name = entity.name;
-    if (entity.description !== undefined) data.description = entity.description;
+    const updateData: any = {};
+
+    if (entity.userId !== undefined) updateData.userId = entity.userId;
+    if (entity.name !== undefined) updateData.name = entity.name;
+    if (entity.description !== undefined)
+      updateData.description = entity.description;
     if (entity.currentAmount !== undefined)
-      data.currentAmount = entity.currentAmount;
-    if (entity.goalAmount !== undefined) data.goalAmount = entity.goalAmount;
-    if (entity.startDate !== undefined) data.startDate = entity.startDate;
+      updateData.currentAmount = entity.currentAmount;
+    if (entity.goalAmount !== undefined)
+      updateData.goalAmount = entity.goalAmount;
+    if (entity.currencyId !== undefined)
+      updateData.currencyId = entity.currencyId;
+    if (entity.statusId !== undefined) updateData.statusId = entity.statusId;
+    if (entity.categoryId !== undefined)
+      updateData.categoryId = entity.categoryId;
+    if (entity.budgetAllocationId !== undefined)
+      updateData.budgetAllocationId = entity.budgetAllocationId;
+    if (entity.budgetExecutionId !== undefined)
+      updateData.budgetExecutionId = entity.budgetExecutionId;
+    if (entity.budgetTypeId !== undefined)
+      updateData.budgetTypeId = entity.budgetTypeId;
+    if (entity.startedDate !== undefined)
+      updateData.startedDate = entity.startedDate;
     if (entity.finishedDate !== undefined)
-      data.finishedDate = entity.finishedDate;
-
-    if (entity.currencyId) {
-      const currency = await this.prisma.currency.findFirst({
-        where: { id: entity.currencyId },
-      });
-      if (!currency) {
-        throw new Error(`Currency not found for code: ${entity.currencyId}`);
-      }
-      data.currency = { connect: { id: currency.id } };
-    }
-
-    if (entity.statusId) {
-      const status = await this.prisma.budgetStatus.findUnique({
-        where: { id: entity.statusId },
-      });
-      if (!status) {
-        throw new Error(`Budget status not found for id: ${entity.statusId}`);
-      }
-      data.status = { connect: { id: status.id } };
-    }
+      updateData.finishedDate = entity.finishedDate;
+    if (entity.deletedAt !== undefined) updateData.deletedAt = entity.deletedAt;
 
     const budget = await this.prisma.budget.update({
       where: { id },
-      data,
-      include: { currency: true, status: true },
+      data: updateData,
+      include: {
+        currency: true,
+        status: true,
+        category: true,
+        budgetType: true,
+      },
     });
 
     return new Budget(
@@ -240,15 +189,23 @@ export class PostgresBudgetRepository implements IBudgetRepository {
       budget.userId,
       budget.name,
       budget.description,
-      budget.currentAmount.toNumber(),
-      budget.goalAmount.toNumber(),
+      budget.currentAmount,
+      budget.goalAmount,
       budget.currencyId,
-      budget.categoryId,
       budget.statusId,
-      budget.startDate,
+      budget.categoryId,
+      budget.budgetAllocationId,
+      budget.budgetExecutionId,
+      budget.budgetTypeId,
+      budget.startedDate,
       budget.finishedDate,
       budget.createdAt,
-      budget.updatedAt
+      budget.updatedAt,
+      budget.deletedAt || undefined,
+      budget.currency,
+      budget.status,
+      budget.category,
+      budget.budgetType
     );
   }
 

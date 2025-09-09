@@ -51,18 +51,6 @@ const bankData: BankData[] = [
   { name: 'Banco de Ahorro y Crédito Mujer Microfinanzas' },
   { name: 'Banco de Ahorro y Crédito Solidario' },
   { name: 'Banco de Ahorro y Crédito Apap' },
-
-  // Major Cooperative Banks
-  { name: 'Banco de Ahorro y Crédito Coopnama' },
-  { name: 'Banco de Ahorro y Crédito Coopesan' },
-  { name: 'Banco de Ahorro y Crédito Coopmedica' },
-  { name: 'Banco de Ahorro y Crédito Coopherrera' },
-  { name: 'Banco de Ahorro y Crédito Coopvega' },
-  { name: 'Banco de Ahorro y Crédito Coopnaiboa' },
-  { name: 'Banco de Ahorro y Crédito Coopnaba' },
-  { name: 'Banco de Ahorro y Crédito Coopnabasur' },
-  { name: 'Banco de Ahorro y Crédito Coopbarnoba' },
-  { name: 'Banco de Ahorro y Crédito Coopnabasal' },
 ];
 
 /**

@@ -8,11 +8,12 @@ export class PostgresCurrencyRepository implements ICurrencyRepository {
   async findAll(): Promise<Currency[]> {
     const currencies = await this.prisma.currency.findMany({
       orderBy: {
-        currency: 'asc',
+        code: 'asc',
       },
     });
     return currencies.map(
-      currency => new Currency(currency.id, currency.currency)
+      currency =>
+        new Currency(currency.id, currency.code, currency.name, currency.symbol)
     );
   }
 
@@ -23,7 +24,12 @@ export class PostgresCurrencyRepository implements ICurrencyRepository {
 
     if (!currency) return null;
 
-    return new Currency(currency.id, currency.currency);
+    return new Currency(
+      currency.id,
+      currency.code,
+      currency.name,
+      currency.symbol
+    );
   }
 
   async findByIdInt(id: number): Promise<Currency | null> {
@@ -33,6 +39,11 @@ export class PostgresCurrencyRepository implements ICurrencyRepository {
 
     if (!currency) return null;
 
-    return new Currency(currency.id, currency.currency);
+    return new Currency(
+      currency.id,
+      currency.code,
+      currency.name,
+      currency.symbol
+    );
   }
 }

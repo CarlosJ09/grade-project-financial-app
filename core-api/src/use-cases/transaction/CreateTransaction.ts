@@ -1,16 +1,17 @@
-import { ITransactionRepository } from '@/domain/repositories/ITransactionRepository';
 import { Transaction } from '@/domain/entities/Transaction';
+import { ITransactionRepository } from '@/domain/repositories/ITransactionRepository';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export type CreateTransactionInput = {
   userId: string;
-  amount: number;
-  currencyId: string;
-  exchangeRateId?: string;
-  type: string;
-  categoryId: string;
-  paymentMethodId: string;
-  place: string;
-  bankingProductId?: string;
+  amount: Decimal;
+  currencyId: number;
+  exchangeRateId?: number | null;
+  transactionTypeId: number;
+  categoryId: number;
+  merchantId: number;
+  userBankingProductId?: string | null;
+  paymentMethodId: number;
   transactionDate: Date;
 };
 
@@ -19,9 +20,16 @@ export class CreateTransaction {
 
   async execute(input: CreateTransactionInput): Promise<Transaction> {
     return this.transactionRepository.create({
-      ...input,
+      userId: input.userId,
+      amount: input.amount,
+      currencyId: input.currencyId,
       exchangeRateId: input.exchangeRateId || null,
-      bankingProductId: input.bankingProductId || null,
+      transactionTypeId: input.transactionTypeId,
+      categoryId: input.categoryId,
+      merchantId: input.merchantId,
+      userBankingProductId: input.userBankingProductId || null,
+      paymentMethodId: input.paymentMethodId,
+      transactionDate: input.transactionDate,
     });
   }
 }

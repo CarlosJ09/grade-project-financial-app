@@ -1,3 +1,4 @@
+import { Merchant } from '@/domain/entities/Merchant';
 import { Transaction } from '@/domain/entities/Transaction';
 import { ITransactionRepository } from '@/domain/repositories/ITransactionRepository';
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
@@ -17,8 +18,10 @@ export class PostgresTransactionRepository implements ITransactionRepository {
         currency: true,
         exchangeRate: true,
         category: true,
+        transactionType: true,
         paymentMethod: true,
-        bankingProduct: true,
+        merchant: true,
+        userBankingProduct: true,
       },
     });
     return transactions.map(
@@ -29,11 +32,11 @@ export class PostgresTransactionRepository implements ITransactionRepository {
           transaction.amount,
           transaction.currencyId,
           transaction.exchangeRateId || null,
-          transaction.type,
+          transaction.transactionTypeId,
           transaction.categoryId,
+          transaction.merchantId,
+          transaction.userBankingProductId || null,
           transaction.paymentMethodId,
-          transaction.place,
-          transaction.bankingProductId || null,
           transaction.transactionDate,
           transaction.createdAt,
           transaction.updatedAt,
@@ -41,8 +44,20 @@ export class PostgresTransactionRepository implements ITransactionRepository {
           transaction.currency,
           transaction.exchangeRate || undefined,
           transaction.category,
+          transaction.transactionType,
           transaction.paymentMethod,
-          transaction.bankingProduct || undefined
+          transaction.merchant
+            ? new Merchant(
+                transaction.merchant.id,
+                transaction.merchant.name,
+                transaction.merchant.categoryId,
+                transaction.merchant.createdAt,
+                transaction.merchant.updatedAt,
+                transaction.merchant.website || undefined,
+                transaction.merchant.location || undefined
+              )
+            : undefined,
+          transaction.userBankingProduct || undefined
         )
     );
   }
@@ -54,8 +69,10 @@ export class PostgresTransactionRepository implements ITransactionRepository {
         currency: true,
         exchangeRate: true,
         category: true,
+        transactionType: true,
         paymentMethod: true,
-        bankingProduct: true,
+        merchant: true,
+        userBankingProduct: true,
       },
     });
 
@@ -67,11 +84,11 @@ export class PostgresTransactionRepository implements ITransactionRepository {
       transaction.amount,
       transaction.currencyId,
       transaction.exchangeRateId || null,
-      transaction.type,
+      transaction.transactionTypeId,
       transaction.categoryId,
+      transaction.merchantId,
+      transaction.userBankingProductId || null,
       transaction.paymentMethodId,
-      transaction.place,
-      transaction.bankingProductId || null,
       transaction.transactionDate,
       transaction.createdAt,
       transaction.updatedAt,
@@ -79,8 +96,20 @@ export class PostgresTransactionRepository implements ITransactionRepository {
       transaction.currency,
       transaction.exchangeRate || undefined,
       transaction.category,
+      transaction.transactionType,
       transaction.paymentMethod,
-      transaction.bankingProduct || undefined
+      transaction.merchant
+        ? new Merchant(
+            transaction.merchant.id,
+            transaction.merchant.name,
+            transaction.merchant.categoryId,
+            transaction.merchant.createdAt,
+            transaction.merchant.updatedAt,
+            transaction.merchant.website || undefined,
+            transaction.merchant.location || undefined
+          )
+        : undefined,
+      transaction.userBankingProduct || undefined
     );
   }
 
@@ -119,8 +148,10 @@ export class PostgresTransactionRepository implements ITransactionRepository {
         currency: true,
         exchangeRate: true,
         category: true,
+        transactionType: true,
         paymentMethod: true,
-        bankingProduct: true,
+        merchant: true,
+        userBankingProduct: true,
       },
     });
 
@@ -132,11 +163,11 @@ export class PostgresTransactionRepository implements ITransactionRepository {
           transaction.amount,
           transaction.currencyId,
           transaction.exchangeRateId || null,
-          transaction.type,
+          transaction.transactionTypeId,
           transaction.categoryId,
+          transaction.merchantId,
+          transaction.userBankingProductId || null,
           transaction.paymentMethodId,
-          transaction.place,
-          transaction.bankingProductId || null,
           transaction.transactionDate,
           transaction.createdAt,
           transaction.updatedAt,
@@ -144,8 +175,20 @@ export class PostgresTransactionRepository implements ITransactionRepository {
           transaction.currency,
           transaction.exchangeRate || undefined,
           transaction.category,
+          transaction.transactionType,
           transaction.paymentMethod,
-          transaction.bankingProduct || undefined
+          transaction.merchant
+            ? new Merchant(
+                transaction.merchant.id,
+                transaction.merchant.name,
+                transaction.merchant.categoryId,
+                transaction.merchant.createdAt,
+                transaction.merchant.updatedAt,
+                transaction.merchant.website || undefined,
+                transaction.merchant.location || undefined
+              )
+            : undefined,
+          transaction.userBankingProduct || undefined
         )
     );
   }
@@ -159,12 +202,35 @@ export class PostgresTransactionRepository implements ITransactionRepository {
       | 'currency'
       | 'exchangeRate'
       | 'category'
+      | 'transactionType'
       | 'paymentMethod'
-      | 'bankingProduct'
+      | 'merchant'
+      | 'userBankingProduct'
     >
   ): Promise<Transaction> {
     const transaction = await this.prisma.transaction.create({
-      data: entity,
+      data: {
+        userId: entity.userId,
+        amount: entity.amount,
+        currencyId: entity.currencyId,
+        exchangeRateId: entity.exchangeRateId,
+        transactionTypeId: entity.transactionTypeId,
+        categoryId: entity.categoryId,
+        merchantId: entity.merchantId,
+        userBankingProductId: entity.userBankingProductId,
+        paymentMethodId: entity.paymentMethodId,
+        transactionDate: entity.transactionDate,
+        deletedAt: entity.deletedAt,
+      },
+      include: {
+        currency: true,
+        exchangeRate: true,
+        category: true,
+        transactionType: true,
+        paymentMethod: true,
+        merchant: true,
+        userBankingProduct: true,
+      },
     });
 
     return new Transaction(
@@ -173,14 +239,32 @@ export class PostgresTransactionRepository implements ITransactionRepository {
       transaction.amount,
       transaction.currencyId,
       transaction.exchangeRateId || null,
-      transaction.type,
+      transaction.transactionTypeId,
       transaction.categoryId,
+      transaction.merchantId,
+      transaction.userBankingProductId || null,
       transaction.paymentMethodId,
-      transaction.place,
-      transaction.bankingProductId || null,
       transaction.transactionDate,
       transaction.createdAt,
-      transaction.updatedAt
+      transaction.updatedAt,
+      transaction.deletedAt || undefined,
+      transaction.currency,
+      transaction.exchangeRate || undefined,
+      transaction.category,
+      transaction.transactionType,
+      transaction.paymentMethod,
+      transaction.merchant
+        ? new Merchant(
+            transaction.merchant.id,
+            transaction.merchant.name,
+            transaction.merchant.categoryId,
+            transaction.merchant.createdAt,
+            transaction.merchant.updatedAt,
+            transaction.merchant.website || undefined,
+            transaction.merchant.location || undefined
+          )
+        : undefined,
+      transaction.userBankingProduct || undefined
     );
   }
 
@@ -195,14 +279,47 @@ export class PostgresTransactionRepository implements ITransactionRepository {
         | 'currency'
         | 'exchangeRate'
         | 'category'
+        | 'transactionType'
         | 'paymentMethod'
-        | 'bankingProduct'
+        | 'merchant'
+        | 'userBankingProduct'
       >
     >
   ): Promise<Transaction> {
+    const updateData: any = {};
+
+    if (entity.userId !== undefined) updateData.userId = entity.userId;
+    if (entity.amount !== undefined) updateData.amount = entity.amount;
+    if (entity.currencyId !== undefined)
+      updateData.currencyId = entity.currencyId;
+    if (entity.exchangeRateId !== undefined)
+      updateData.exchangeRateId = entity.exchangeRateId;
+    if (entity.transactionTypeId !== undefined)
+      updateData.transactionTypeId = entity.transactionTypeId;
+    if (entity.categoryId !== undefined)
+      updateData.categoryId = entity.categoryId;
+    if (entity.merchantId !== undefined)
+      updateData.merchantId = entity.merchantId;
+    if (entity.userBankingProductId !== undefined)
+      updateData.userBankingProductId = entity.userBankingProductId;
+    if (entity.paymentMethodId !== undefined)
+      updateData.paymentMethodId = entity.paymentMethodId;
+    if (entity.transactionDate !== undefined)
+      updateData.transactionDate = entity.transactionDate;
+    if (entity.deletedAt !== undefined) updateData.deletedAt = entity.deletedAt;
+
     const transaction = await this.prisma.transaction.update({
       where: { id },
-      data: entity,
+      data: updateData,
+      include: {
+        currency: true,
+        exchangeRate: true,
+        category: true,
+        transactionType: true,
+        paymentMethod: true,
+        merchant: true,
+        userBankingProduct: true,
+      },
     });
 
     return new Transaction(
@@ -211,14 +328,32 @@ export class PostgresTransactionRepository implements ITransactionRepository {
       transaction.amount,
       transaction.currencyId,
       transaction.exchangeRateId || null,
-      transaction.type,
+      transaction.transactionTypeId,
       transaction.categoryId,
+      transaction.merchantId,
+      transaction.userBankingProductId || null,
       transaction.paymentMethodId,
-      transaction.place,
-      transaction.bankingProductId || null,
       transaction.transactionDate,
       transaction.createdAt,
-      transaction.updatedAt
+      transaction.updatedAt,
+      transaction.deletedAt || undefined,
+      transaction.currency,
+      transaction.exchangeRate || undefined,
+      transaction.category,
+      transaction.transactionType,
+      transaction.paymentMethod,
+      transaction.merchant
+        ? new Merchant(
+            transaction.merchant.id,
+            transaction.merchant.name,
+            transaction.merchant.categoryId,
+            transaction.merchant.createdAt,
+            transaction.merchant.updatedAt,
+            transaction.merchant.website || undefined,
+            transaction.merchant.location || undefined
+          )
+        : undefined,
+      transaction.userBankingProduct || undefined
     );
   }
 

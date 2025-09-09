@@ -1,17 +1,19 @@
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 
 interface CurrencyData {
-  currency: string;
+  code: string;
+  name: string;
+  symbol: string;
 }
 
 /**
  * Seed data for currencies
- * Using ISO 4217 currency codes
+ * Using ISO 4217 currency codes with names and symbols
  */
 const currencyData: CurrencyData[] = [
-  { currency: 'DOP' }, // Dominican Peso
-  { currency: 'USD' }, // US Dollar
-  { currency: 'EUR' }, // Euro
+  { code: 'DOP', name: 'Dominican Peso', symbol: 'RD$' },
+  { code: 'USD', name: 'US Dollar', symbol: '$' },
+  { code: 'EUR', name: 'Euro', symbol: '€' },
 ];
 
 /**
@@ -19,13 +21,13 @@ const currencyData: CurrencyData[] = [
  * @param prisma - Prisma client instance
  */
 export async function seedCurrencies(prisma: PrismaClient): Promise<void> {
-  console.log('📦 Seeding currencies...');
+  console.log('💱 Seeding currencies...');
 
   try {
     // Check existing currencies and only create new ones
     for (const currency of currencyData) {
       const existingCurrency = await prisma.currency.findFirst({
-        where: { currency: currency.currency },
+        where: { code: currency.code },
       });
 
       if (!existingCurrency) {

@@ -12,7 +12,7 @@ export class ExchangeRateResponseDto {
     return new ExchangeRateResponseDto(
       exchangeRate.id,
       exchangeRate.currencyId,
-      exchangeRate.rate,
+      exchangeRate.rate.toNumber(),
       exchangeRate.rateDate
     );
   }

@@ -13,7 +13,7 @@ export class PostgresPaymentMethodRepository
       paymentMethod =>
         new PaymentMethod(
           paymentMethod.id,
-          paymentMethod.paymentMethod,
+          paymentMethod.name,
           paymentMethod.createdAt,
           paymentMethod.updatedAt
         )
@@ -29,7 +29,7 @@ export class PostgresPaymentMethodRepository
 
     return new PaymentMethod(
       paymentMethod.id,
-      paymentMethod.paymentMethod,
+      paymentMethod.name,
       paymentMethod.createdAt,
       paymentMethod.updatedAt
     );
@@ -44,7 +44,7 @@ export class PostgresPaymentMethodRepository
 
     return new PaymentMethod(
       paymentMethod.id,
-      paymentMethod.paymentMethod,
+      paymentMethod.name,
       paymentMethod.createdAt,
       paymentMethod.updatedAt
     );
@@ -61,7 +61,7 @@ export class PostgresPaymentMethodRepository
 
     return new PaymentMethod(
       paymentMethod.id,
-      paymentMethod.paymentMethod,
+      paymentMethod.name,
       paymentMethod.createdAt,
       paymentMethod.updatedAt
     );

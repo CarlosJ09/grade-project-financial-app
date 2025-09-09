@@ -1,7 +1,7 @@
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 
 interface BankingProductData {
-  bankingProductName: string;
+  name: string;
 }
 
 /**
@@ -9,26 +9,26 @@ interface BankingProductData {
  * Common banking products offered by financial institutions
  */
 const bankingProductData: BankingProductData[] = [
-  { bankingProductName: 'checking_account' },
-  { bankingProductName: 'savings_account' },
-  { bankingProductName: 'money_market_account' },
-  { bankingProductName: 'certificate_of_deposit' },
-  { bankingProductName: 'individual_retirement_account' },
-  { bankingProductName: 'credit_card' },
-  { bankingProductName: 'debit_card' },
-  { bankingProductName: 'personal_loan' },
-  { bankingProductName: 'auto_loan' },
-  { bankingProductName: 'mortgage' },
-  { bankingProductName: 'home_equity_loan' },
-  { bankingProductName: 'home_equity_line_of_credit' },
-  { bankingProductName: 'business_checking' },
-  { bankingProductName: 'business_savings' },
-  { bankingProductName: 'business_loan' },
-  { bankingProductName: 'business_credit_card' },
-  { bankingProductName: 'student_loan' },
-  { bankingProductName: 'investment_account' },
-  { bankingProductName: 'brokerage_account' },
-  { bankingProductName: 'trust_account' },
+  { name: 'Checking Account' },
+  { name: 'Savings Account' },
+  { name: 'Money Market Account' },
+  { name: 'Certificate of Deposit' },
+  { name: 'Individual Retirement Account' },
+  { name: 'Credit Card' },
+  { name: 'Debit Card' },
+  { name: 'Personal Loan' },
+  { name: 'Auto Loan' },
+  { name: 'Mortgage' },
+  { name: 'Home Equity Loan' },
+  { name: 'Home Equity Line of Credit' },
+  { name: 'Business Checking' },
+  { name: 'Business Savings' },
+  { name: 'Business Loan' },
+  { name: 'Business Credit Card' },
+  { name: 'Student Loan' },
+  { name: 'Investment Account' },
+  { name: 'Brokerage Account' },
+  { name: 'Trust Account' },
 ];
 
 /**
@@ -42,7 +42,7 @@ export async function seedBankingProducts(prisma: PrismaClient): Promise<void> {
     // Check existing banking products and only create new ones
     for (const bankingProduct of bankingProductData) {
       const existingBankingProduct = await prisma.bankingProduct.findFirst({
-        where: { bankingProductName: bankingProduct.bankingProductName },
+        where: { name: bankingProduct.name },
       });
 
       if (!existingBankingProduct) {

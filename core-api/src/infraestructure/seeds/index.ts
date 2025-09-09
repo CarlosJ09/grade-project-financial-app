@@ -1,10 +1,16 @@
 import { Database } from '@/infraestructure/config/Database';
 import { seedBanks } from '@/infraestructure/seeds/BankSeeder';
 import { seedBankingProducts } from '@/infraestructure/seeds/BankingProductSeeder';
+import { seedBudgetCategories } from '@/infraestructure/seeds/BudgetCategorySeeder';
 import { seedBudgetStatuses } from '@/infraestructure/seeds/BudgetStatusSeeder';
-import { seedCategories } from '@/infraestructure/seeds/CategorySeeder';
+import { seedBudgetTypes } from '@/infraestructure/seeds/BudgetTypeSeeder';
 import { seedCurrencies } from '@/infraestructure/seeds/CurrencySeeder';
+import { seedExchangeRates } from '@/infraestructure/seeds/ExchangeRateSeeder';
+import { seedMerchantCategories } from '@/infraestructure/seeds/MerchantCategorySeeder';
+import { seedMerchants } from '@/infraestructure/seeds/MerchantSeeder';
 import { seedPaymentMethods } from '@/infraestructure/seeds/PaymentMethodSeeder';
+import { seedTransactionCategories } from '@/infraestructure/seeds/TransactionCategorySeeder';
+import { seedTransactionTypes } from '@/infraestructure/seeds/TransactionTypeSeeder';
 
 /**
  * Main seeding function that orchestrates all seed operations
@@ -16,12 +22,21 @@ export async function seedDatabase(): Promise<void> {
     console.log('🌱 Starting database seeding...');
 
     // Seed in order of dependencies
+    // 1. Independent entities first
     await seedCurrencies(prisma);
     await seedPaymentMethods(prisma);
-    await seedCategories(prisma);
+    await seedTransactionTypes(prisma);
+    await seedTransactionCategories(prisma);
+    await seedBudgetStatuses(prisma);
+    await seedBudgetTypes(prisma);
+    await seedBudgetCategories(prisma);
     await seedBanks(prisma);
     await seedBankingProducts(prisma);
-    await seedBudgetStatuses(prisma);
+
+    // 2. Dependent entities (require foreign keys)
+    await seedMerchantCategories(prisma);
+    await seedMerchants(prisma); // Requires merchant categories
+    await seedExchangeRates(prisma); // Requires currencies
 
     console.log('✅ Database seeding completed successfully');
   } catch (error) {
@@ -40,9 +55,16 @@ export async function clearSeedData(): Promise<void> {
     console.log('🧹 Clearing seed data...');
 
     // Clear in reverse order of dependencies
+    await prisma.exchangeRate.deleteMany({});
+    await prisma.merchant.deleteMany({});
+    await prisma.merchantCategory.deleteMany({});
     await prisma.bankingProduct.deleteMany({});
     await prisma.bank.deleteMany({});
-    await prisma.category.deleteMany({});
+    await prisma.budgetStatus.deleteMany({});
+    await prisma.budgetType.deleteMany({});
+    await prisma.budgetCategory.deleteMany({});
+    await prisma.transactionCategory.deleteMany({});
+    await prisma.transactionType.deleteMany({});
     await prisma.paymentMethod.deleteMany({});
     await prisma.currency.deleteMany({});
 

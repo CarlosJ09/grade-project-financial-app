@@ -1,15 +1,15 @@
-import { Router } from 'express';
 import { Database } from '@/infraestructure/config/Database';
 import { PostgresTransactionRepository } from '@/infraestructure/repositories/PostgresTransactionRepository';
-import { GetAllTransactions } from '@/use-cases/transaction/GetAllTransactions';
-import { GetTransactionById } from '@/use-cases/transaction/GetTransactionById';
-import { CreateTransaction } from '@/use-cases/transaction/CreateTransaction';
-import { UpdateTransaction } from '@/use-cases/transaction/UpdateTransaction';
-import { DeleteTransaction } from '@/use-cases/transaction/DeleteTransaction';
-import { TransactionController } from '@/presentation/controllers/TransactionController';
 import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { TransactionController } from '@/presentation/controllers/TransactionController';
 import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
 import { asyncHandler } from '@/presentation/utils/asyncHandler';
+import { CreateTransaction } from '@/use-cases/transaction/CreateTransaction';
+import { DeleteTransaction } from '@/use-cases/transaction/DeleteTransaction';
+import { GetAllTransactions } from '@/use-cases/transaction/GetAllTransactions';
+import { GetTransactionById } from '@/use-cases/transaction/GetTransactionById';
+import { UpdateTransaction } from '@/use-cases/transaction/UpdateTransaction';
+import { Router } from 'express';
 
 const router = Router();
 
@@ -102,10 +102,10 @@ router.get(
  *               - userId
  *               - amount
  *               - currencyId
- *               - type
+ *               - transactionTypeId
  *               - categoryId
+ *               - merchantId
  *               - paymentMethodId
- *               - place
  *               - transactionDate
  *             properties:
  *               userId:
@@ -115,26 +115,25 @@ router.get(
  *                 type: number
  *                 example: 150.75
  *               currencyId:
- *                 type: string
- *                 example: "USD"
+ *                 type: number
+ *                 example: 1
  *               exchangeRateId:
- *                 type: string
+ *                 type: number
  *                 nullable: true
- *                 example: "rate123"
- *               type:
- *                 type: string
- *                 enum: [expense, income]
- *                 example: "expense"
+ *                 example: 1
+ *               transactionTypeId:
+ *                 type: number
+ *                 example: 1
  *               categoryId:
- *                 type: string
- *                 example: "cat123"
+ *                 type: number
+ *                 example: 1
+ *               merchantId:
+ *                 type: number
+ *                 example: 1
  *               paymentMethodId:
- *                 type: string
- *                 example: "pm123"
- *               place:
- *                 type: string
- *                 example: "Starbucks"
- *               bankingProductId:
+ *                 type: number
+ *                 example: 1
+ *               userBankingProductId:
  *                 type: string
  *                 nullable: true
  *                 example: "bp123"
@@ -184,26 +183,25 @@ router.post(
  *                 type: number
  *                 example: 200.00
  *               currencyId:
- *                 type: string
- *                 example: "USD"
+ *                 type: number
+ *                 example: 1
  *               exchangeRateId:
- *                 type: string
+ *                 type: number
  *                 nullable: true
- *                 example: "rate123"
- *               type:
- *                 type: string
- *                 enum: [expense, income]
- *                 example: "expense"
+ *                 example: 1
+ *               transactionTypeId:
+ *                 type: number
+ *                 example: 1
  *               categoryId:
- *                 type: string
- *                 example: "cat123"
+ *                 type: number
+ *                 example: 1
+ *               merchantId:
+ *                 type: number
+ *                 example: 1
  *               paymentMethodId:
- *                 type: string
- *                 example: "pm123"
- *               place:
- *                 type: string
- *                 example: "Updated Place"
- *               bankingProductId:
+ *                 type: number
+ *                 example: 1
+ *               userBankingProductId:
  *                 type: string
  *                 nullable: true
  *                 example: "bp123"

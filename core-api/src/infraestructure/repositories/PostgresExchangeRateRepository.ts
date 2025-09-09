@@ -39,8 +39,8 @@ export class PostgresExchangeRateRepository implements IExchangeRateRepository {
   ): Promise<ExchangeRate | null> {
     // Get currency IDs first
     const [fromCurrencyRecord, toCurrencyRecord] = await Promise.all([
-      this.prisma.currency.findFirst({ where: { currency: fromCurrency } }),
-      this.prisma.currency.findFirst({ where: { currency: toCurrency } }),
+      this.prisma.currency.findFirst({ where: { code: fromCurrency } }),
+      this.prisma.currency.findFirst({ where: { code: toCurrency } }),
     ]);
 
     if (!fromCurrencyRecord || !toCurrencyRecord) return null;

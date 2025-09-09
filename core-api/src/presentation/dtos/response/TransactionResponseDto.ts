@@ -1,9 +1,11 @@
-import { BankingProduct } from '@/domain/entities/BankingProduct';
-import { Category } from '@/domain/entities/Category';
 import { Currency } from '@/domain/entities/Currency';
 import { ExchangeRate } from '@/domain/entities/ExchangeRate';
+import { Merchant } from '@/domain/entities/Merchant';
 import { PaymentMethod } from '@/domain/entities/PaymentMethod';
 import { Transaction } from '@/domain/entities/Transaction';
+import { TransactionCategory } from '@/domain/entities/TransactionCategory';
+import { TransactionType } from '@/domain/entities/TransactionType';
+import { UserBankingProduct } from '@/domain/entities/UserBankingProduct';
 import { Decimal } from '@prisma/client/runtime/library';
 
 export class TransactionResponseDto {
@@ -13,19 +15,22 @@ export class TransactionResponseDto {
     public readonly amount: Decimal,
     public readonly currencyId: number,
     public readonly exchangeRateId: number | null,
-    public readonly type: string,
+    public readonly transactionTypeId: number,
     public readonly categoryId: number,
+    public readonly merchantId: number,
+    public readonly userBankingProductId: string | null,
     public readonly paymentMethodId: number,
-    public readonly place: string,
-    public readonly bankingProductId: number | null,
     public readonly transactionDate: Date,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
+    public readonly deletedAt?: Date,
     public readonly currency?: Currency,
     public readonly exchangeRate?: ExchangeRate,
-    public readonly category?: Category,
+    public readonly category?: TransactionCategory,
+    public readonly transactionType?: TransactionType,
     public readonly paymentMethod?: PaymentMethod,
-    public readonly bankingProduct?: BankingProduct
+    public readonly merchant?: Merchant,
+    public readonly userBankingProduct?: UserBankingProduct
   ) {}
 
   static fromEntity(transaction: Transaction): TransactionResponseDto {
@@ -35,19 +40,22 @@ export class TransactionResponseDto {
       transaction.amount,
       transaction.currencyId,
       transaction.exchangeRateId,
-      transaction.type,
+      transaction.transactionTypeId,
       transaction.categoryId,
+      transaction.merchantId,
+      transaction.userBankingProductId,
       transaction.paymentMethodId,
-      transaction.place,
-      transaction.bankingProductId,
       transaction.transactionDate,
       transaction.createdAt,
       transaction.updatedAt,
+      transaction.deletedAt,
       transaction.currency,
       transaction.exchangeRate,
       transaction.category,
+      transaction.transactionType,
       transaction.paymentMethod,
-      transaction.bankingProduct
+      transaction.merchant,
+      transaction.userBankingProduct
     );
   }
 }

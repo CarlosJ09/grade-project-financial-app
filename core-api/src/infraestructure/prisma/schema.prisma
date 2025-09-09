@@ -53,6 +53,7 @@ model Budget {
   categoryId         Int // Foreign key to Category
   budgetAllocationId Int // Foreign key to BudgetAllocation
   budgetExecutionId  Int // Foreign key to BudgetExecution
+  budgetTypeId       Int // Foreign key to BudgetType
   startedDate        DateTime
   finishedDate       DateTime
   createdAt          DateTime  @default(now())
@@ -64,6 +65,7 @@ model Budget {
   currency          Currency           @relation(fields: [currencyId], references: [id])
   status            BudgetStatus       @relation(fields: [statusId], references: [id])
   category          BudgetCategory     @relation(fields: [categoryId], references: [id])
+  budgetType        BudgetType         @relation(fields: [budgetTypeId], references: [id])
   budgetAllocations BudgetAllocation[]
   budgetExecutions  BudgetExecution[]
 
@@ -111,15 +113,31 @@ model BudgetStatus {
 }
 
 model BudgetCategory {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique @db.VarChar(25)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           Int      @id @default(autoincrement())
+  name         String   @unique @db.VarChar(25)
+  budgetTypeId Int // Foreign key to BudgetType
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   // Relations
-  budgets Budget[]
+  budgetType BudgetType @relation(fields: [budgetTypeId], references: [id])
+  budgets    Budget[]
 
   @@map("budget_categories")
+}
+
+model BudgetType {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique @db.VarChar(25)
+  description String?  @db.VarChar(100)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  budgets          Budget[]
+  budgetCategories BudgetCategory[]
+
+  @@map("budget_types")
 }
 
 model Transaction {
@@ -205,10 +223,10 @@ model MerchantCategory {
 }
 
 model PaymentMethod {
-  id            Int      @id @default(autoincrement())
-  paymentMethod String // Enum
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relations
   transactions Transaction[]

@@ -107,7 +107,10 @@ router.get(
  *               - currencyId
  *               - statusId
  *               - categoryId
- *               - startDate
+ *               - budgetAllocationId
+ *               - budgetExecutionId
+ *               - budgetTypeId
+ *               - startedDate
  *               - finishedDate
  *             properties:
  *               userId:
@@ -126,16 +129,24 @@ router.get(
  *                 type: number
  *                 example: 5000.00
  *               currencyId:
- *                 type: string
- *                 example: "USD"
+ *                 type: number
+ *                 example: 1
  *               statusId:
  *                 type: number
- *                 enum: [1, 2, 3]
- *                 example: "1"
+ *                 example: 1
  *               categoryId:
  *                 type: number
- *                 example: "1"
- *               startDate:
+ *                 example: 1
+ *               budgetAllocationId:
+ *                 type: number
+ *                 example: 1
+ *               budgetExecutionId:
+ *                 type: number
+ *                 example: 1
+ *               budgetTypeId:
+ *                 type: number
+ *                 example: 1
+ *               startedDate:
  *                 type: string
  *                 format: date-time
  *                 example: "2024-01-01T00:00:00Z"
@@ -194,9 +205,24 @@ router.post(
  *                 type: number
  *                 example: 6000.00
  *               currencyId:
- *                 type: string
- *                 example: "USD"
- *               startDate:
+ *                 type: number
+ *                 example: 1
+ *               statusId:
+ *                 type: number
+ *                 example: 1
+ *               categoryId:
+ *                 type: number
+ *                 example: 1
+ *               budgetAllocationId:
+ *                 type: number
+ *                 example: 1
+ *               budgetExecutionId:
+ *                 type: number
+ *                 example: 1
+ *               budgetTypeId:
+ *                 type: number
+ *                 example: 1
+ *               startedDate:
  *                 type: string
  *                 format: date-time
  *                 example: "2024-01-01T00:00:00Z"
@@ -204,10 +230,6 @@ router.post(
  *                 type: string
  *                 format: date-time
  *                 example: "2024-12-31T23:59:59Z"
- *               state:
- *                 type: string
- *                 enum: [active, inactive, completed]
- *                 example: "active"
  *     responses:
  *       200:
  *         description: Budget updated successfully

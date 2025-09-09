@@ -2,16 +2,16 @@ import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 
 const budgetStatuses = [
   {
-    name: 'active',
-    description: 'Presupuesto activo y en uso',
+    name: 'Active',
+    description: 'Budget active and in use',
   },
   {
-    name: 'inactive',
-    description: 'Presupuesto inactivo pero no eliminado',
+    name: 'Inactive',
+    description: 'Budget inactive but not deleted',
   },
   {
-    name: 'completed',
-    description: 'Presupuesto completado y alcanzó su objetivo',
+    name: 'Completed',
+    description: 'Budget completed and reached its goal',
   },
 ];
 

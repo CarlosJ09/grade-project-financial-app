@@ -1,16 +1,21 @@
-import { IBudgetRepository } from '@/domain/repositories/IBudgetRepository';
 import { Budget } from '@/domain/entities/Budget';
+import { IBudgetRepository } from '@/domain/repositories/IBudgetRepository';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export type CreateBudgetInput = {
   userId: string;
   name: string;
   description: string;
-  currentAmount: number;
-  goalAmount: number;
-  currencyId: string;
-  startDate: Date;
+  currentAmount: Decimal;
+  goalAmount: Decimal;
+  currencyId: number;
+  statusId: number;
+  categoryId: number;
+  budgetAllocationId: number;
+  budgetExecutionId: number;
+  budgetTypeId: number;
+  startedDate: Date;
   finishedDate: Date;
-  state: string;
 };
 
 export class CreateBudget {

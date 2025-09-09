@@ -1,7 +1,7 @@
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 
 interface PaymentMethodData {
-  paymentMethod: string;
+  name: string;
 }
 
 /**
@@ -9,18 +9,14 @@ interface PaymentMethodData {
  * Common payment methods used in financial applications
  */
 const paymentMethodData: PaymentMethodData[] = [
-  { paymentMethod: 'cash' },
-  { paymentMethod: 'credit_card' },
-  { paymentMethod: 'debit_card' },
-  { paymentMethod: 'bank_transfer' },
-  { paymentMethod: 'digital_wallet' },
-  { paymentMethod: 'paypal' },
-  { paymentMethod: 'apple_pay' },
-  { paymentMethod: 'google_pay' },
-  { paymentMethod: 'check' },
-  { paymentMethod: 'money_order' },
-  { paymentMethod: 'cryptocurrency' },
-  { paymentMethod: 'gift_card' },
+  { name: 'Cash' },
+  { name: 'Credit Card' },
+  { name: 'Debit Card' },
+  { name: 'Bank Transfer' },
+  { name: 'Digital Wallet' },
+  { name: 'Paypal' },
+  { name: 'Check' },
+  { name: 'Cryptocurrency' },
 ];
 
 /**
@@ -34,7 +30,7 @@ export async function seedPaymentMethods(prisma: PrismaClient): Promise<void> {
     // Check existing payment methods and only create new ones
     for (const paymentMethod of paymentMethodData) {
       const existingPaymentMethod = await prisma.paymentMethod.findFirst({
-        where: { paymentMethod: paymentMethod.paymentMethod },
+        where: { name: paymentMethod.name },
       });
 
       if (!existingPaymentMethod) {
