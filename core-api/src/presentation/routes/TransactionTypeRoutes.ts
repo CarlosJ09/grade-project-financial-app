@@ -40,12 +40,6 @@ const transactionTypeController = new TransactionTypeController(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
  *                   type: array
  *                   items:
  *                     type: object

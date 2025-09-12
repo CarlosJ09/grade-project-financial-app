@@ -46,34 +46,28 @@ const budgetCategoryController = new BudgetCategoryController(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
- *                   type: array
- *                   items:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: integer
+ *                     example: 1
+ *                   name:
+ *                     type: string
+ *                     example: "Emergency Fund"
+ *                   budgetTypeId:
+ *                     type: integer
+ *                     example: 1
+ *                   budgetType:
  *                     type: object
  *                     properties:
  *                       id:
  *                         type: integer
- *                         example: 1
  *                       name:
  *                         type: string
- *                         example: "Emergency Fund"
- *                       budgetTypeId:
- *                         type: integer
- *                         example: 1
- *                       budgetType:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: integer
- *                           name:
- *                             type: string
- *                           description:
- *                             type: string
+ *                       description:
+ *                         type: string
  *       401:
  *         description: Unauthorized
  */

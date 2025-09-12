@@ -1,12 +1,12 @@
-import { Router } from 'express';
 import { Database } from '@/infraestructure/config/Database';
 import { PostgresCurrencyRepository } from '@/infraestructure/repositories/PostgresCurrencyRepository';
-import { GetAllCurrencies } from '@/use-cases/currency/GetAllCurrencies';
-import { GetCurrencyById } from '@/use-cases/currency/GetCurrencyById';
-import { CurrencyController } from '@/presentation/controllers/CurrencyController';
 import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { CurrencyController } from '@/presentation/controllers/CurrencyController';
 import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
 import { asyncHandler } from '@/presentation/utils/asyncHandler';
+import { GetAllCurrencies } from '@/use-cases/currency/GetAllCurrencies';
+import { GetCurrencyById } from '@/use-cases/currency/GetCurrencyById';
+import { Router } from 'express';
 
 const router = Router();
 
@@ -37,12 +37,6 @@ const currencyController = new CurrencyController(
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   example: true
- *                 data:
  *                   type: array
  *                   items:
  *                     type: object

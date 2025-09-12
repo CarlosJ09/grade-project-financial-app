@@ -15,6 +15,7 @@ import { transactionCategoryRoutes } from '@/presentation/routes/TransactionCate
 import { transactionRoutes } from '@/presentation/routes/TransactionRoutes';
 import { transactionTypeRoutes } from '@/presentation/routes/TransactionTypeRoutes';
 import { userBankRoutes } from '@/presentation/routes/UserBankRoutes';
+import { userBankingProductRoutes } from '@/presentation/routes/UserBankingProductRoutes';
 import { userRoutes } from '@/presentation/routes/UserRoutes';
 import { Router } from 'express';
 
@@ -35,6 +36,7 @@ apiRouter.use(transactionCategoryRoutes);
 apiRouter.use(transactionTypeRoutes);
 apiRouter.use(paymentMethodRoutes);
 apiRouter.use(userBankRoutes);
+apiRouter.use(userBankingProductRoutes);
 apiRouter.use(currencyRoutes);
 apiRouter.use(exchangeRateRoutes);
 apiRouter.use(courseRoutes);

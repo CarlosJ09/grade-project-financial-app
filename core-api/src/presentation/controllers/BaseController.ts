@@ -119,7 +119,7 @@ export abstract class BaseController {
   protected async handleGetById<T>(
     req: Request,
     res: Response,
-    useCase: { execute(id: string): Promise<T | null> },
+    useCase: { execute(id: any): Promise<T | null> },
     dtoMapper: { fromEntity(entity: T): any },
     resourceName: string = 'Resource'
   ): Promise<Response | void> {
@@ -235,7 +235,7 @@ export abstract class BaseController {
   protected async handleDelete(
     req: Request,
     res: Response,
-    useCase: { execute(id: string): Promise<boolean> },
+    useCase: { execute(id: any): Promise<boolean> },
     resourceName: string = 'Resource'
   ): Promise<Response | void> {
     return this.executeOperation(
