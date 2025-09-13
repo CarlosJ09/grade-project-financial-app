@@ -6,7 +6,7 @@ import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
 import { asyncHandler } from '@/presentation/utils/asyncHandler';
 import { CreateUserBankingProduct } from '@/use-cases/userBankingProduct/CreateUserBankingProduct';
 import { DeleteUserBankingProduct } from '@/use-cases/userBankingProduct/DeleteUserBankingProduct';
-import { GetAllUserBankingProducts } from '@/use-cases/userBankingProduct/GetAllUserBankingProducts';
+import { GetAllUserBankingProductsByUserId } from '@/use-cases/userBankingProduct/GetAllUserBankingProductsByUserId';
 import { GetUserBankingProductById } from '@/use-cases/userBankingProduct/GetUserBankingProductById';
 import { UpdateUserBankingProduct } from '@/use-cases/userBankingProduct/UpdateUserBankingProduct';
 import { Router } from 'express';
@@ -20,7 +20,7 @@ const prisma = Database.getInstance();
 const userBankingProductRepository = new PostgresUserBankingProductRepository(
   prisma
 );
-const getAllUserBankingProducts = new GetAllUserBankingProducts(
+const getAllUserBankingProductsByUserId = new GetAllUserBankingProductsByUserId(
   userBankingProductRepository
 );
 const getUserBankingProductById = new GetUserBankingProductById(
@@ -36,7 +36,7 @@ const deleteUserBankingProduct = new DeleteUserBankingProduct(
   userBankingProductRepository
 );
 const userBankingProductController = new UserBankingProductController(
-  getAllUserBankingProducts,
+  getAllUserBankingProductsByUserId,
   getUserBankingProductById,
   createUserBankingProduct,
   updateUserBankingProduct,
@@ -45,14 +45,14 @@ const userBankingProductController = new UserBankingProductController(
 
 /**
  * @swagger
- * /user-banking-products:
+ * /user-banking-products/user/{userId}:
  *   get:
- *     summary: Get all user banking products
+ *     summary: Get all user banking products by user id
  *     tags: [User Banking Products]
  *     security:
  *       - bearerAuth: []
  *     parameters:
- *       - in: query
+ *       - in: path
  *         name: userId
  *         schema:
  *           type: string
@@ -104,10 +104,10 @@ const userBankingProductController = new UserBankingProductController(
  *         description: Unauthorized
  */
 router.get(
-  '/user-banking-products',
+  '/user-banking-products/user/:userId',
   authMiddleware,
   asyncHandler(async (req, res) => {
-    return userBankingProductController.getAll(req, res);
+    return userBankingProductController.getAllByUserId(req, res);
   })
 );
 

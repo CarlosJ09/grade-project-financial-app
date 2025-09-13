@@ -2,6 +2,7 @@ import { BankBankingProduct } from '@/domain/entities/BankBankingProduct';
 import { UserBankingProduct } from '@/domain/entities/UserBankingProduct';
 import { IUserBankingProductRepository } from '@/domain/repositories/IUserBankingProductRepository';
 import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
+import { Decimal } from '@prisma/client/runtime/library';
 
 export class PostgresUserBankingProductRepository
   implements IUserBankingProductRepository
@@ -10,6 +11,26 @@ export class PostgresUserBankingProductRepository
 
   async findAll(): Promise<UserBankingProduct[]> {
     const userBankingProducts = await this.prisma.userBankingProduct.findMany({
+      include: {
+        currency: true,
+        bankBankingProduct: {
+          include: {
+            bank: true,
+            bankingProduct: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return userBankingProducts.map(product => this.mapToEntity(product));
+  }
+
+  async findAllByUserId(userId: string): Promise<UserBankingProduct[]> {
+    const userBankingProducts = await this.prisma.userBankingProduct.findMany({
+      where: { userId },
       include: {
         currency: true,
         bankBankingProduct: {
@@ -152,10 +173,23 @@ export class PostgresUserBankingProductRepository
       prismaProduct.referenceNumber,
       prismaProduct.label,
       prismaProduct.currencyId,
+      prismaProduct.currentBalance || new Decimal(0),
+      prismaProduct.lastBalanceUpdate,
       prismaProduct.createdAt,
       prismaProduct.updatedAt,
       bankBankingProduct,
       prismaProduct.currency
     );
+  }
+
+  async updateBalance(accountId: string, newBalance: Decimal): Promise<void> {
+    await this.prisma.userBankingProduct.update({
+      where: { id: accountId },
+      data: {
+        currentBalance: newBalance,
+        lastBalanceUpdate: new Date(),
+        updatedAt: new Date(),
+      },
+    });
   }
 }

@@ -37,6 +37,8 @@ model User {
   quizAttempts        QuizAttempt[]
   recommendations     Recommendation[]
   userBankingProducts UserBankingProduct[]
+  userCashHoldings    UserCashHolding[]
+  userAssets          UserAsset[]
 
   @@map("users")
 }
@@ -245,6 +247,8 @@ model Currency {
   transactions       Transaction[]
   exchangeRates      ExchangeRate[]
   UserBankingProduct UserBankingProduct[]
+  userCashHoldings   UserCashHolding[]
+  userAssets         UserAsset[]
 
   @@map("currencies")
 }
@@ -314,14 +318,16 @@ model BankBankingProduct {
 }
 
 model UserBankingProduct {
-  id                   String   @id @default(uuid())
+  id                   String    @id @default(uuid())
   userId               String
   bankBankingProductId Int
   referenceNumber      String
   label                String
   currencyId           Int
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  currentBalance       Decimal   @default(0.00) @db.Decimal(18, 4)
+  lastBalanceUpdate    DateTime? @default(now())
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   // Relations
   transactions       Transaction[]
@@ -527,4 +533,39 @@ model Recommendation {
   user User @relation(fields: [sessionId], references: [id])
 
   @@map("recommendations")
+}
+
+model UserCashHolding {
+  id         String   @id @default(uuid())
+  userId     String
+  currencyId Int
+  amount     Decimal  @default(0.00) @db.Decimal(18, 4)
+  label      String   @default("Cash") @db.VarChar(50)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id])
+  currency Currency @relation(fields: [currencyId], references: [id])
+
+  @@unique([userId, currencyId])
+  @@map("user_cash_holdings")
+}
+
+model UserAsset {
+  id           String   @id @default(uuid())
+  userId       String
+  assetType    String   @db.VarChar(50) // 'investment', 'crypto', 'property', etc.
+  assetName    String   @db.VarChar(100)
+  currentValue Decimal  @default(0.00) @db.Decimal(18, 4)
+  currencyId   Int
+  description  String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  user     User     @relation(fields: [userId], references: [id])
+  currency Currency @relation(fields: [currencyId], references: [id])
+
+  @@map("user_assets")
 }

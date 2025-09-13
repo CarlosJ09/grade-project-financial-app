@@ -1,4 +1,5 @@
 import { Database } from '@/infraestructure/config/Database';
+import { seedBankBankingProducts } from '@/infraestructure/seeds/BankBankingProductSeeder';
 import { seedBanks } from '@/infraestructure/seeds/BankSeeder';
 import { seedBankingProducts } from '@/infraestructure/seeds/BankingProductSeeder';
 import { seedBudgetCategories } from '@/infraestructure/seeds/BudgetCategorySeeder';
@@ -32,6 +33,7 @@ export async function seedDatabase(): Promise<void> {
     await seedBudgetCategories(prisma);
     await seedBanks(prisma);
     await seedBankingProducts(prisma);
+    await seedBankBankingProducts(prisma); // Requires banks and banking products
 
     // 2. Dependent entities (require foreign keys)
     await seedMerchantCategories(prisma);
@@ -55,6 +57,8 @@ export async function clearSeedData(): Promise<void> {
     console.log('🧹 Clearing seed data...');
 
     // Clear in reverse order of dependencies
+    // Delete dependent relations first
+    await prisma.bankBankingProduct.deleteMany({});
     await prisma.exchangeRate.deleteMany({});
     await prisma.merchant.deleteMany({});
     await prisma.merchantCategory.deleteMany({});

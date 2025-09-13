@@ -1,7 +1,7 @@
 import { UserBankingProductResponseDto } from '@/presentation/dtos/response/UserBankingProductResponseDto';
 import { CreateUserBankingProduct } from '@/use-cases/userBankingProduct/CreateUserBankingProduct';
 import { DeleteUserBankingProduct } from '@/use-cases/userBankingProduct/DeleteUserBankingProduct';
-import { GetAllUserBankingProducts } from '@/use-cases/userBankingProduct/GetAllUserBankingProducts';
+import { GetAllUserBankingProductsByUserId } from '@/use-cases/userBankingProduct/GetAllUserBankingProductsByUserId';
 import { GetUserBankingProductById } from '@/use-cases/userBankingProduct/GetUserBankingProductById';
 import { UpdateUserBankingProduct } from '@/use-cases/userBankingProduct/UpdateUserBankingProduct';
 import { Request, Response } from 'express';
@@ -9,7 +9,7 @@ import { BaseController } from './BaseController';
 
 export class UserBankingProductController extends BaseController {
   constructor(
-    private getAllUserBankingProducts: GetAllUserBankingProducts,
+    private getAllUserBankingProductsByUserId: GetAllUserBankingProductsByUserId,
     private getUserBankingProductById: GetUserBankingProductById,
     private createUserBankingProduct: CreateUserBankingProduct,
     private updateUserBankingProduct: UpdateUserBankingProduct,
@@ -18,12 +18,22 @@ export class UserBankingProductController extends BaseController {
     super();
   }
 
-  async getAll(req: Request, res: Response) {
-    return this.handleGetAll(
-      req,
+  async getAllByUserId(req: Request, res: Response) {
+    return this.executeOperation(
       res,
-      this.getAllUserBankingProducts,
-      UserBankingProductResponseDto
+      async () => {
+        const { userId } = req.params;
+
+        if (!userId) {
+          return this.badRequest(res, 'User ID parameter is required');
+        }
+
+        const entities =
+          await this.getAllUserBankingProductsByUserId.execute(userId);
+        const dtos = entities.map(UserBankingProductResponseDto.fromEntity);
+        return this.ok(res, dtos);
+      },
+      'Error retrieving user banking products'
     );
   }
 

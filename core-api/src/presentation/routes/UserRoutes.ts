@@ -2,6 +2,7 @@ import { Database } from '@/infraestructure/config/Database';
 import { PostgresCurrencyRepository } from '@/infraestructure/repositories/PostgresCurrencyRepository';
 import { PostgresExchangeRateRepository } from '@/infraestructure/repositories/PostgresExchangeRateRepository';
 import { PostgresTransactionRepository } from '@/infraestructure/repositories/PostgresTransactionRepository';
+import { PostgresUserBankingProductRepository } from '@/infraestructure/repositories/PostgresUserBankingProductRepository';
 import { PostgresUserRepository } from '@/infraestructure/repositories/PostgresUserRepository';
 import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
 import { UserController } from '@/presentation/controllers/UserController';
@@ -22,13 +23,17 @@ const userRepository = new PostgresUserRepository(prisma);
 const transactionRepository = new PostgresTransactionRepository(prisma);
 const currencyRepository = new PostgresCurrencyRepository(prisma);
 const exchangeRateRepository = new PostgresExchangeRateRepository(prisma);
+const userBankingProductRepository = new PostgresUserBankingProductRepository(
+  prisma
+);
 
 const getAllUsers = new GetAllUsers(userRepository);
 const getUserById = new GetUserById(userRepository);
 const getUserBalance = new GetUserBalance(
   transactionRepository,
   currencyRepository,
-  exchangeRateRepository
+  exchangeRateRepository,
+  userBankingProductRepository
 );
 
 const userController = new UserController(
