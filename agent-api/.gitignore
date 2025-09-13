@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+.venv/
+venv/
+VENV/
+venv.bak/
+.env
+.flaskenv
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.hypothesis/
+htmlcov/
+.tox/
+dist/
+build/
+*.so
+*.mo
+*.pot
+
+# FastAPI specific
+# If you are using a specific database, its files might need to be ignored
+# e.g., for SQLite
+*.sqlite3
+*.db
+
+# Editor/OS specific
+.DS_Store
+.vscode/
+.idea/
+*~
+# Logs
+*.log
