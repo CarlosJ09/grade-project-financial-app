@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -9,6 +9,8 @@ import { TransactionCard } from '@/components/finances/transaction/TransactionCa
 import { TransactionModal } from '@/components/finances/transaction/TransactionModal';
 import { budgetService } from '@/services/budget';
 import { transactionService } from '@/services/transaction';
+import { UserBalanceResponse, userService } from '@/services/user';
+import { useAuthStore } from '@/stores';
 import { Budget } from '@/types/financial/budget';
 import { Transaction } from '@/types/financial/transaction';
 import { formatCurrency } from '@/utils/formatCurrency';
@@ -19,11 +21,31 @@ export default function FinancesScreen() {
   const [showTransactionModal, setShowTransactionModal] = useState(false);
   const [showBudgetModal, setShowBudgetModal] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userBalance, setUserBalance] = useState<UserBalanceResponse | null>(
+    null
+  );
+
+  const { user } = useAuthStore();
+
+  const fetchUserBalance = useCallback(async () => {
+    if (!user?.id) return;
+    setLoading(true);
+    try {
+      const response = await userService.getUserBalance(user?.id);
+      setUserBalance(response);
+      console.log('User balance response:', response);
+    } catch (error) {
+      console.error('Error fetching user balance:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.id]);
 
   useEffect(() => {
     fetchTransactions();
     fetchBudgets();
-  }, []);
+    fetchUserBalance();
+  }, [fetchUserBalance]);
 
   const fetchTransactions = async () => {
     setLoading(true);
@@ -55,25 +77,12 @@ export default function FinancesScreen() {
 
   const handleTransactionCreated = () => {
     fetchTransactions();
+    fetchUserBalance(); // Refresh balance after transaction is created
   };
 
   const handleBudgetCreated = () => {
     fetchBudgets();
   };
-
-  const calculateTotals = () => {
-    const income = transactions
-      .filter(t => t.transactionTypeId === 1)
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    const expenses = transactions
-      .filter(t => t.transactionTypeId === 2)
-      .reduce((sum, t) => sum + t.amount, 0);
-
-    return { income, expenses };
-  };
-
-  const { income, expenses } = calculateTotals();
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
@@ -86,28 +95,28 @@ export default function FinancesScreen() {
           {/* Financial Summary */}
           <View className="mb-6 gap-4">
             <View className="flex-1 rounded-xl bg-primary p-4 dark:bg-primary">
-              <Text className="text-sm font-medium text-white dark:text-white">
+              <Text className="font-poppins-medium text-sm text-white dark:text-white">
                 Current Balance
               </Text>
               <Text className="mt-1 text-2xl font-bold text-white dark:text-white">
-                {formatCurrency(income)}
+                {formatCurrency(Number(userBalance?.totalBalance))}
               </Text>
             </View>
             <View className="flex-row gap-4">
               <View className="flex-1 rounded-xl bg-green-50 p-4 dark:bg-green-900/20">
-                <Text className="text-sm font-medium text-green-600 dark:text-green-400">
+                <Text className="font-poppins-medium text-sm text-green-600 dark:text-green-400">
                   Income
                 </Text>
-                <Text className="mt-1 text-2xl font-bold text-green-800 dark:text-green-300">
-                  {formatCurrency(income)}
+                <Text className="mt-1 font-poppins-bold text-xl text-green-800 dark:text-green-300">
+                  {formatCurrency(Number(userBalance?.totalIncome))}
                 </Text>
               </View>
               <View className="flex-1 rounded-xl bg-red-50 p-4 dark:bg-red-900/20">
-                <Text className="text-sm font-medium text-red-600 dark:text-red-400">
+                <Text className="font-poppins-medium text-sm text-red-600 dark:text-red-400">
                   Expenses
                 </Text>
-                <Text className="mt-1 text-2xl font-bold text-red-800 dark:text-red-300">
-                  {formatCurrency(expenses)}
+                <Text className="mt-1 font-poppins-bold text-xl text-red-800 dark:text-red-300">
+                  {formatCurrency(Number(userBalance?.totalExpenses))}
                 </Text>
               </View>
             </View>

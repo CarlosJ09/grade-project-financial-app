@@ -8,12 +8,6 @@ interface BudgetCardProps {
   budget: Budget;
 }
 
-/* enum BudgetStatus {
-  ON_TRACK = 'on_track',
-  OVER_BUDGET = 'over_budget',
-  COMPLETED = 'completed',
-} */
-
 export function BudgetCard({ budget }: BudgetCardProps) {
   const spent = budget.currentAmount;
   const total = budget.goalAmount;
@@ -27,9 +21,9 @@ export function BudgetCard({ budget }: BudgetCardProps) {
       <View className="mb-4 flex-row items-start justify-between">
         <View className="flex-1">
           <View className="mb-1 flex-row items-center">
-            {budget.category?.icon && (
+            {/*     {budget.category.icon && (
               <Text className="mr-2 text-lg">{budget.category.icon}</Text>
-            )}
+            )} */}
             <Text className="text-xl font-semibold text-gray-900 dark:text-white">
               {budget.name}
             </Text>
@@ -59,11 +53,11 @@ export function BudgetCard({ budget }: BudgetCardProps) {
 
       {/* Amount spent and total */}
       <View className="mb-3 flex-row items-baseline justify-between">
-        <Text className="text-lg text-gray-500 dark:text-gray-400">
-          {formatCurrency(spent)} spent
+        <Text className="text-md text-gray-500 dark:text-gray-400">
+          {formatCurrency(Number(spent))} spent
         </Text>
-        <Text className="text-lg text-gray-500 dark:text-gray-400">
-          of {formatCurrency(total)}
+        <Text className="text-md text-gray-500 dark:text-gray-400">
+          of {formatCurrency(Number(total))}
         </Text>
       </View>
 

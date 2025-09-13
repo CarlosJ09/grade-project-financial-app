@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { TextInput } from '@/components/ui/TextInput';
-import Checkbox from 'expo-checkbox';
+import { Checkbox } from 'expo-checkbox';
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { ThemedText } from '@/components/ThemedText';
 import { useAuthStore } from '@/stores';
 
 const SignIn = () => {
@@ -49,11 +50,22 @@ const SignIn = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-slate-600">
-      <View className="flex-1 justify-center p-8">
+      <View className="flex-1 justify-center p-8 pt-0">
+        <View className="items-center justify-center">
+          <View className="mb-4">
+            <Image source={require('@/assets/images/logo-image.png')} />
+          </View>
+          <View className="mb-8">
+            <ThemedText type="title" className="text-center">
+              Sign In
+            </ThemedText>
+          </View>
+        </View>
+
         <View className="mb-8 w-full gap-8">
           <TextInput
             label="Email"
-            placeholder="ejemplo@example.com"
+            placeholder="example@example.com"
             keyboardType="email-address"
             autoCapitalize="none"
             value={formData.email}
@@ -64,7 +76,7 @@ const SignIn = () => {
           />
 
           <TextInput
-            label="Contraseña"
+            label="Password"
             placeholder="*********"
             secureTextEntry
             value={formData.password}
@@ -79,7 +91,7 @@ const SignIn = () => {
               value={rememberSession}
               onValueChange={setRememberSession}
             />
-            <Text>Recordar Sesión</Text>
+            <Text>Remember Session</Text>
           </View>
         </View>
 
@@ -92,19 +104,19 @@ const SignIn = () => {
         )}
 
         <Button
-          title={isLoading ? 'Iniciando...' : 'Iniciar Sesión'}
+          title={isLoading ? 'Signing...' : 'Sign In'}
           onPress={handleLogin}
           disabled={isLoading}
         />
 
         <Link href="/auth/forgot-password" asChild>
-          <Text className="mt-4">Olvidé mi contraseña</Text>
+          <Text className="mt-4 text-green-800 underline">Forgot Password</Text>
         </Link>
 
         <View className="mt-16 flex-row items-center justify-center gap-2">
-          <Text>No tienes una cuenta?</Text>
+          <Text>Don&apos;t have an account?</Text>
           <Link href="/auth/sign-up" asChild>
-            <Text>Registrate</Text>
+            <Text className="text-green-800 underline">Register</Text>
           </Link>
         </View>
       </View>

@@ -126,7 +126,23 @@ export class GetUserBalance {
       { balance: number; income: number; expenses: number }
     > = {};
 
-    // Add account balances
+    // Calculate income and expenses from transactions first
+    const transactionsByCurrency =
+      this.groupTransactionsByCurrency(transactions);
+    for (const [currencyId, txns] of Object.entries(transactionsByCurrency)) {
+      const currency = await this.getCurrencyCode(parseInt(currencyId));
+      const { income, expenses } = this.calculateIncomeAndExpenses(txns);
+
+      if (!balancesByCurrency[currency]) {
+        balancesByCurrency[currency] = { balance: 0, income: 0, expenses: 0 };
+      }
+      balancesByCurrency[currency].income = income;
+      balancesByCurrency[currency].expenses = expenses;
+      // Calculate balance as income - expenses
+      balancesByCurrency[currency].balance = income - expenses;
+    }
+
+    // Add account balances (current balance from banking products)
     for (const account of accountBalances) {
       if (!balancesByCurrency[account.currency]) {
         balancesByCurrency[account.currency] = {
@@ -135,6 +151,7 @@ export class GetUserBalance {
           expenses: 0,
         };
       }
+      // Add the account balance to the calculated transaction balance
       balancesByCurrency[account.currency].balance += account.balance;
     }
 
@@ -160,20 +177,6 @@ export class GetUserBalance {
         };
       }
       balancesByCurrency[asset.currency].balance += asset.value;
-    }
-
-    // Calculate income and expenses from transactions (for analytics)
-    const transactionsByCurrency =
-      this.groupTransactionsByCurrency(transactions);
-    for (const [currencyId, txns] of Object.entries(transactionsByCurrency)) {
-      const currency = await this.getCurrencyCode(parseInt(currencyId));
-      const { income, expenses } = this.calculateIncomeAndExpenses(txns);
-
-      if (!balancesByCurrency[currency]) {
-        balancesByCurrency[currency] = { balance: 0, income: 0, expenses: 0 };
-      }
-      balancesByCurrency[currency].income = income;
-      balancesByCurrency[currency].expenses = expenses;
     }
 
     // Convert to array format
@@ -273,10 +276,16 @@ export class GetUserBalance {
   } {
     return transactions.reduce(
       (totals, transaction) => {
-        if (transaction.type === 'income') {
-          totals.income += transaction.amount;
-        } else if (transaction.type === 'expense') {
-          totals.expenses += transaction.amount;
+        const amount = parseFloat(transaction.amount.toString());
+
+        // Check by transaction type name or ID
+        const typeName = transaction.transactionType?.name?.toLowerCase();
+        const typeId = transaction.transactionTypeId;
+
+        if (typeName === 'income' || typeId === 1) {
+          totals.income += amount;
+        } else if (typeName === 'expense' || typeId === 2) {
+          totals.expenses += amount;
         }
         return totals;
       },
@@ -285,10 +294,8 @@ export class GetUserBalance {
   }
 
   private async getCurrencyCode(currencyId: number): Promise<string> {
-    const currency = await (this.currencyRepository as any).findByIdInt(
-      currencyId
-    );
-    return currency?.currency || 'USD';
+    const currency = await this.currencyRepository.findByIdInt(currencyId);
+    return currency?.code || 'USD';
   }
 
   private async getExchangeRate(

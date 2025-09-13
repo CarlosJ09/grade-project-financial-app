@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
+import { FinancialDashboard } from '@/components/finances/analytics/FinancialDashboard';
 import { useTranslation } from '@/hooks/useTranslation';
 import { userService } from '@/services/user';
 import { useAuthStore } from '@/stores';
@@ -14,9 +15,16 @@ export default function HomeScreen() {
   const { t } = useTranslation();
   const [balance, setBalance] = useState<number>(0);
 
+  const fetchBalance = useCallback(async () => {
+    if (!user?.id) return;
+
+    const balance = await userService.getUserBalance(user?.id);
+    setBalance(balance.totalBalance);
+  }, [user?.id]);
+
   useEffect(() => {
     fetchBalance();
-  }, [user?.id]);
+  }, [fetchBalance]);
 
   // Get current time for greeting
   const currentHour = new Date().getHours();
@@ -24,13 +32,6 @@ export default function HomeScreen() {
     if (currentHour < 12) return t('home.greeting.goodMorning');
     if (currentHour < 18) return t('home.greeting.goodAfternoon');
     return t('home.greeting.goodEvening');
-  };
-
-  const fetchBalance = async () => {
-    if (!user?.id) return;
-
-    const balance = await userService.getUserBalance(user?.id);
-    setBalance(balance.totalBalance);
   };
 
   return (
@@ -58,7 +59,7 @@ export default function HomeScreen() {
 
         {/* Financial Overview */}
         <View className="mb-6 px-6">
-          <View className="rounded-2xl bg-success p-6">
+          <View className="rounded-2xl bg-primary p-6">
             <Text className="mb-2 text-lg font-semibold text-white">
               {t('home.financialOverview.title')}
             </Text>
@@ -156,6 +157,14 @@ export default function HomeScreen() {
               </View>
             </View>
           </TouchableOpacity>
+        </View>
+
+        {/* Financial Dashboard */}
+        <View className="mb-6 px-6">
+          <ThemedText type="subtitle" className="mb-4">
+            Spending Analytics
+          </ThemedText>
+          <FinancialDashboard />
         </View>
 
         {/* Recent Activity Placeholder */}

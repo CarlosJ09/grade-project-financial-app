@@ -11,6 +11,7 @@ import { asyncHandler } from '@/presentation/utils/asyncHandler';
 import { GetAllUsers } from '@/use-cases/user/GetAllUsers';
 import { GetUserBalance } from '@/use-cases/user/GetUserBalance';
 import { GetUserById } from '@/use-cases/user/GetUserById';
+import { GetUserExpenseAnalytics } from '@/use-cases/user/GetUserExpenseAnalytics';
 import { Router } from 'express';
 
 const router = Router();
@@ -35,11 +36,16 @@ const getUserBalance = new GetUserBalance(
   exchangeRateRepository,
   userBankingProductRepository
 );
+const getUserExpenseAnalytics = new GetUserExpenseAnalytics(
+  transactionRepository,
+  currencyRepository
+);
 
 const userController = new UserController(
   getAllUsers,
   getUserById,
-  getUserBalance
+  getUserBalance,
+  getUserExpenseAnalytics
 );
 
 /**
@@ -181,6 +187,84 @@ router.get(
   authMiddleware,
   asyncHandler(async (req, res) => {
     return userController.getBalance(req, res);
+  })
+);
+
+/**
+ * @swagger
+ * /users/{id}/expense-analytics:
+ *   parameters:
+ *     - in: path
+ *       name: id
+ *       required: true
+ *       schema:
+ *         type: string
+ *       description: The ID of the user to get expense analytics for
+ *   get:
+ *     summary: Get user's expense analytics by category
+ *     description: Get expense breakdown by category with percentages
+ *     tags: [Users]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: baseCurrencyId
+ *         schema:
+ *           type: integer
+ *         description: Currency ID to convert all amounts to (optional)
+ *       - in: query
+ *         name: fromDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Start date for expense filtering (optional)
+ *       - in: query
+ *         name: toDate
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: End date for expense filtering (optional)
+ *     responses:
+ *       200:
+ *         description: User expense analytics by category
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 totalExpenses:
+ *                   type: number
+ *                   example: 21800
+ *                 currency:
+ *                   type: string
+ *                   example: "USD"
+ *                 categoriesData:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       categoryName:
+ *                         type: string
+ *                         example: "Food & Dining"
+ *                       amount:
+ *                         type: number
+ *                         example: 5400
+ *                       percentage:
+ *                         type: number
+ *                         example: 24.77
+ *                       count:
+ *                         type: number
+ *                         example: 12
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: User not found
+ */
+router.get(
+  '/users/:id/expense-analytics',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    return userController.getExpenseAnalytics(req, res);
   })
 );
 
