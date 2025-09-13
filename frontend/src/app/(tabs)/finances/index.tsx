@@ -57,13 +57,17 @@ export default function FinancesScreen() {
     fetchTransactions();
   };
 
+  const handleBudgetCreated = () => {
+    fetchBudgets();
+  };
+
   const calculateTotals = () => {
     const income = transactions
-      .filter(t => t.type === 'income')
+      .filter(t => t.transactionTypeId === 1)
       .reduce((sum, t) => sum + t.amount, 0);
 
     const expenses = transactions
-      .filter(t => t.type === 'expense')
+      .filter(t => t.transactionTypeId === 2)
       .reduce((sum, t) => sum + t.amount, 0);
 
     return { income, expenses };
@@ -105,7 +109,6 @@ export default function FinancesScreen() {
                 <Text className="mt-1 text-2xl font-bold text-red-800 dark:text-red-300">
                   {formatCurrency(expenses)}
                 </Text>
-                x
               </View>
             </View>
           </View>
@@ -147,7 +150,7 @@ export default function FinancesScreen() {
                   Loading budgets...
                 </Text>
               </View>
-            ) : transactions.length === 0 ? (
+            ) : budgets.length === 0 ? (
               <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
                 <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
                   💰 No budgets yet
@@ -211,7 +214,7 @@ export default function FinancesScreen() {
       <BudgetModal
         visible={showBudgetModal}
         onClose={() => setShowBudgetModal(false)}
-        onSuccess={handleTransactionCreated}
+        onSuccess={handleBudgetCreated}
       />
     </SafeAreaView>
   );

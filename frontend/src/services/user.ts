@@ -1,6 +1,21 @@
 import api from '@/interceptor/core-api';
 import { User } from '@/types/auth';
-import { UserBalance } from '@/types/user';
+
+type UserBalanceResponse = {
+  totalBalance: number;
+  totalIncome: number;
+  totalExpenses: number;
+  baseCurrency: string;
+  balancesByCurrency: [
+    {
+      currency: string;
+      balance: number;
+      income: number;
+      expenses: number;
+    },
+  ];
+  lastTransactionDate: Date;
+};
 
 class UserService {
   async getAllUsers(): Promise<User[]> {
@@ -12,7 +27,7 @@ class UserService {
     return response.data;
   }
 
-  async getUserBalance(userId: string): Promise<UserBalance> {
+  async getUserBalance(userId: string): Promise<UserBalanceResponse> {
     const response = await api.get(`/users/${userId}/balance`);
     return response.data;
   }

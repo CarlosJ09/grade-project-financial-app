@@ -8,7 +8,7 @@ interface TransactionCardProps {
 }
 
 export function TransactionCard({ transaction }: TransactionCardProps) {
-  const isIncome = transaction.type === 'income';
+  const isIncome = transaction.transactionTypeId === 3;
   const formattedDate = new Date(
     transaction.transactionDate
   ).toLocaleDateString();
@@ -18,7 +18,7 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
       <View className="mb-2 flex-row items-start justify-between">
         <View className="flex-1">
           <Text className="text-lg font-semibold text-gray-900 dark:text-white">
-            {transaction.place}
+            {transaction.merchant?.name}
           </Text>
           <Text className="text-sm text-gray-500 dark:text-gray-400">
             {formattedDate}
@@ -33,7 +33,7 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
             }`}
           >
             {isIncome ? '+' : '-'}
-            {formatCurrency(transaction.amount)}
+            {formatCurrency(Number(transaction.amount))}
           </Text>
         </View>
       </View>
@@ -53,7 +53,7 @@ export function TransactionCard({ transaction }: TransactionCardProps) {
                 : 'text-red-800 dark:text-red-300'
             }`}
           >
-            {transaction.type}
+            {transaction.transactionType?.name}
           </Text>
         </View>
 

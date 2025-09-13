@@ -1,3 +1,5 @@
+import { Currency } from '@/stores';
+
 export interface UserBalance {
   totalBalance: number;
   totalIncome: number;
@@ -12,4 +14,17 @@ export interface CurrencyBalance {
   balance: number;
   income: number;
   expenses: number;
+}
+
+export interface UserAsset {
+  id: string;
+  userId: string;
+  assetType: string;
+  assetName: string;
+  currentValue: number;
+  currencyId: number;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+  currency?: Currency;
 }

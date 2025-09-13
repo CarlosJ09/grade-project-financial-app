@@ -3,15 +3,23 @@ import { Button } from '@/components/ui/Button';
 import { DatePicker } from '@/components/ui/DatePicker';
 import { Dropdown, DropdownOption } from '@/components/ui/Dropdown';
 import { TextInput } from '@/components/ui/TextInput';
-import { categoryService } from '@/services/category';
-import { currencyService } from '@/services/currency';
+import { merchantService } from '@/services/merchant';
 import { paymentMethodService } from '@/services/paymentMethod';
 import { transactionService } from '@/services/transaction';
+import { transactionCategoryService } from '@/services/transactionCategory';
+import { transactionTypeService } from '@/services/transactionType';
+import { userBankingProductService } from '@/services/userBankingProduct';
 import { useAuthStore } from '@/stores/authStore';
-import { Category, Currency, PaymentMethod } from '@/types/financial/shared';
-import { CreateTransactionInput } from '@/types/financial/transaction';
-import { useEffect, useState } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { UserBankingProduct } from '@/types/financial/bank';
+import { PaymentMethod } from '@/types/financial/shared';
+import {
+  CreateTransactionInput,
+  Merchant,
+  TransactionCategory,
+  TransactionType,
+} from '@/types/financial/transaction';
+import { useCallback, useEffect, useState } from 'react';
+import { Alert, ScrollView, Text, View } from 'react-native';
 
 interface TransactionFormProps {
   onSuccess: () => void;
@@ -23,46 +31,74 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
-  // Form data with separate date state
+  const [transactionDate, setTransactionDate] = useState<Date>(new Date());
+  const [merchants, setMerchants] = useState<Merchant[]>([]);
+  const [categories, setCategories] = useState<TransactionCategory[]>([]);
+  const [transactionTypes, setTransactionTypes] = useState<TransactionType[]>(
+    []
+  );
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [userBankingProducts, setUserBankingProducts] = useState<
+    UserBankingProduct[]
+  >([]);
+
+  // Form data matching API requirements
   const [formData, setFormData] = useState<
-    Omit<CreateTransactionInput, 'transactionDate'>
+    Omit<CreateTransactionInput, 'userId' | 'transactionDate'>
   >({
     amount: 0,
-    currencyId: 0,
-    type: 'expense',
+    currencyId: 4, // Default to Dominican Peso
+    exchangeRateId: null,
+    transactionTypeId: 0,
     categoryId: 0,
+    merchantId: 1, // Default to first merchant
+    userBankingProductId: null,
     paymentMethodId: 0,
-    place: '',
-    userId: '',
   });
 
-  const [transactionDate, setTransactionDate] = useState<Date>(new Date());
-
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
-  const [currencies, setCurrencies] = useState<Currency[]>([]);
-
-  useEffect(() => {
-    loadFormData();
-  }, []);
-
-  const loadFormData = async () => {
+  const loadFormData = useCallback(async () => {
     try {
-      const [categoriesRes, paymentMethodsRes, currenciesRes] =
-        await Promise.all([
-          categoryService.getAll(),
-          paymentMethodService.getAll(),
-          currencyService.getAll(),
-        ]);
+      if (!user) {
+        Alert.alert('Error', 'You must be logged in');
+        return;
+      }
+
+      const [
+        categoriesRes,
+        transactionTypesRes,
+        paymentMethodsRes,
+        userBankingProductsRes,
+        merchantsRes,
+      ] = await Promise.all([
+        transactionCategoryService.getAll(),
+        transactionTypeService.getAll(),
+        paymentMethodService.getAll(),
+        userBankingProductService.getAllByUserId(user.id),
+        merchantService.getAll(),
+      ]);
 
       setCategories(categoriesRes.data || []);
+      setTransactionTypes(transactionTypesRes.data || []);
       setPaymentMethods(paymentMethodsRes.data || []);
-      setCurrencies(currenciesRes.data || []);
+      setUserBankingProducts(userBankingProductsRes.data || []);
+      setMerchants(merchantsRes.data || []);
 
-      if (currenciesRes.data && currenciesRes.data.length > 0) {
+      // Set default values
+      if (transactionTypesRes.data && transactionTypesRes.data.length > 0) {
+        const expenseType = transactionTypesRes.data.find(
+          t => t.name === 'Expense'
+        );
+        if (expenseType) {
+          setFormData(prev => ({
+            ...prev,
+            transactionTypeId: expenseType.id,
+          }));
+        }
+      }
+      if (merchantsRes.data && merchantsRes.data.length > 0) {
         setFormData(prev => ({
           ...prev,
-          currencyId: currenciesRes.data[0].id,
+          merchantId: merchantsRes.data[0].id,
         }));
       }
     } catch (error) {
@@ -71,7 +107,11 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
     } finally {
       setLoadingData(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadFormData();
+  }, [loadFormData]);
 
   const handleSubmit = async () => {
     if (!user) {
@@ -84,28 +124,40 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
       Alert.alert('Error', 'Please enter a valid amount');
       return;
     }
+    if (!formData.transactionTypeId) {
+      Alert.alert('Error', 'Please select a transaction type');
+      return;
+    }
     if (!formData.categoryId) {
       Alert.alert('Error', 'Please select a category');
+      return;
+    }
+    if (!formData.merchantId) {
+      Alert.alert('Error', 'Please select a merchant');
       return;
     }
     if (!formData.paymentMethodId) {
       Alert.alert('Error', 'Please select a payment method');
       return;
     }
-    if (!formData.place.trim()) {
-      Alert.alert('Error', 'Please enter a place');
-      return;
-    }
 
     setLoading(true);
     try {
-      // Combine form data with date
+      // Create transaction data matching API requirements
       const transactionData: CreateTransactionInput = {
-        ...formData,
-        currencyId: Number(formData.currencyId),
-        transactionDate: transactionDate,
         userId: user.id,
+        amount: Number(formData.amount),
+        currencyId: Number(formData.currencyId),
+        exchangeRateId: formData.exchangeRateId,
+        transactionTypeId: Number(formData.transactionTypeId),
+        categoryId: Number(formData.categoryId),
+        merchantId: Number(formData.merchantId),
+        userBankingProductId: formData.userBankingProductId,
+        paymentMethodId: Number(formData.paymentMethodId),
+        transactionDate: transactionDate,
       };
+
+      console.log(transactionData);
 
       await transactionService.create(transactionData);
       Alert.alert('Success', 'Transaction created successfully');
@@ -126,15 +178,34 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
   };
 
   // Convert arrays to dropdown options
+  const transactionTypeOptions: DropdownOption[] = transactionTypes.map(
+    type => ({
+      label: type.name,
+      value: type.id.toString(),
+    })
+  );
+
+  const merchantOptions: DropdownOption[] = merchants.map(merchant => ({
+    label: merchant.name,
+    value: merchant.id.toString(),
+  }));
+
   const categoryOptions: DropdownOption[] = categories.map(category => ({
     label: category.name,
-    value: category.id,
+    value: category.id.toString(),
   }));
 
   const paymentMethodOptions: DropdownOption[] = paymentMethods.map(method => ({
-    label: method.paymentMethod,
-    value: method.id,
+    label: method.name,
+    value: method.id.toString(),
   }));
+
+  const userBankingProductOptions: DropdownOption[] = userBankingProducts.map(
+    product => ({
+      label: product.label,
+      value: product.id,
+    })
+  );
 
   if (loadingData) {
     return (
@@ -151,57 +222,12 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           New Transaction
         </ThemedText>
 
-        {/* Transaction Type */}
-        <View className="mb-4">
-          <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Type
-          </Text>
-          <View className="flex-row gap-2">
-            <TouchableOpacity
-              className={`flex-1 rounded-lg border-2 p-3 ${
-                formData.type === 'expense'
-                  ? 'border-red-500 bg-red-50 dark:bg-red-900/20'
-                  : 'border-gray-300 dark:border-gray-600'
-              }`}
-              onPress={() => updateFormData('type', 'expense')}
-            >
-              <Text
-                className={`text-center font-medium ${
-                  formData.type === 'expense'
-                    ? 'text-red-600 dark:text-red-400'
-                    : 'text-gray-600 dark:text-gray-400'
-                }`}
-              >
-                Expense
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              className={`flex-1 rounded-lg border-2 p-3 ${
-                formData.type === 'income'
-                  ? 'border-green-500 bg-green-50 dark:bg-green-900/20'
-                  : 'border-gray-300 dark:border-gray-600'
-              }`}
-              onPress={() => updateFormData('type', 'income')}
-            >
-              <Text
-                className={`text-center font-medium ${
-                  formData.type === 'income'
-                    ? 'text-green-600 dark:text-green-400'
-                    : 'text-gray-600 dark:text-gray-400'
-                }`}
-              >
-                Income
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-
         <View className="mb-4">
           <TextInput
             label="Amount"
             value={formData.amount.toString()}
             onChangeText={value =>
-              updateFormData('amount', parseFloat(value) || 0)
+              updateFormData('amount', parseFloat(value) || '')
             }
             keyboardType="decimal-pad"
             placeholder="0.00"
@@ -209,40 +235,31 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           />
         </View>
 
-        <View className="mb-4">
-          <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Currency
-          </Text>
-          <View className="rounded-lg border border-gray-300 dark:border-gray-600">
-            {currencies.map(currency => (
-              <TouchableOpacity
-                key={currency.id}
-                className={`border-b border-gray-200 p-3 dark:border-gray-700 ${
-                  formData.currencyId === currency.id
-                    ? 'bg-blue-50 dark:bg-blue-900/20'
-                    : ''
-                }`}
-                onPress={() => updateFormData('currencyId', currency.id)}
-              >
-                <Text
-                  className={`font-medium ${
-                    formData.currencyId === currency.id
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  {currency.currency}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <Dropdown
+          label="Transaction Type"
+          value={formData.transactionTypeId.toString()}
+          options={transactionTypeOptions}
+          onSelect={value =>
+            updateFormData('transactionTypeId', parseInt(value))
+          }
+          placeholder="Select transaction type"
+          className="mb-4"
+        />
+
+        <Dropdown
+          label="Merchant"
+          value={formData.merchantId.toString()}
+          options={merchantOptions}
+          onSelect={value => updateFormData('merchantId', parseInt(value))}
+          placeholder="Select a merchant"
+          className="mb-4"
+        />
 
         <Dropdown
           label="Category"
-          value={formData.categoryId.toString()}
+          value={formData?.categoryId?.toString() || ''}
           options={categoryOptions}
-          onSelect={value => updateFormData('categoryId', value)}
+          onSelect={value => updateFormData('categoryId', parseInt(value))}
           placeholder="Select a category"
           className="mb-4"
         />
@@ -251,20 +268,23 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           label="Payment Method"
           value={formData.paymentMethodId.toString()}
           options={paymentMethodOptions}
-          onSelect={value => updateFormData('paymentMethodId', value)}
+          onSelect={value => updateFormData('paymentMethodId', parseInt(value))}
           placeholder="Select a payment method"
           className="mb-4"
         />
 
-        <View className="mb-4">
-          <TextInput
-            label="Place"
-            value={formData.place}
-            onChangeText={value => updateFormData('place', value)}
-            placeholder="e.g., Starbucks, Salary, etc."
-            className="w-full"
+        {userBankingProducts.length > 0 && (
+          <Dropdown
+            label="Banking Product (Optional)"
+            value={formData.userBankingProductId || ''}
+            options={userBankingProductOptions}
+            onSelect={value =>
+              updateFormData('userBankingProductId', value || null)
+            }
+            placeholder="Select a banking product"
+            className="mb-4"
           />
-        </View>
+        )}
 
         <DatePicker
           label="Date"

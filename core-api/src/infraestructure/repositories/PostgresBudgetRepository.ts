@@ -13,6 +13,9 @@ export class PostgresBudgetRepository implements IBudgetRepository {
         category: true,
         budgetType: true,
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return budgets.map(

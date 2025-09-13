@@ -1,6 +1,5 @@
-import { BankingProduct } from '@/types/financial/bank';
+import { UserBankingProduct } from '@/types/financial/bank';
 import {
-  Category,
   Currency,
   ExchangeRate,
   PaymentMethod,
@@ -11,32 +10,65 @@ export interface Transaction {
   userId: string;
   amount: number;
   currencyId: number;
-  exchangeRateId: string | null;
-  type: 'income' | 'expense';
+  exchangeRateId: number | null;
+  transactionTypeId: number;
   categoryId: number;
+  merchantId: number;
+  userBankingProductId: string | null;
   paymentMethodId: number;
-  place: string;
-  bankingProductId: number | null;
   transactionDate: Date;
   createdAt: Date;
   updatedAt: Date;
   deletedAt?: Date;
   currency?: Currency;
   exchangeRate?: ExchangeRate;
-  category?: Category;
+  category?: TransactionCategory;
+  transactionType?: TransactionType;
   paymentMethod?: PaymentMethod;
-  bankingProduct?: BankingProduct;
+  merchant?: Merchant;
+  userBankingProduct?: UserBankingProduct;
+}
+
+export interface TransactionType {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface TransactionCategory {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface Merchant {
+  id: number;
+  name: string;
+  categoryId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  website?: string;
+  location?: string;
+}
+
+export interface MerchantCategory {
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface CreateTransactionInput {
+  userId: string;
   amount: number;
   currencyId: number;
-  type: 'income' | 'expense';
+  exchangeRateId?: number | null;
+  transactionTypeId: number;
   categoryId: number;
+  merchantId: number;
+  userBankingProductId?: string | null;
   paymentMethodId: number;
-  place: string;
   transactionDate: Date;
-  exchangeRateId?: string;
-  bankingProductId?: number;
-  userId: string;
 }

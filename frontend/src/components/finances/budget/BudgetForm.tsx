@@ -4,12 +4,12 @@ import { DatePicker } from '@/components/ui/DatePicker';
 import { Dropdown, DropdownOption } from '@/components/ui/Dropdown';
 import { TextInput } from '@/components/ui/TextInput';
 import { budgetService } from '@/services/budget';
-import { categoryService } from '@/services/category';
-import { currencyService } from '@/services/currency';
+import { budgetCategoryService } from '@/services/budgetCategory';
+import { budgetTypeService } from '@/services/budgetType';
 import { useAuthStore } from '@/stores/authStore';
-import { Currency } from '@/types/financial/shared';
+import { BudgetCategory, BudgetType } from '@/types/financial/budget';
 import { useEffect, useState } from 'react';
-import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, Text, View } from 'react-native';
 
 interface BudgetFormProps {
   onSuccess: () => void;
@@ -23,7 +23,8 @@ type FormState = {
   goalAmount: number;
   currencyId: number;
   categoryId: number;
-  startDate: Date;
+  budgetTypeId: number;
+  startedDate: Date;
   finishedDate: Date;
   statusId: number;
 };
@@ -33,53 +34,72 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   const [loading, setLoading] = useState(false);
   const [loadingData, setLoadingData] = useState(true);
 
-  const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [categories, setCategories] = useState<DropdownOption[]>([]);
+  const [budgetTypes, setBudgetTypes] = useState<DropdownOption[]>([]);
   const [form, setForm] = useState<FormState>({
     name: '',
     description: '',
     currentAmount: 0,
     goalAmount: 0,
-    currencyId: 0,
+    currencyId: 4, // Default to Dominican Peso
     categoryId: 0,
-    startDate: new Date(),
+    budgetTypeId: 0,
+    startedDate: new Date(),
     finishedDate: new Date(),
     statusId: 1,
   });
 
   useEffect(() => {
-    loadCategories();
-    loadCurrencies();
+    loadInitialData();
   }, []);
 
-  const loadCategories = async () => {
-    const res = await categoryService.getAll();
-    const categories = res.data
-      .filter(category => category.type === 'budget')
-      .map(category => {
-        return {
-          label: category.name,
-          value: category.id,
-        };
-      });
-
-    console.log(res.data);
-    setCategories(categories);
-  };
-
-  const loadCurrencies = async () => {
+  const loadInitialData = async () => {
+    setLoadingData(true);
     try {
-      const res = await currencyService.getAll();
-      setCurrencies(res.data || []);
-      if (res.data && res.data.length > 0) {
-        // Use currency code (e.g., 'USD') for budgets API
-        setForm(prev => ({ ...prev, currencyId: res.data[0].id }));
-      }
+      await Promise.all([loadCategories(), loadBudgetTypes()]);
     } catch (error) {
-      console.error('Error loading currencies:', error);
-      Alert.alert('Error', 'Failed to load currencies');
+      console.error('Error loading initial data:', error);
+      Alert.alert('Error', 'Failed to load form data');
     } finally {
       setLoadingData(false);
+    }
+  };
+
+  const loadCategories = async () => {
+    try {
+      const res = await budgetCategoryService.getAll();
+      const categories = res.data.map((category: BudgetCategory) => ({
+        label: category.name,
+        value: category.id.toString(),
+      }));
+      setCategories(categories);
+
+      // Set first category as default if available
+      if (categories.length > 0) {
+        setForm(prev => ({ ...prev, categoryId: Number(categories[0].value) }));
+      }
+    } catch (error) {
+      console.error('Error loading categories:', error);
+      throw error;
+    }
+  };
+
+  const loadBudgetTypes = async () => {
+    try {
+      const res = await budgetTypeService.getAll();
+      const types = res.data.map((type: BudgetType) => ({
+        label: type.name,
+        value: type.id.toString(),
+      }));
+      setBudgetTypes(types);
+
+      // Set first type as default if available
+      if (types.length > 0) {
+        setForm(prev => ({ ...prev, budgetTypeId: Number(types[0].value) }));
+      }
+    } catch (error) {
+      console.error('Error loading budget types:', error);
+      throw error;
     }
   };
 
@@ -102,11 +122,19 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
       Alert.alert('Error', 'Please select a currency');
       return;
     }
+    if (!form.categoryId) {
+      Alert.alert('Error', 'Please select a category');
+      return;
+    }
+    if (!form.budgetTypeId) {
+      Alert.alert('Error', 'Please select a budget type');
+      return;
+    }
     if (!form.goalAmount || form.goalAmount <= 0) {
       Alert.alert('Error', 'Please enter a valid goal amount');
       return;
     }
-    if (form.finishedDate < form.startDate) {
+    if (form.finishedDate < form.startedDate) {
       Alert.alert('Error', 'Finished date must be after start date');
       return;
     }
@@ -119,11 +147,16 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
         description: form.description.trim(),
         currentAmount: Number(form.currentAmount) || 0,
         goalAmount: Number(form.goalAmount),
-        currencyId: form.currencyId, // currency code e.g., 'USD'
-        startDate: form.startDate,
-        finishedDate: form.finishedDate,
+        currencyId: form.currencyId,
         statusId: form.statusId,
         categoryId: form.categoryId,
+        budgetTypeId: form.budgetTypeId,
+        startedDate: form.startedDate,
+        finishedDate: form.finishedDate,
+        // These are required by the API but seem to be placeholder values
+        // based on the schema design issue
+        budgetAllocationId: 1,
+        budgetExecutionId: 1,
       });
 
       if (res.status === 201) {
@@ -206,40 +239,19 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
           className="mb-4"
         />
 
-        {/* Currency selector (use currency code) */}
-        <View className="mb-4">
-          <Text className="mb-2 text-sm font-medium text-gray-700 dark:text-gray-300">
-            Currency
-          </Text>
-          <View className="rounded-lg border border-gray-300 dark:border-gray-600">
-            {currencies.map(currency => (
-              <TouchableOpacity
-                key={currency.id}
-                className={`border-b border-gray-200 p-3 dark:border-gray-700 ${
-                  form.currencyId === currency.id
-                    ? 'bg-blue-50 dark:bg-blue-900/20'
-                    : ''
-                }`}
-                onPress={() => update('currencyId', currency.id)}
-              >
-                <Text
-                  className={`font-medium ${
-                    form.currencyId === currency.id
-                      ? 'text-blue-600 dark:text-blue-400'
-                      : 'text-gray-700 dark:text-gray-300'
-                  }`}
-                >
-                  {currency.currency}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-        </View>
+        <Dropdown
+          label="Budget Type"
+          value={form.budgetTypeId.toString()}
+          options={budgetTypes}
+          onSelect={value => update('budgetTypeId', Number(value))}
+          placeholder="Select a budget type"
+          className="mb-4"
+        />
 
         <DatePicker
           label="Start Date"
-          value={form.startDate}
-          onChange={date => update('startDate', date)}
+          value={form.startedDate}
+          onChange={date => update('startedDate', date)}
           className="mb-4"
           placeholder="Select start date"
         />

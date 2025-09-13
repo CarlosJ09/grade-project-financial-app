@@ -86,7 +86,7 @@ export default function ChatScreen() {
           <View className="mb-4 items-start">
             <View className="max-w-[90%] rounded-2xl rounded-bl-md bg-gray-100 p-4 dark:bg-gray-800">
               <Text className="mb-2 text-gray-900 dark:text-white">
-                Hello! I'm your AI financial assistant 🤖
+                Hello! I&apos;m your AI financial assistant 🤖
               </Text>
               <Text className="text-sm text-gray-700 dark:text-gray-300">
                 I can help you with budgeting, saving tips, investment advice,
@@ -108,7 +108,7 @@ export default function ChatScreen() {
               </TouchableOpacity>
               <TouchableOpacity className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
                 <Text className="text-sm text-gray-700 dark:text-gray-300">
-                  What's a good savings rate?
+                  What&apos;s a good savings rate?
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
@@ -121,7 +121,7 @@ export default function ChatScreen() {
         </ScrollView>
 
         {/* Input */}
-        <View className="border-t border-gray-200 p-4 dark:border-gray-700">
+        <View className="mb-12 border-t border-gray-200 p-4 dark:border-gray-700">
           <View className="flex-row items-center gap-3">
             <TextInput
               className="flex-1 rounded-2xl bg-gray-100 p-3 text-gray-900 dark:bg-gray-800 dark:text-white"

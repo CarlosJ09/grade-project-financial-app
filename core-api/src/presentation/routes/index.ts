@@ -9,6 +9,7 @@ import { courseEnrollmentRoutes } from '@/presentation/routes/CourseEnrollmentRo
 import { courseRoutes } from '@/presentation/routes/CourseRoutes';
 import { currencyRoutes } from '@/presentation/routes/CurrencyRoutes';
 import { exchangeRateRoutes } from '@/presentation/routes/ExchangeRateRoutes';
+import { merchantRoutes } from '@/presentation/routes/MerchantRoutes';
 import { moduleRoutes } from '@/presentation/routes/ModuleRoutes';
 import { paymentMethodRoutes } from '@/presentation/routes/PaymentMethodRoutes';
 import { transactionCategoryRoutes } from '@/presentation/routes/TransactionCategoryRoutes';
@@ -39,6 +40,7 @@ apiRouter.use(userBankRoutes);
 apiRouter.use(userBankingProductRoutes);
 apiRouter.use(currencyRoutes);
 apiRouter.use(exchangeRateRoutes);
+apiRouter.use(merchantRoutes);
 apiRouter.use(courseRoutes);
 apiRouter.use(moduleRoutes);
 apiRouter.use(contentItemRoutes);

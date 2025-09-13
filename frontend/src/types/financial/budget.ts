@@ -1,4 +1,4 @@
-import { Category, Currency } from '@/types/financial/shared';
+import { Currency } from '@/types/financial/shared';
 
 export interface Budget {
   id: string;
@@ -8,31 +8,59 @@ export interface Budget {
   currentAmount: number;
   goalAmount: number;
   currencyId: number;
-  categoryId: number;
   statusId: number;
-  startDate: Date;
+  categoryId: number;
+  budgetAllocationId: number;
+  budgetExecutionId: number;
+  budgetTypeId: number;
+  startedDate: Date;
   finishedDate: Date;
   createdAt: Date;
   updatedAt: Date;
-  status?: BudgetState;
-  category?: Category;
-  currency?: Currency;
   deletedAt?: Date;
+  currency?: Currency;
+  status?: BudgetStatus;
+  category?: BudgetCategory;
+  budgetType?: BudgetType;
 }
 
-export interface BudgetState {
+export interface BudgetStatus {
   id: number;
   name: string;
-  description: string | null;
+  description?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-export interface BudgetLineMovement {
+export interface BudgetCategory {
+  id: number;
+  name: string;
+  budgetTypeId: number;
+  createdAt: Date;
+  updatedAt: Date;
+  budgetType?: BudgetType;
+}
+
+export interface BudgetType {
+  id: number;
+  name: string;
+  description?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BudgetAllocation {
+  id: number;
+  budgetId: string;
+  amount: number;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface BudgetExecution {
   id: number;
   budgetId: string;
   transactionId: string;
-  movementType: string; // allocation, actual
-  amount: number;
-  dateMovement: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

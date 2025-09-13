@@ -1,26 +1,17 @@
 export interface Currency {
   id: number;
-  currency: string;
-  createdAt: string;
-  updatedAt: string;
-}
-
-export interface Category {
-  id: string;
+  code: string;
   name: string;
-  icon?: string;
-  color?: string;
-  type: 'income' | 'expense' | 'budget';
-  userId: string;
-  createdAt: string;
-  updatedAt: string;
+  symbol: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface PaymentMethod {
-  id: string;
-  paymentMethod: string;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  name: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface ExchangeRate {

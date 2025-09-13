@@ -23,6 +23,9 @@ export class PostgresTransactionRepository implements ITransactionRepository {
         merchant: true,
         userBankingProduct: true,
       },
+      orderBy: {
+        transactionDate: 'desc',
+      },
     });
     return transactions.map(
       transaction =>

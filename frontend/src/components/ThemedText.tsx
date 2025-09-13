@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins_700Bold',
   },
   title: {
-    fontSize: 32,
+    fontSize: 28,
     lineHeight: 32,
     fontFamily: 'Poppins_700Bold',
   },
