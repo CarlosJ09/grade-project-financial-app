@@ -9,7 +9,7 @@ env/
 venv/
 VENV/
 venv.bak/
-.env
+.env.local
 .flaskenv
 *.egg-info/
 .pytest_cache/

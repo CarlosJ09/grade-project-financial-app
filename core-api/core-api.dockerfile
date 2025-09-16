@@ -10,6 +10,6 @@ COPY ./src/infraestructure/prisma ./prisma/
 
 COPY . .
 
-EXPOSE ${PORT}
+EXPOSE ${CORE_PORT}
 
 CMD ["npm", "run", "dev"]

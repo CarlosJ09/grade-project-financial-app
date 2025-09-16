@@ -8,7 +8,7 @@ import { Database } from '@/infraestructure/config/Database';
 import { errorHandler } from '@/presentation/middleware/errorHandler';
 import { apiRouter } from '@/presentation/routes';
 
-const { PORT } = process.env;
+const { CORE_PORT } = process.env;
 
 const app = express();
 const swaggerDocs = swaggerJSDoc(swaggerOptions);
@@ -25,10 +25,10 @@ async function startApplication() {
   try {
     await Database.connect();
 
-    app.listen(PORT, () => {
-      console.log(`🚀 Financial app listening on port ${PORT}`);
+    app.listen(CORE_PORT, () => {
+      console.log(`🚀 Financial app listening on port ${CORE_PORT}`);
       console.log(
-        `🔗 Swagger docs available at http://localhost:${PORT}/api-docs`
+        `🔗 Swagger docs available at http://localhost:${CORE_PORT}/api-docs`
       );
     });
   } catch (error) {
