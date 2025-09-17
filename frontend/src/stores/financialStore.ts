@@ -3,21 +3,16 @@ import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
 import api from '@/interceptor/core-api';
-import type {
-  Bank,
-  Budget,
-  Category,
-  Currency,
-  PaymentMethod,
-  Transaction,
-} from '@/types/financial';
+import { Bank } from '@/types/financial/bank';
+import { Budget } from '@/types/financial/budget';
+import type { Currency, PaymentMethod } from '@/types/financial/shared';
+import { Transaction } from '@/types/financial/transaction';
 
 interface FinancialState {
   // State
   banks: Bank[];
   transactions: Transaction[];
   budgets: Budget[];
-  categories: Category[];
   paymentMethods: PaymentMethod[];
   currencies: Currency[];
   isLoading: boolean;
@@ -27,7 +22,6 @@ interface FinancialState {
   fetchBanks: () => Promise<void>;
   fetchTransactions: () => Promise<void>;
   fetchBudgets: () => Promise<void>;
-  fetchCategories: () => Promise<void>;
   fetchPaymentMethods: () => Promise<void>;
 
   createTransaction: (
@@ -70,7 +64,6 @@ export const useFinancialStore = create<FinancialState>()(
       banks: [],
       transactions: [],
       budgets: [],
-      categories: [],
       paymentMethods: [],
       currencies: [],
       isLoading: false,
@@ -112,20 +105,6 @@ export const useFinancialStore = create<FinancialState>()(
         } catch (error: any) {
           set({
             error: error.response?.data?.message || 'Failed to fetch budgets',
-            isLoading: false,
-          });
-        }
-      },
-
-      fetchCategories: async () => {
-        set({ isLoading: true, error: null });
-        try {
-          const response = await api.get('/categories');
-          set({ categories: response.data, isLoading: false });
-        } catch (error: any) {
-          set({
-            error:
-              error.response?.data?.message || 'Failed to fetch categories',
             isLoading: false,
           });
         }
@@ -291,7 +270,6 @@ export const useFinancialStore = create<FinancialState>()(
           banks: [],
           transactions: [],
           budgets: [],
-          categories: [],
           paymentMethods: [],
           currencies: [],
           error: null,
@@ -306,7 +284,6 @@ export const useFinancialStore = create<FinancialState>()(
         banks: state.banks,
         transactions: state.transactions,
         budgets: state.budgets,
-        categories: state.categories,
         paymentMethods: state.paymentMethods,
         currencies: state.currencies,
       }),

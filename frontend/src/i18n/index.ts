@@ -14,21 +14,11 @@ export type SupportedLanguage = keyof typeof SUPPORTED_LANGUAGES;
 
 const getDeviceLanguage = (): SupportedLanguage => {
   try {
-    let locale = 'en';
+    const locales = Localization.getLocales();
 
-    if (Localization.locale && typeof Localization.locale === 'string') {
-      locale = Localization.locale;
-    } else if (
-      Localization.locales &&
-      Array.isArray(Localization.locales) &&
-      Localization.locales.length > 0
-    ) {
-      locale = Localization.locales[0];
-    }
-
-    // Ensure locale is a string and split safely
-    if (typeof locale === 'string' && locale.length > 0) {
-      const deviceLanguage = locale.split('-')[0] as SupportedLanguage;
+    if (locales && locales.length > 0) {
+      const primaryLocale = locales[0];
+      const deviceLanguage = primaryLocale.languageCode as SupportedLanguage;
       return Object.keys(SUPPORTED_LANGUAGES).includes(deviceLanguage)
         ? deviceLanguage
         : 'en';

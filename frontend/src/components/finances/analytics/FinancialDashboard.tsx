@@ -1,5 +1,5 @@
 import { UserExpenseAnalyticsResponse, userService } from '@/services/user';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { ExpensePieChart } from './ExpensePieChart';

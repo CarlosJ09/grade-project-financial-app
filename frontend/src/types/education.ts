@@ -1,84 +1,78 @@
 export interface Course {
-  id: string;
-  title: string;
+  id: number;
+  name: string;
   description: string;
-  imageUrl?: string;
-  level: 'beginner' | 'intermediate' | 'advanced';
-  duration: number; // in minutes
-  price: number;
-  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
 export interface Module {
-  id: string;
-  title: string;
-  description: string;
-  courseId: string;
-  orderIndex: number;
-  duration: number; // in minutes
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  courseId: number;
+  contentItem: string;
+  sequence: number;
+  summary: string;
+  estimatedMinutes: number;
+  releaseAt: string;
+  prerequisiteModuleId?: number;
 }
 
 export interface ContentItem {
-  id: string;
+  id: number;
+  sectionId: string;
+  moduleId: number;
+  sequence: number;
   title: string;
-  content: string;
-  type: 'video' | 'text' | 'quiz' | 'interactive';
-  moduleId: string;
-  orderIndex: number;
-  duration?: number; // in minutes
-  createdAt: string;
-  updatedAt: string;
+  fileUrl: string;
+  markdownBody: string;
 }
 
 export interface QuizQuestion {
-  id: string;
-  question: string;
-  explanation?: string;
-  contentItemId: string;
-  orderIndex: number;
-  createdAt: string;
-  updatedAt: string;
+  id: number;
+  contentItemId: number;
+  questionText: string;
+  questionType: string;
+  explanation: string;
 }
 
 export interface QuizOption {
-  id: string;
-  text: string;
+  id: number;
+  quizQuestionId: number;
+  optionText: string;
   isCorrect: boolean;
-  questionId: string;
-  orderIndex: number;
 }
 
 export interface CourseEnrollment {
-  id: string;
+  id: number;
   userId: string;
-  courseId: string;
-  enrollmentDate: string;
-  completionDate?: string;
-  progress: number; // 0-100
-  isCompleted: boolean;
+  courseId: number;
+  enrolledAt: string;
+  unenrolledAt?: string;
 }
 
 export interface UserModuleProgress {
-  id: string;
+  id: number;
   userId: string;
-  moduleId: string;
-  progress: number; // 0-100
-  isCompleted: boolean;
+  moduleId: number;
+  status: string;
+  progressPercent: number;
+  startedAt: string;
   completedAt?: string;
 }
 
 export interface QuizAttempt {
-  id: string;
+  id: number;
   userId: string;
-  contentItemId: string;
+  contentItemId: number;
+  attemptNo: number;
+  status: string;
+  startedAt: string;
+  finishedAt?: string;
   score: number;
-  totalQuestions: number;
-  correctAnswers: number;
-  attemptDate: string;
-  isCompleted: boolean;
+}
+
+export interface QuizAttemptAnswer {
+  id: number;
+  quizAttemptId: number;
+  quizQuestionId: number;
 }

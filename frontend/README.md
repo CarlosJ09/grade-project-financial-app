@@ -23,7 +23,7 @@ This app uses **Zustand** for state management with the following stores:
 - Protected routing
 
 ```tsx
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 
 const { user, login, logout, isAuthenticated } = useAuthStore();
 ```

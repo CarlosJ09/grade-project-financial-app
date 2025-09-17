@@ -53,14 +53,10 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="finances/balance" options={{ href: null }} />
+
       <Tabs.Screen
-        name="finances/balance"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="learn"
+        name="learn/index"
         options={{
           title: 'Learn',
           tabBarIcon: ({ color }) => (
@@ -68,6 +64,10 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen name="learn/course/[id]" options={{ href: null }} />
+      <Tabs.Screen name="learn/module/[id]" options={{ href: null }} />
+      <Tabs.Screen name="learn/content/[id]" options={{ href: null }} />
+
       <Tabs.Screen
         name="chat"
         options={{

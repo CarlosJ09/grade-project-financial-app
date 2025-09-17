@@ -11,7 +11,9 @@
     "format:check": "prettier --check .",
     "lint": "prettier --check .",
     "seed": "tsx src/infraestructure/seeds/index.ts seed",
-    "seed:clear": "tsx src/infraestructure/seeds/index.ts clear"
+    "seed:clear": "tsx src/infraestructure/seeds/index.ts clear",
+    "seed:education": "tsx src/infraestructure/seeds/educationSeeder.ts seed",
+    "seed:education:clear": "tsx src/infraestructure/seeds/educationSeeder.ts clear"
   },
   "author": "CarlosJ09",
   "license": "ISC",

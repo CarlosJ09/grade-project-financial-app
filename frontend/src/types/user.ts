@@ -1,4 +1,4 @@
-import { Currency } from '@/stores';
+import { Currency } from '@/types/financial/shared';
 
 export interface UserBalance {
   totalBalance: number;

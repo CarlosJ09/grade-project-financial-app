@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 
 const SignUp = () => {
   const { register, isLoading, error, clearError } = useAuthStore();

@@ -5,11 +5,15 @@ import { seedBankingProducts } from '@/infraestructure/seeds/BankingProductSeede
 import { seedBudgetCategories } from '@/infraestructure/seeds/BudgetCategorySeeder';
 import { seedBudgetStatuses } from '@/infraestructure/seeds/BudgetStatusSeeder';
 import { seedBudgetTypes } from '@/infraestructure/seeds/BudgetTypeSeeder';
+import { seedContentItems } from '@/infraestructure/seeds/ContentItemSeeder';
+import { seedCourses } from '@/infraestructure/seeds/CourseSeeder';
 import { seedCurrencies } from '@/infraestructure/seeds/CurrencySeeder';
 import { seedExchangeRates } from '@/infraestructure/seeds/ExchangeRateSeeder';
 import { seedMerchantCategories } from '@/infraestructure/seeds/MerchantCategorySeeder';
 import { seedMerchants } from '@/infraestructure/seeds/MerchantSeeder';
+import { seedModules } from '@/infraestructure/seeds/ModuleSeeder';
 import { seedPaymentMethods } from '@/infraestructure/seeds/PaymentMethodSeeder';
+import { seedQuizzes } from '@/infraestructure/seeds/QuizSeeder';
 import { seedTransactionCategories } from '@/infraestructure/seeds/TransactionCategorySeeder';
 import { seedTransactionTypes } from '@/infraestructure/seeds/TransactionTypeSeeder';
 
@@ -40,6 +44,12 @@ export async function seedDatabase(): Promise<void> {
     await seedMerchants(prisma); // Requires merchant categories
     await seedExchangeRates(prisma); // Requires currencies
 
+    // 3. Education module entities (hierarchical dependencies)
+    await seedCourses(prisma);
+    await seedModules(prisma); // Requires courses
+    await seedContentItems(prisma); // Requires modules
+    await seedQuizzes(prisma); // Requires content items
+
     console.log('✅ Database seeding completed successfully');
   } catch (error) {
     console.error('❌ Database seeding failed:', error);
@@ -58,6 +68,15 @@ export async function clearSeedData(): Promise<void> {
 
     // Clear in reverse order of dependencies
     // Delete dependent relations first
+
+    // Education module cleanup (most dependent first)
+    await prisma.quizOption.deleteMany({});
+    await prisma.quizQuestion.deleteMany({});
+    await prisma.contentItem.deleteMany({});
+    await prisma.module.deleteMany({});
+    await prisma.course.deleteMany({});
+
+    // Financial module cleanup
     await prisma.bankBankingProduct.deleteMany({});
     await prisma.exchangeRate.deleteMany({});
     await prisma.merchant.deleteMany({});

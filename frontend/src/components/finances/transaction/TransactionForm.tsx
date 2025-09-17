@@ -157,8 +157,6 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
         transactionDate: transactionDate,
       };
 
-      console.log(transactionData);
-
       await transactionService.create(transactionData);
       Alert.alert('Success', 'Transaction created successfully');
       onSuccess();

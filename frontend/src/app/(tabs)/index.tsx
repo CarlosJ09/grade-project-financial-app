@@ -7,7 +7,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { FinancialDashboard } from '@/components/finances/analytics/FinancialDashboard';
 import { useTranslation } from '@/hooks/useTranslation';
 import { userService } from '@/services/user';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 import { formatCurrency } from '@/utils/formatCurrency';
 
 export default function HomeScreen() {
@@ -142,7 +142,7 @@ export default function HomeScreen() {
             {t('home.aiAssistant.title')}
           </ThemedText>
           <TouchableOpacity
-            className="rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 p-4"
+            className="rounded-xl bg-secondary p-4"
             onPress={() => router.push('/(tabs)/chat')}
           >
             <View className="flex-row items-center">
@@ -151,7 +151,7 @@ export default function HomeScreen() {
                 <Text className="mb-1 font-semibold text-white">
                   {t('home.aiAssistant.subtitle')}
                 </Text>
-                <Text className="text-sm text-purple-100">
+                <Text className="text-sm text-white">
                   {t('home.aiAssistant.description')}
                 </Text>
               </View>

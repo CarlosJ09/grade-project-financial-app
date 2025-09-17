@@ -7,7 +7,7 @@ import { Image, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 
 const SignIn = () => {
   const { login, isLoading, error, clearError } = useAuthStore();

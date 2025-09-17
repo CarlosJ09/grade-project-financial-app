@@ -10,7 +10,7 @@ import { TransactionModal } from '@/components/finances/transaction/TransactionM
 import { budgetService } from '@/services/budget';
 import { transactionService } from '@/services/transaction';
 import { UserBalanceResponse, userService } from '@/services/user';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 import { Budget } from '@/types/financial/budget';
 import { Transaction } from '@/types/financial/transaction';
 import { formatCurrency } from '@/utils/formatCurrency';
@@ -33,7 +33,6 @@ export default function FinancesScreen() {
     try {
       const response = await userService.getUserBalance(user?.id);
       setUserBalance(response);
-      console.log('User balance response:', response);
     } catch (error) {
       console.error('Error fetching user balance:', error);
     } finally {
@@ -50,10 +49,8 @@ export default function FinancesScreen() {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      console.log('Fetching transactions...');
       const response = await transactionService.getAll();
-      console.log('Transactions response:', response.data);
-      setTransactions(response.data || []);
+      setTransactions(response || []);
     } catch (error) {
       console.error('Error fetching transactions:', error);
     } finally {
@@ -64,10 +61,8 @@ export default function FinancesScreen() {
   const fetchBudgets = async () => {
     setLoading(true);
     try {
-      console.log('Fetching budgets...');
       const response = await budgetService.getAll();
-      console.log('Budgets response:', response.data);
-      setBudgets(response.data || []);
+      setBudgets(response || []);
     } catch (error) {
       console.error('Error fetching budgets:', error);
     } finally {

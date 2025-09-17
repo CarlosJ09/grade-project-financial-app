@@ -21,7 +21,7 @@ export class PostgresCourseEnrollmentRepository
     );
   }
 
-  async findById(id: string): Promise<CourseEnrollment | null> {
+  async findById(id: number): Promise<CourseEnrollment | null> {
     const courseEnrollment = await this.prisma.courseEnrollment.findUnique({
       where: { id },
     });
@@ -57,7 +57,7 @@ export class PostgresCourseEnrollmentRepository
   }
 
   async update(
-    id: string,
+    id: number,
     entity: Partial<Omit<CourseEnrollment, 'id'>>
   ): Promise<CourseEnrollment> {
     const updateData: any = { ...entity };
@@ -81,7 +81,7 @@ export class PostgresCourseEnrollmentRepository
     );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.courseEnrollment.delete({
       where: { id },
     });

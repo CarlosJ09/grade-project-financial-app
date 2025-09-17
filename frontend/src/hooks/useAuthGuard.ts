@@ -1,4 +1,4 @@
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 import { router } from 'expo-router';
 import { useEffect } from 'react';
 

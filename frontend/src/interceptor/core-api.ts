@@ -33,7 +33,7 @@ api.interceptors.response.use(
 
       try {
         // Dynamic import to avoid circular dependency
-        const { useAuthStore } = await import('@/stores');
+        const { useAuthStore } = await import('@/stores/authStore');
         const success = await useAuthStore.getState().refreshToken();
 
         if (success) {
@@ -52,7 +52,7 @@ api.interceptors.response.use(
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
         // Dynamic import to avoid circular dependency
-        const { useAuthStore } = await import('@/stores');
+        const { useAuthStore } = await import('@/stores/authStore');
         useAuthStore.getState().logout();
         return Promise.reject(error);
       }

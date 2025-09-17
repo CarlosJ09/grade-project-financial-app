@@ -7,14 +7,12 @@ import { LanguageSwitcher } from '@/components/LanguageSwitcher';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
 import { useTranslation } from '@/hooks/useTranslation';
-import { useAuthStore } from '@/stores';
+import { useAuthStore } from '@/stores/authStore';
 import { logout } from '@/utils/logout';
 
 export default function ProfileScreen() {
   const { user, logout: storeLogout } = useAuthStore();
   const { t } = useTranslation();
-
-  console.log(user);
 
   const handleLogout = () => {
     Alert.alert(

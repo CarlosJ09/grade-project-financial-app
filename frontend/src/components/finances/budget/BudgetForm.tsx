@@ -138,7 +138,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
       Alert.alert('Error', 'Finished date must be after start date');
       return;
     }
-    console.log('form', form);
+
     setLoading(true);
     try {
       const res = await budgetService.create({
