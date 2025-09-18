@@ -24,7 +24,7 @@ export class PostgresModuleRepository implements IModuleRepository {
 
   async findById(id: number): Promise<Module | null> {
     const module = await this.prisma.module.findUnique({
-      where: { id },
+      where: { id: Number(id) },
     });
 
     if (!module) return null;
@@ -38,6 +38,26 @@ export class PostgresModuleRepository implements IModuleRepository {
       module.estimatedMinutes,
       module.releaseAt,
       module.prerequisiteModuleId || undefined
+    );
+  }
+
+  async findByCourseId(courseId: number): Promise<Module[]> {
+    const modules = await this.prisma.module.findMany({
+      where: { courseId: Number(courseId) },
+    });
+
+    return modules.map(
+      module =>
+        new Module(
+          module.id,
+          module.courseId,
+          module.contentItem,
+          module.sequence,
+          module.summary,
+          module.estimatedMinutes,
+          module.releaseAt,
+          module.prerequisiteModuleId || undefined
+        )
     );
   }
 
@@ -73,7 +93,7 @@ export class PostgresModuleRepository implements IModuleRepository {
     }
 
     const module = await this.prisma.module.update({
-      where: { id },
+      where: { id: Number(id) },
       data: updateData,
     });
 
@@ -91,7 +111,7 @@ export class PostgresModuleRepository implements IModuleRepository {
 
   async delete(id: number): Promise<void> {
     await this.prisma.module.delete({
-      where: { id },
+      where: { id: Number(id) },
     });
   }
 }

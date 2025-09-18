@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -84,7 +85,12 @@ export default function HomeScreen() {
               className="flex-1 items-center rounded-xl bg-green-50 p-4 dark:bg-green-900/20"
               onPress={() => router.push('/(tabs)/finances')}
             >
-              <Text className="mb-2 text-2xl">💰</Text>
+              <Ionicons
+                name="cash"
+                size={24}
+                color="#10B981"
+                className="mb-2 dark:color-green-400"
+              />
               <Text className="text-sm font-medium text-green-800 dark:text-green-300">
                 {t('home.quickActions.addIncome')}
               </Text>
@@ -93,7 +99,12 @@ export default function HomeScreen() {
               className="flex-1 items-center rounded-xl bg-red-50 p-4 dark:bg-red-900/20"
               onPress={() => router.push('/(tabs)/finances')}
             >
-              <Text className="mb-2 text-2xl">💸</Text>
+              <Ionicons
+                name="trending-down"
+                size={24}
+                color="#EF4444"
+                className="mb-2 dark:color-red-400"
+              />
               <Text className="text-sm font-medium text-red-800 dark:text-red-300">
                 {t('home.quickActions.addExpense')}
               </Text>
@@ -102,7 +113,12 @@ export default function HomeScreen() {
               className="flex-1 items-center rounded-xl bg-blue-50 p-4 dark:bg-blue-900/20"
               onPress={() => router.push('/(tabs)/finances')}
             >
-              <Text className="mb-2 text-2xl">📊</Text>
+              <Ionicons
+                name="bar-chart"
+                size={24}
+                color="#2563eb"
+                className="mb-2 dark:color-blue-400"
+              />
               <Text className="text-sm font-medium text-blue-800 dark:text-blue-300">
                 {t('home.quickActions.budget')}
               </Text>
@@ -120,7 +136,12 @@ export default function HomeScreen() {
             onPress={() => router.push('/(tabs)/learn')}
           >
             <View className="flex-row items-center">
-              <Text className="mr-4 text-3xl">📚</Text>
+              <Ionicons
+                name="library"
+                size={28}
+                color="#6b7280"
+                className="mr-4 dark:color-gray-400"
+              />
               <View className="flex-1">
                 <Text className="mb-1 font-semibold text-gray-900 dark:text-white">
                   {t('home.learning.subtitle')}
@@ -146,7 +167,12 @@ export default function HomeScreen() {
             onPress={() => router.push('/(tabs)/chat')}
           >
             <View className="flex-row items-center">
-              <Text className="mr-4 text-3xl">🤖</Text>
+              <Ionicons
+                name="chatbubbles"
+                size={28}
+                color="#ffffff"
+                className="mr-4"
+              />
               <View className="flex-1">
                 <Text className="mb-1 font-semibold text-white">
                   {t('home.aiAssistant.subtitle')}

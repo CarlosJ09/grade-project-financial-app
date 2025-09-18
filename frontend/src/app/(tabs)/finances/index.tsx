@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -156,8 +157,14 @@ export default function FinancesScreen() {
               </View>
             ) : budgets.length === 0 ? (
               <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
-                <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
-                  💰 No budgets yet
+                <Ionicons
+                  name="cash"
+                  size={48}
+                  color="#6b7280"
+                  className="mx-auto mb-4 dark:color-gray-400"
+                />
+                <Text className="text-center text-gray-600 dark:text-gray-400">
+                  No budgets yet
                 </Text>
                 <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
                   Start by adding your first budget
@@ -186,8 +193,14 @@ export default function FinancesScreen() {
               </View>
             ) : transactions.length === 0 ? (
               <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
-                <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
-                  💰 No transactions yet
+                <Ionicons
+                  name="cash"
+                  size={48}
+                  color="#6b7280"
+                  className="mx-auto mb-4 dark:color-gray-400"
+                />
+                <Text className="text-center text-gray-600 dark:text-gray-400">
+                  No transactions yet
                 </Text>
                 <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
                   Start by adding your first transaction

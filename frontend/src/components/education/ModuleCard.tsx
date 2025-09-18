@@ -1,4 +1,5 @@
 import type { Module } from '@/types/education';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ProgressBar } from './ProgressBar';
@@ -31,9 +32,36 @@ export function ModuleCard({
     >
       <View className="flex-row items-center">
         <View className="mr-3">
-          <Text className="text-2xl">
-            {isLocked ? '🔒' : isCompleted ? '✅' : hasStarted ? '📖' : '📄'}
-          </Text>
+          <Ionicons
+            name={
+              isLocked
+                ? 'lock-closed'
+                : isCompleted
+                  ? 'checkmark-circle'
+                  : hasStarted
+                    ? 'book'
+                    : 'document-text'
+            }
+            size={24}
+            color={
+              isLocked
+                ? '#9CA3AF'
+                : isCompleted
+                  ? '#10B981'
+                  : hasStarted
+                    ? '#3B82F6'
+                    : '#6B7280'
+            }
+            className={
+              isLocked
+                ? 'dark:color-gray-600'
+                : isCompleted
+                  ? 'dark:color-green-400'
+                  : hasStarted
+                    ? 'dark:color-blue-400'
+                    : 'dark:color-gray-400'
+            }
+          />
         </View>
 
         <View className="flex-1">

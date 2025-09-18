@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React from 'react';
 import { Alert, ScrollView, Text, TouchableOpacity, View } from 'react-native';
@@ -35,27 +36,27 @@ export default function ProfileScreen() {
   const menuItems = [
     {
       title: t('profile.menu.personalInfo'),
-      icon: '👤',
+      iconName: 'person',
       onPress: () => {},
     },
     {
       title: t('profile.menu.securityPrivacy'),
-      icon: '🔒',
+      iconName: 'lock-closed',
       onPress: () => {},
     },
     {
       title: t('profile.menu.notifications'),
-      icon: '🔔',
+      iconName: 'notifications',
       onPress: () => {},
     },
     {
       title: t('profile.menu.helpSupport'),
-      icon: '❓',
+      iconName: 'help-circle',
       onPress: () => {},
     },
     {
       title: t('profile.menu.about'),
-      icon: 'ℹ️',
+      iconName: 'information-circle',
       onPress: () => {},
     },
   ];
@@ -96,7 +97,12 @@ export default function ProfileScreen() {
         <View className="px-4 pb-4">
           <View className="mb-3 rounded-xl bg-gray-50 p-4 dark:bg-gray-800">
             <View className="mb-3 flex-row items-center">
-              <Text className="mr-4 text-2xl">🎨</Text>
+              <Ionicons
+                name="color-palette"
+                size={24}
+                color="#6b7280"
+                className="mr-4 dark:color-gray-400"
+              />
               <View className="flex-1">
                 <Text className="font-medium text-gray-900 dark:text-white">
                   {t('profile.theme.title')}
@@ -118,7 +124,12 @@ export default function ProfileScreen() {
               className="mb-3 flex-row items-center rounded-xl bg-gray-50 p-4 dark:bg-gray-800"
               onPress={item.onPress}
             >
-              <Text className="mr-4 text-2xl">{item.icon}</Text>
+              <Ionicons
+                name={item.iconName as any}
+                size={24}
+                color="#6b7280"
+                className="mr-4 dark:color-gray-400"
+              />
               <View className="flex-1">
                 <Text className="font-medium text-gray-900 dark:text-white">
                   {item.title}

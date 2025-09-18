@@ -21,9 +21,9 @@ export class PostgresContentItemRepository implements IContentItemRepository {
     );
   }
 
-  async findById(id: string): Promise<ContentItem | null> {
+  async findById(id: number): Promise<ContentItem | null> {
     const contentItem = await this.prisma.contentItem.findUnique({
-      where: { id },
+      where: { id: Number(id) },
     });
 
     if (!contentItem) return null;
@@ -60,7 +60,7 @@ export class PostgresContentItemRepository implements IContentItemRepository {
     entity: Partial<Omit<ContentItem, 'id'>>
   ): Promise<ContentItem> {
     const contentItem = await this.prisma.contentItem.update({
-      where: { id },
+      where: { id: Number(id) },
       data: entity,
     });
 
@@ -75,9 +75,9 @@ export class PostgresContentItemRepository implements IContentItemRepository {
     );
   }
 
-  async delete(id: string): Promise<void> {
+  async delete(id: number): Promise<void> {
     await this.prisma.contentItem.delete({
-      where: { id },
+      where: { id: Number(id) },
     });
   }
 }

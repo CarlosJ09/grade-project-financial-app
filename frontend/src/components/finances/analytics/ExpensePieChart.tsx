@@ -1,4 +1,5 @@
 import { ExpenseCategoryData } from '@/services/user';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Dimensions, Text, View } from 'react-native';
 import { PieChart } from 'react-native-chart-kit';
@@ -44,8 +45,14 @@ export const ExpensePieChart: React.FC<ExpensePieChartProps> = ({
   if (data.length === 0) {
     return (
       <View className="items-center justify-center rounded-xl bg-gray-50 p-8 dark:bg-gray-800">
-        <Text className="text-center text-gray-600 dark:text-gray-400">
-          📊 No expense data available
+        <Ionicons
+          name="bar-chart"
+          size={48}
+          color="#6b7280"
+          className="dark:color-gray-400"
+        />
+        <Text className="mt-4 text-center text-gray-600 dark:text-gray-400">
+          No expense data available
         </Text>
         <Text className="mt-2 text-center text-sm text-gray-500 dark:text-gray-500">
           Start adding expenses to see your spending breakdown

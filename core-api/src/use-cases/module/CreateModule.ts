@@ -1,14 +1,14 @@
-import { IModuleRepository } from '@/domain/repositories/IModuleRepository';
 import { Module } from '@/domain/entities/Module';
+import { IModuleRepository } from '@/domain/repositories/IModuleRepository';
 
 export type CreateModuleInput = {
-  courseId: string;
+  courseId: number;
   contentItem: string;
   sequence: number;
   summary: string;
   estimatedMinutes: number;
   releaseAt: Date;
-  prerequisiteModuleId?: string;
+  prerequisiteModuleId?: number;
 };
 
 export class CreateModule {

@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Alert, Text, TouchableOpacity, View } from 'react-native';
 
@@ -79,9 +80,12 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
               {name}
             </Text>
             {code === currentLanguage && (
-              <Text className="text-lg text-blue-600 dark:text-blue-400">
-                ✓
-              </Text>
+              <Ionicons
+                name="checkmark"
+                size={18}
+                color="#2563eb"
+                className="dark:color-blue-400"
+              />
             )}
           </TouchableOpacity>
         ))}
@@ -95,7 +99,12 @@ export const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
       onPress={showLanguageOptions}
     >
       <View className="flex-row items-center">
-        <Text className="mr-3 text-2xl">🌍</Text>
+        <Ionicons
+          name="language"
+          size={24}
+          color="#6b7280"
+          className="mr-3 dark:color-gray-400"
+        />
         <Text className="font-medium text-gray-900 dark:text-white">
           {t('profile.settings.language')}
         </Text>

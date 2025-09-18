@@ -21,7 +21,7 @@ export class PostgresCourseRepository implements ICourseRepository {
 
   async findById(id: number): Promise<Course | null> {
     const course = await this.prisma.course.findUnique({
-      where: { id },
+      where: { id: Number(id) },
     });
 
     if (!course) return null;
@@ -56,7 +56,7 @@ export class PostgresCourseRepository implements ICourseRepository {
     entity: Partial<Omit<Course, 'id' | 'createdAt' | 'updatedAt'>>
   ): Promise<Course> {
     const course = await this.prisma.course.update({
-      where: { id },
+      where: { id: Number(id) },
       data: entity,
     });
 
@@ -71,7 +71,7 @@ export class PostgresCourseRepository implements ICourseRepository {
 
   async delete(id: number): Promise<void> {
     await this.prisma.course.delete({
-      where: { id },
+      where: { id: Number(id) },
     });
   }
 }

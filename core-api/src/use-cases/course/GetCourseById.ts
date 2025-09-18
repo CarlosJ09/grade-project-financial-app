@@ -1,10 +1,10 @@
-import { ICourseRepository } from '@/domain/repositories/ICourseRepository';
 import { Course } from '@/domain/entities/Course';
+import { ICourseRepository } from '@/domain/repositories/ICourseRepository';
 
 export class GetCourseById {
   constructor(private courseRepository: ICourseRepository) {}
 
-  async execute(id: string): Promise<Course | null> {
+  async execute(id: number): Promise<Course | null> {
     return this.courseRepository.findById(id);
   }
 }

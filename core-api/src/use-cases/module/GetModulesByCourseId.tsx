@@ -1,10 +1,10 @@
 import { Module } from '@/domain/entities/Module';
 import { IModuleRepository } from '@/domain/repositories/IModuleRepository';
 
-export class GetModuleById {
+export class GetModulesByCourseId {
   constructor(private moduleRepository: IModuleRepository) {}
 
-  async execute(id: number): Promise<Module | null> {
-    return this.moduleRepository.findById(id);
+  async execute(courseId: number): Promise<Module[]> {
+    return this.moduleRepository.findByCourseId(courseId);
   }
 }

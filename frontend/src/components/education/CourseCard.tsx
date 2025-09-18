@@ -1,4 +1,5 @@
 import type { Course } from '@/types/education';
+import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 import { ProgressBar } from './ProgressBar';
@@ -36,7 +37,12 @@ export function CourseCard({
       onPress={handlePress}
     >
       <View className="flex-row items-center">
-        <Text className="mr-3 text-2xl">{isEnrolled ? '✅' : '📚'}</Text>
+        <Ionicons
+          name={isEnrolled ? 'checkmark-circle' : 'library'}
+          size={24}
+          color={isEnrolled ? '#10B981' : '#2563eb'}
+          className={`mr-3 ${isEnrolled ? 'dark:color-green-400' : 'dark:color-blue-400'}`}
+        />
         <View className="flex-1">
           <Text
             className={`mb-1 font-semibold ${

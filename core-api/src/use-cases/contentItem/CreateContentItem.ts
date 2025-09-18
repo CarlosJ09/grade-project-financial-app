@@ -1,9 +1,9 @@
-import { IContentItemRepository } from '@/domain/repositories/IContentItemRepository';
 import { ContentItem } from '@/domain/entities/ContentItem';
+import { IContentItemRepository } from '@/domain/repositories/IContentItemRepository';
 
 export type CreateContentItemInput = {
   sectionId: string;
-  moduleId: string;
+  moduleId: number;
   sequence: number;
   title: string;
   fileUrl: string;

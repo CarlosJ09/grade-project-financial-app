@@ -1,15 +1,16 @@
-import { Router } from 'express';
 import { Database } from '@/infraestructure/config/Database';
 import { PostgresModuleRepository } from '@/infraestructure/repositories/PostgresModuleRepository';
-import { GetAllModules } from '@/use-cases/module/GetAllModules';
-import { GetModuleById } from '@/use-cases/module/GetModuleById';
-import { CreateModule } from '@/use-cases/module/CreateModule';
-import { UpdateModule } from '@/use-cases/module/UpdateModule';
-import { DeleteModule } from '@/use-cases/module/DeleteModule';
-import { ModuleController } from '@/presentation/controllers/ModuleController';
 import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { ModuleController } from '@/presentation/controllers/ModuleController';
 import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
 import { asyncHandler } from '@/presentation/utils/asyncHandler';
+import { CreateModule } from '@/use-cases/module/CreateModule';
+import { DeleteModule } from '@/use-cases/module/DeleteModule';
+import { GetAllModules } from '@/use-cases/module/GetAllModules';
+import { GetModuleById } from '@/use-cases/module/GetModuleById';
+import { GetModulesByCourseId } from '@/use-cases/module/GetModulesByCourseId';
+import { UpdateModule } from '@/use-cases/module/UpdateModule';
+import { Router } from 'express';
 
 const router = Router();
 
@@ -20,12 +21,14 @@ const prisma = Database.getInstance();
 const moduleRepository = new PostgresModuleRepository(prisma);
 const getAllModules = new GetAllModules(moduleRepository);
 const getModuleById = new GetModuleById(moduleRepository);
+const getModulesByCourseId = new GetModulesByCourseId(moduleRepository);
 const createModule = new CreateModule(moduleRepository);
 const updateModule = new UpdateModule(moduleRepository);
 const deleteModule = new DeleteModule(moduleRepository);
 const moduleController = new ModuleController(
   getAllModules,
   getModuleById,
+  getModulesByCourseId,
   createModule,
   updateModule,
   deleteModule
@@ -81,6 +84,37 @@ router.get(
   authMiddleware,
   asyncHandler(async (req, res) => {
     return moduleController.getById(req, res);
+  })
+);
+
+/**
+ * @swagger
+ * /modules/course/{courseId}:
+ *   parameters:
+ *     - in: path
+ *       name: courseId
+ *       required: true
+ *       schema:
+ *         type: number
+ *       description: The ID of the course to retrieve modules for
+ *   get:
+ *     summary: Get a module by course id
+ *     tags: [Modules]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: A module
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Module not found
+ */
+router.get(
+  '/modules/course/:courseId',
+  authMiddleware,
+  asyncHandler(async (req, res) => {
+    return moduleController.getByCourseId(req, res);
   })
 );
 

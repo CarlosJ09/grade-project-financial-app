@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
 import React, { useEffect } from 'react';
 import {
@@ -97,7 +98,12 @@ export default function LearnScreen() {
               onPress={handleNavigateToChat}
             >
               <View className="flex-row items-center">
-                <Text className="mr-4 text-4xl">🤖</Text>
+                <Ionicons
+                  name="chatbubbles"
+                  size={32}
+                  color="#ffffff"
+                  className="mr-4"
+                />
                 <View className="flex-1">
                   <Text className="mb-2 text-lg font-bold text-white">
                     Get Personalized Advice
@@ -141,9 +147,12 @@ export default function LearnScreen() {
                       }
                     >
                       <View className="flex-row items-center">
-                        <Text className="mr-3 text-2xl">
-                          {isEnrolled ? '✅' : '📚'}
-                        </Text>
+                        <Ionicons
+                          name={isEnrolled ? 'checkmark-circle' : 'book'}
+                          size={24}
+                          color={isEnrolled ? '#10B981' : '#2563eb'}
+                          className="mr-3"
+                        />
                         <View className="flex-1">
                           <Text
                             className={`mb-1 font-semibold ${
@@ -179,9 +188,17 @@ export default function LearnScreen() {
 
           {/* Getting Started */}
           <View className="rounded-xl bg-gray-50 p-6 dark:bg-gray-800">
-            <Text className="mb-2 text-center text-gray-600 dark:text-gray-400">
-              📚 Start Your Financial Journey
-            </Text>
+            <View className="mb-2 flex-row items-center justify-center">
+              <Ionicons
+                name="book"
+                size={20}
+                color="#6b7280"
+                className="mr-2 dark:color-gray-400"
+              />
+              <Text className="text-center text-gray-600 dark:text-gray-400">
+                Start Your Financial Journey
+              </Text>
+            </View>
             <Text className="text-center text-sm text-gray-500 dark:text-gray-500">
               {courses.length > 0
                 ? 'Enroll in courses to build your financial knowledge'

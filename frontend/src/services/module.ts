@@ -8,14 +8,7 @@ export class ModuleService extends BaseService<Module> {
   }
 
   async getModulesByCourse(courseId: number): Promise<Module[]> {
-    const response = await api.get(`${this.endpoint}?courseId=${courseId}`);
-    return response.data;
-  }
-
-  async getModuleWithContent(
-    id: number
-  ): Promise<Module & { contentItems: any[] }> {
-    const response = await api.get(`${this.endpoint}/${id}/content`);
+    const response = await api.get(`${this.endpoint}/course/${courseId}`);
     return response.data;
   }
 }

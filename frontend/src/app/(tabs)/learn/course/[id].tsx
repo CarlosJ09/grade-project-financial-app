@@ -48,7 +48,7 @@ export default function CourseDetailScreen() {
       return;
     }
 
-    const success = await enrollInCourse(courseId);
+    const success = await enrollInCourse({ userId: user.id, courseId });
     if (success) {
       Alert.alert('Success', 'You have been enrolled in the course!');
     } else if (error) {

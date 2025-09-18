@@ -1,9 +1,9 @@
-import { IContentItemRepository } from '@/domain/repositories/IContentItemRepository';
 import { ContentItem } from '@/domain/entities/ContentItem';
+import { IContentItemRepository } from '@/domain/repositories/IContentItemRepository';
 
 export type UpdateContentItemInput = {
   sectionId?: string;
-  moduleId?: string;
+  moduleId?: number;
   sequence?: number;
   title?: string;
   fileUrl?: string;
@@ -14,7 +14,7 @@ export class UpdateContentItem {
   constructor(private contentItemRepository: IContentItemRepository) {}
 
   async execute(
-    id: string,
+    id: number,
     input: UpdateContentItemInput
   ): Promise<ContentItem> {
     return this.contentItemRepository.update(id, input);
