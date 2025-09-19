@@ -1,15 +1,15 @@
-import { Router } from 'express';
 import { Database } from '@/infraestructure/config/Database';
 import { PostgresContentItemRepository } from '@/infraestructure/repositories/PostgresContentItemRepository';
-import { GetAllContentItems } from '@/use-cases/contentItem/GetAllContentItems';
-import { GetContentItemById } from '@/use-cases/contentItem/GetContentItemById';
-import { CreateContentItem } from '@/use-cases/contentItem/CreateContentItem';
-import { UpdateContentItem } from '@/use-cases/contentItem/UpdateContentItem';
-import { DeleteContentItem } from '@/use-cases/contentItem/DeleteContentItem';
-import { ContentItemController } from '@/presentation/controllers/ContentItemController';
 import { JwtTokenService } from '@/infraestructure/services/JwtTokenService';
+import { ContentItemController } from '@/presentation/controllers/ContentItemController';
 import { createAuthMiddleware } from '@/presentation/middleware/authMiddleware';
 import { asyncHandler } from '@/presentation/utils/asyncHandler';
+import { CreateContentItem } from '@/use-cases/contentItem/CreateContentItem';
+import { DeleteContentItem } from '@/use-cases/contentItem/DeleteContentItem';
+import { GetAllContentItems } from '@/use-cases/contentItem/GetAllContentItems';
+import { GetContentItemById } from '@/use-cases/contentItem/GetContentItemById';
+import { UpdateContentItem } from '@/use-cases/contentItem/UpdateContentItem';
+import { Router } from 'express';
 
 const router = Router();
 
@@ -34,6 +34,13 @@ const contentItemController = new ContentItemController(
 /**
  * @swagger
  * /content-items:
+ *   parameters:
+ *    - in: query
+ *      name: moduleId
+ *      required: false
+ *   schema:
+ *    type: string
+ *   description: The ID of the module to retrieve
  *   get:
  *     summary: Get all content items
  *     tags: [Content Items]

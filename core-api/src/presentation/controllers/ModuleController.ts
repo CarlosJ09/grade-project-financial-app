@@ -12,7 +12,7 @@ export class ModuleController extends BaseController {
   constructor(
     private getAllModules: GetAllModules,
     private getModuleById: GetModuleById,
-    private GetModulesByCourseId: GetModulesByCourseId,
+    private getModulesByCourseId: GetModulesByCourseId,
     private createModule: CreateModule,
     private updateModule: UpdateModule,
     private deleteModule: DeleteModule
@@ -44,7 +44,9 @@ export class ModuleController extends BaseController {
           return this.badRequest(res, 'Course ID parameter is required');
         }
 
-        const entities = await this.getModulesByCourseId.execute(courseId);
+        const entities = await this.getModulesByCourseId.execute(
+          parseInt(courseId)
+        );
         const dtos = entities.map(ModuleResponseDto.fromEntity);
         return this.ok(res, dtos);
       },

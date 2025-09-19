@@ -5,8 +5,13 @@ import { PrismaClient } from '@/infraestructure/prisma/generated/prisma';
 export class PostgresContentItemRepository implements IContentItemRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
-  async findAll(): Promise<ContentItem[]> {
-    const contentItems = await this.prisma.contentItem.findMany();
+  async findAll(moduleId?: number): Promise<ContentItem[]> {
+    const contentItems = await this.prisma.contentItem.findMany({
+      where: {
+        moduleId: moduleId ?? undefined,
+      },
+    });
+
     return contentItems.map(
       contentItem =>
         new ContentItem(

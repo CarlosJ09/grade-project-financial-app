@@ -68,7 +68,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   const loadCategories = async () => {
     try {
       const res = await budgetCategoryService.getAll();
-      const categories = res.data.map((category: BudgetCategory) => ({
+      const categories = res.map((category: BudgetCategory) => ({
         label: category.name,
         value: category.id.toString(),
       }));
@@ -87,7 +87,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
   const loadBudgetTypes = async () => {
     try {
       const res = await budgetTypeService.getAll();
-      const types = res.data.map((type: BudgetType) => ({
+      const types = res.map((type: BudgetType) => ({
         label: type.name,
         value: type.id.toString(),
       }));
@@ -159,7 +159,7 @@ export function BudgetForm({ onSuccess, onCancel }: BudgetFormProps) {
         budgetExecutionId: 1,
       });
 
-      if (res.status === 201) {
+      if (res?.id) {
         Alert.alert('Success', 'Budget created successfully');
         onSuccess();
       }

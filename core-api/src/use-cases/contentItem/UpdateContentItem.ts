@@ -14,7 +14,7 @@ export class UpdateContentItem {
   constructor(private contentItemRepository: IContentItemRepository) {}
 
   async execute(
-    id: number,
+    id: string,
     input: UpdateContentItemInput
   ): Promise<ContentItem> {
     return this.contentItemRepository.update(id, input);

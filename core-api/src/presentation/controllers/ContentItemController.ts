@@ -1,10 +1,10 @@
-import { Request, Response } from 'express';
+import { ContentItemResponseDto } from '@/presentation/dtos/response/ContentItemResponseDto';
+import { CreateContentItem } from '@/use-cases/contentItem/CreateContentItem';
+import { DeleteContentItem } from '@/use-cases/contentItem/DeleteContentItem';
 import { GetAllContentItems } from '@/use-cases/contentItem/GetAllContentItems';
 import { GetContentItemById } from '@/use-cases/contentItem/GetContentItemById';
-import { CreateContentItem } from '@/use-cases/contentItem/CreateContentItem';
 import { UpdateContentItem } from '@/use-cases/contentItem/UpdateContentItem';
-import { DeleteContentItem } from '@/use-cases/contentItem/DeleteContentItem';
-import { ContentItemResponseDto } from '@/presentation/dtos/response/ContentItemResponseDto';
+import { Request, Response } from 'express';
 import { BaseController } from './BaseController';
 
 export class ContentItemController extends BaseController {
@@ -19,11 +19,19 @@ export class ContentItemController extends BaseController {
   }
 
   async getAll(req: Request, res: Response) {
-    return this.handleGetAll(
-      req,
+    return this.executeOperation(
       res,
-      this.getAllContentItems,
-      ContentItemResponseDto
+      async () => {
+        const { moduleId } = req.query;
+
+        const entities = await this.getAllContentItems.execute(
+          moduleId ? parseInt(moduleId as string) : undefined
+        );
+        const dtos = entities.map(ContentItemResponseDto.fromEntity);
+
+        return this.ok(res, dtos);
+      },
+      'Error retrieving content items'
     );
   }
 

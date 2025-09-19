@@ -1,14 +1,15 @@
 import { router, useLocalSearchParams } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
   Text,
   TouchableOpacity,
   View,
+  useColorScheme,
 } from 'react-native';
+import Markdown from 'react-native-markdown-display';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { WebView } from 'react-native-webview';
 
 import { ThemedText } from '@/components/ThemedText';
 import { contentItemService } from '@/services/contentItem';
@@ -22,11 +23,7 @@ export default function ContentItemScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    loadContent();
-  }, [contentItemId]);
-
-  const loadContent = async () => {
+  const loadContent = useCallback(async () => {
     setIsLoading(true);
     setError(null);
 
@@ -38,52 +35,102 @@ export default function ContentItemScreen() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [contentItemId]);
 
-  const renderMarkdownContent = (markdown: string) => {
-    // Simple markdown to HTML conversion for basic formatting
-    const htmlContent = markdown
-      .replace(/\n/g, '<br>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-      .replace(/^## (.*$)/gim, '<h2>$1</h2>')
-      .replace(/^### (.*$)/gim, '<h3>$1</h3>');
+  useEffect(() => {
+    loadContent();
+  }, [loadContent]);
 
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <style>
-            body {
-              font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-              line-height: 1.6;
-              color: #333;
-              margin: 20px;
-            }
-            h1, h2, h3 {
-              color: #2563eb;
-              margin-top: 24px;
-              margin-bottom: 16px;
-            }
-            h1 { font-size: 24px; }
-            h2 { font-size: 20px; }
-            h3 { font-size: 18px; }
-            p { margin-bottom: 16px; }
-            strong { font-weight: 600; }
-            em { font-style: italic; }
-            @media (prefers-color-scheme: dark) {
-              body { background-color: #1f2937; color: #f9fafb; }
-              h1, h2, h3 { color: #60a5fa; }
-            }
-          </style>
-        </head>
-        <body>${htmlContent}</body>
-      </html>
-    `;
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === 'dark';
 
-    return html;
+  const markdownStyles = {
+    body: {
+      fontSize: 16,
+      lineHeight: 24,
+      color: isDark ? '#f9fafb' : '#374151',
+      fontFamily: 'System',
+    },
+    heading1: {
+      fontSize: 24,
+      fontWeight: '700' as const,
+      color: isDark ? '#60a5fa' : '#2563eb',
+      marginTop: 24,
+      marginBottom: 16,
+    },
+    heading2: {
+      fontSize: 20,
+      fontWeight: '600' as const,
+      color: isDark ? '#60a5fa' : '#2563eb',
+      marginTop: 20,
+      marginBottom: 12,
+    },
+    heading3: {
+      fontSize: 18,
+      fontWeight: '600' as const,
+      color: isDark ? '#60a5fa' : '#2563eb',
+      marginTop: 16,
+      marginBottom: 8,
+    },
+    paragraph: {
+      marginBottom: 16,
+      fontSize: 16,
+      lineHeight: 24,
+    },
+    strong: {
+      fontWeight: '600' as const,
+    },
+    em: {
+      fontStyle: 'italic' as const,
+    },
+    code_inline: {
+      backgroundColor: isDark ? '#374151' : '#f3f4f6',
+      color: isDark ? '#f87171' : '#dc2626',
+      paddingHorizontal: 4,
+      paddingVertical: 2,
+      borderRadius: 4,
+      fontFamily: 'Courier',
+      fontSize: 14,
+    },
+    code_block: {
+      backgroundColor: isDark ? '#374151' : '#f3f4f6',
+      padding: 12,
+      borderRadius: 8,
+      marginVertical: 8,
+      fontFamily: 'Courier',
+      fontSize: 14,
+    },
+    fence: {
+      backgroundColor: isDark ? '#374151' : '#f3f4f6',
+      padding: 12,
+      borderRadius: 8,
+      marginVertical: 8,
+      fontFamily: 'Courier',
+      fontSize: 14,
+    },
+    blockquote: {
+      backgroundColor: isDark ? '#1f2937' : '#f9fafb',
+      borderLeftWidth: 4,
+      borderLeftColor: isDark ? '#60a5fa' : '#2563eb',
+      paddingLeft: 16,
+      paddingVertical: 8,
+      marginVertical: 8,
+      fontStyle: 'italic' as const,
+    },
+    list_item: {
+      marginBottom: 8,
+    },
+    bullet_list: {
+      marginVertical: 8,
+    },
+    ordered_list: {
+      marginVertical: 8,
+    },
+    hr: {
+      backgroundColor: isDark ? '#4b5563' : '#d1d5db',
+      height: 1,
+      marginVertical: 16,
+    },
   };
 
   if (isLoading) {
@@ -131,41 +178,30 @@ export default function ContentItemScreen() {
         </View>
 
         {/* Content */}
-        <View className="flex-1">
-          {contentItem.fileUrl ? (
-            <View className="flex-1 p-4">
-              <Text className="mb-4 text-center text-gray-600 dark:text-gray-400">
+        <ScrollView className="flex-1 p-4" showsVerticalScrollIndicator={true}>
+          {contentItem.fileUrl && (
+            <View className="mb-4 rounded-lg bg-blue-50 p-3 dark:bg-blue-900/20">
+              <Text className="text-center text-blue-700 dark:text-blue-300">
                 📎 File: {contentItem.fileUrl}
               </Text>
-              {contentItem.markdownBody && (
-                <ScrollView className="flex-1">
-                  <WebView
-                    source={{
-                      html: renderMarkdownContent(contentItem.markdownBody),
-                    }}
-                    style={{ flex: 1, minHeight: 400 }}
-                    scrollEnabled={false}
-                    showsVerticalScrollIndicator={false}
-                  />
-                </ScrollView>
-              )}
             </View>
-          ) : (
-            <ScrollView className="flex-1 p-4">
-              <WebView
-                source={{
-                  html: renderMarkdownContent(contentItem.markdownBody),
-                }}
-                style={{ flex: 1, minHeight: 400 }}
-                scrollEnabled={false}
-                showsVerticalScrollIndicator={false}
-              />
-            </ScrollView>
           )}
-        </View>
+
+          {contentItem.markdownBody ? (
+            <Markdown style={markdownStyles}>
+              {contentItem.markdownBody}
+            </Markdown>
+          ) : (
+            <View className="flex-1 items-center justify-center py-8">
+              <Text className="text-center text-gray-500 dark:text-gray-400">
+                No content available for this item.
+              </Text>
+            </View>
+          )}
+        </ScrollView>
 
         {/* Footer Actions */}
-        <View className="border-t border-gray-200 p-4 dark:border-gray-700">
+        <View className="mb-14 border-t border-gray-200 p-4 dark:border-gray-700">
           <TouchableOpacity
             className="rounded-lg bg-blue-500 px-6 py-3"
             onPress={() => router.back()}
