@@ -1,14 +1,7 @@
-from typing import Union
+# This file is kept for backward compatibility with Docker
+# The main application is now in app/main.py
 
-from fastapi import FastAPI
+from app.main import app
 
-app = FastAPI()
-
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
-
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+# Re-export the app for uvicorn
+__all__ = ["app"]
