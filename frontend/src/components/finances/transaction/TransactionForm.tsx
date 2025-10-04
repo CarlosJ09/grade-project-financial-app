@@ -77,17 +77,15 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
         merchantService.getAll(),
       ]);
 
-      setCategories(categoriesRes.data || []);
-      setTransactionTypes(transactionTypesRes.data || []);
-      setPaymentMethods(paymentMethodsRes.data || []);
+      setCategories(categoriesRes || []);
+      setTransactionTypes(transactionTypesRes || []);
+      setPaymentMethods(paymentMethodsRes || []);
       setUserBankingProducts(userBankingProductsRes.data || []);
-      setMerchants(merchantsRes.data || []);
+      setMerchants(merchantsRes || []);
 
       // Set default values
-      if (transactionTypesRes.data && transactionTypesRes.data.length > 0) {
-        const expenseType = transactionTypesRes.data.find(
-          t => t.name === 'Expense'
-        );
+      if (transactionTypesRes && transactionTypesRes.length > 0) {
+        const expenseType = transactionTypesRes.find(t => t.name === 'Expense');
         if (expenseType) {
           setFormData(prev => ({
             ...prev,
@@ -95,10 +93,10 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           }));
         }
       }
-      if (merchantsRes.data && merchantsRes.data.length > 0) {
+      if (merchantsRes && merchantsRes.length > 0) {
         setFormData(prev => ({
           ...prev,
-          merchantId: merchantsRes.data[0].id,
+          merchantId: merchantsRes[0].id,
         }));
       }
     } catch (error) {
