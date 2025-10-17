@@ -19,11 +19,10 @@ from .chatbot.prompts import FinancialPromptTemplates
 
 logger = logging.getLogger(__name__)
 
-# Create router
 router = APIRouter()
 
 
-@router.post("/chat", response_model=ChatResponse)
+@router.post("/chat", response_model=ChatResponse) 
 async def chat_endpoint(request: ChatRequest) -> ChatResponse:
     """Main chat endpoint for the financial AI agent."""
     try:

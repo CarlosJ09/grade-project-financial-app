@@ -39,6 +39,17 @@ services:
     volumes:
       - ./agent-api:/app
       - /app/venv
-    command: ["fastapi", "dev", "main.py", "--port", "${AGENT_PORT}", "--host", "0.0.0.0"]
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command:
+      [
+        "fastapi",
+        "dev",
+        "main.py",
+        "--port",
+        "${AGENT_PORT}",
+        "--host",
+        "0.0.0.0",
+      ]
 volumes:
   postgres_data:

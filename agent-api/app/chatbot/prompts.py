@@ -5,44 +5,48 @@ from typing import Dict, List, Optional
 class FinancialPromptTemplates:
     """Template system for financial literacy chatbot prompts."""
     
-    SYSTEM_PROMPT = """You are a knowledgeable and friendly financial literacy assistant. Your role is to help users understand personal finance concepts, budgeting, investing, and making informed financial decisions.
+    SYSTEM_PROMPT = """Eres un asistente de educación financiera amigable y conocedor. Tu función es ayudar a los usuarios a comprender conceptos de finanzas personales, presupuestos, inversiones y tomar decisiones financieras informadas.
 
-Guidelines:
-- Provide clear, practical financial advice suitable for beginners to advanced users
-- Use examples relevant to everyday financial situations
-- Always emphasize the importance of personal financial responsibility
-- If you're unsure about specific financial regulations or tax advice, recommend consulting with a qualified professional
-- Focus on educational content rather than specific investment recommendations
-- Be supportive and encouraging about financial learning journeys
+IMPORTANTE: Debes responder SIEMPRE en español, sin importar el idioma en que te escriban.
 
-Context from user's financial app data: {user_context}
+Directrices:
+- Proporciona consejos financieros claros y prácticos adecuados para usuarios desde principiantes hasta avanzados
+- Usa ejemplos relevantes para situaciones financieras cotidianas
+- Enfatiza siempre la importancia de la responsabilidad financiera personal
+- Si no estás seguro sobre regulaciones financieras específicas o asesoramiento fiscal, recomienda consultar con un profesional calificado
+- Enfócate en contenido educativo en lugar de recomendaciones de inversión específicas
+- Sé comprensivo y alentador sobre los procesos de aprendizaje financiero
 
-Relevant financial education content: {rag_context}
+Contexto de los datos de la aplicación financiera del usuario: {user_context}
+
+Contenido de educación financiera relevante: {rag_context}
 """
 
-    CHAT_PROMPT = Template("""Based on the conversation history and relevant financial education materials, please provide a helpful response to the user's question about: $user_message
+    CHAT_PROMPT = Template("""Basándote en el historial de conversación y los materiales educativos financieros relevantes, proporciona una respuesta útil a la pregunta del usuario sobre: $user_message
 
-Previous conversation context:
+Contexto de conversación previo:
 $conversation_history
 
-Relevant educational content:
+Contenido educativo relevante:
 $rag_context
 
-User's financial context (if available):
+Contexto financiero del usuario (si está disponible):
 $user_context
 
-Please provide a comprehensive but concise response that:
-1. Directly addresses the user's question
-2. Incorporates relevant information from the educational materials
-3. Provides actionable advice when appropriate
-4. Suggests related topics they might want to learn about
+Por favor proporciona una respuesta completa pero concisa que:
+1. Responda directamente a la pregunta del usuario
+2. Incorpore información relevante de los materiales educativos
+3. Proporcione consejos prácticos cuando sea apropiado
+4. Sugiera temas relacionados que podrían interesarle
+
+IMPORTANTE: Tu respuesta debe ser COMPLETAMENTE en español.
 """)
 
-    RAG_CONTEXT_PROMPT = Template("""Here are relevant excerpts from financial education materials that may help answer the user's question:
+    RAG_CONTEXT_PROMPT = Template("""Aquí hay extractos relevantes de materiales de educación financiera que pueden ayudar a responder la pregunta del usuario:
 
 $retrieved_content
 
-Please use this information to provide context for your response, but don't simply repeat it. Synthesize and explain the concepts in a way that's most helpful for the user's specific question.
+Por favor usa esta información para proporcionar contexto en tu respuesta, pero no la repitas simplemente. Sintetiza y explica los conceptos de la manera más útil para la pregunta específica del usuario.
 """)
 
     CONVERSATION_SUMMARY_PROMPT = Template("""Please provide a brief summary of this financial conversation to maintain context:
@@ -59,33 +63,33 @@ Summary should capture:
 Keep summary under 200 words.
 """)
 
-    ERROR_RESPONSE = "I apologize, but I'm having trouble processing your request right now. Please try rephrasing your question about financial topics, and I'll do my best to help you learn about personal finance, budgeting, investing, or other money management topics."
+    ERROR_RESPONSE = "Lo siento, pero estoy teniendo problemas para procesar tu solicitud en este momento. Por favor intenta reformular tu pregunta sobre temas financieros, y haré mi mejor esfuerzo para ayudarte a aprender sobre finanzas personales, presupuestos, inversiones u otros temas de gestión del dinero."
 
     SUGGESTION_PROMPTS = {
-        "budgeting": [
-            "How do I create my first budget?",
-            "What's the 50/30/20 budgeting rule?",
-            "How can I stick to my budget better?",
+        "presupuesto": [
+            "¿Cómo creo mi primer presupuesto?",
+            "¿Qué es la regla 50/30/20 para presupuestos?",
+            "¿Cómo puedo seguir mejor mi presupuesto?",
         ],
-        "saving": [
-            "How much should I have in an emergency fund?",
-            "What are the best high-yield savings accounts?",
-            "How can I save money on everyday expenses?",
+        "ahorro": [
+            "¿Cuánto debería tener en un fondo de emergencia?",
+            "¿Cuáles son las mejores cuentas de ahorro de alto rendimiento?",
+            "¿Cómo puedo ahorrar dinero en gastos diarios?",
         ],
-        "investing": [
-            "What's the difference between stocks and bonds?",
-            "How do I start investing with little money?",
-            "What is dollar-cost averaging?",
+        "inversion": [
+            "¿Cuál es la diferencia entre acciones y bonos?",
+            "¿Cómo empiezo a invertir con poco dinero?",
+            "¿Qué es el promedio de costo en dólares?",
         ],
-        "debt": [
-            "Should I pay off debt or invest first?",
-            "What's the difference between good and bad debt?",
-            "How does the debt snowball method work?",
+        "deuda": [
+            "¿Debo pagar deudas o invertir primero?",
+            "¿Cuál es la diferencia entre deuda buena y mala?",
+            "¿Cómo funciona el método bola de nieve para deudas?",
         ],
-        "credit": [
-            "How can I improve my credit score?",
-            "What factors affect my credit score?",
-            "Should I close old credit cards?",
+        "credito": [
+            "¿Cómo puedo mejorar mi puntaje de crédito?",
+            "¿Qué factores afectan mi puntaje de crédito?",
+            "¿Debería cerrar tarjetas de crédito antiguas?",
         ],
     }
 
@@ -97,9 +101,9 @@ Keep summary under 200 words.
             if key in topic_lower:
                 return suggestions
         return [
-            "Tell me about budgeting basics",
-            "How do I start building an emergency fund?",
-            "What should I know about investing?",
+            "Cuéntame sobre conceptos básicos de presupuestos",
+            "¿Cómo empiezo a construir un fondo de emergencia?",
+            "¿Qué debo saber sobre inversiones?",
         ]
 
     @classmethod
@@ -113,9 +117,9 @@ Keep summary under 200 words.
         """Format the main chat prompt with context."""
         return cls.CHAT_PROMPT.substitute(
             user_message=user_message,
-            conversation_history=conversation_history or "No previous conversation.",
-            rag_context=rag_context or "No specific educational content retrieved.",
-            user_context=user_context or "No specific user financial context available.",
+            conversation_history=conversation_history or "No hay conversación previa.",
+            rag_context=rag_context or "No se recuperó contenido educativo específico.",
+            user_context=user_context or "No hay contexto financiero específico del usuario disponible.",
         )
 
     @classmethod
@@ -126,8 +130,8 @@ Keep summary under 200 words.
     ) -> str:
         """Format the system prompt with context."""
         return cls.SYSTEM_PROMPT.format(
-            user_context=user_context or "No specific user context available.",
-            rag_context=rag_context or "No specific educational content available.",
+            user_context=user_context or "No hay contexto específico del usuario disponible.",
+            rag_context=rag_context or "No hay contenido educativo específico disponible.",
         )
 
     @classmethod

@@ -87,18 +87,6 @@ app.add_middleware(
 app.include_router(router, prefix="/api/v1")
 
 
-@app.get("/")
-async def root():
-    """Root endpoint with basic API information."""
-    return {
-        "name": "Financial AI Agent API",
-        "version": "1.0.0",
-        "description": "AI-powered financial literacy assistant",
-        "docs_url": "/docs",
-        "health_check": "/api/v1/health",
-    }
-
-
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request, exc):
     """Global HTTP exception handler."""

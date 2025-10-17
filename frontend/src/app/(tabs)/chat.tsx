@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -11,12 +12,17 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/ThemedText';
+import { agentChatService } from '@/services/agentChat';
+import { useAuthStore } from '@/stores/authStore';
 
 interface Message {
   id: string;
   text: string;
   isUser: boolean;
   timestamp: Date;
+  sources?: string[];
+  suggestions?: string[];
+  thinking?: string; // AI's internal reasoning
 }
 
 export default function ChatScreen() {
@@ -30,31 +36,91 @@ export default function ChatScreen() {
   ]);
   const [inputText, setInputText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [sessionId, setSessionId] = useState<string | undefined>(undefined);
+  const [expandedThinking, setExpandedThinking] = useState<string | null>(null);
+  const scrollViewRef = useRef<ScrollView>(null);
+  const { user } = useAuthStore();
 
-  const sendMessage = () => {
-    if (inputText.trim()) {
-      const newMessage: Message = {
-        id: Date.now().toString(),
-        text: inputText,
-        isUser: true,
+  // Auto-scroll to bottom when messages change
+  useEffect(() => {
+    scrollViewRef.current?.scrollToEnd({ animated: true });
+  }, [messages]);
+
+  // Parse response to extract thinking tags
+  const parseResponse = (text: string) => {
+    const thinkRegex = /<think>([\s\S]*?)<\/think>/gi;
+    const thinkMatches = text.match(thinkRegex);
+
+    let thinking = '';
+    let cleanText = text;
+
+    if (thinkMatches) {
+      // Extract all thinking content
+      thinking = thinkMatches
+        .map(match => match.replace(/<\/?think>/gi, '').trim())
+        .join('\n\n');
+
+      // Remove thinking tags from the main text
+      cleanText = text.replace(thinkRegex, '').trim();
+    }
+
+    return { text: cleanText, thinking };
+  };
+
+  const sendMessage = async () => {
+    if (!inputText.trim()) return;
+
+    const newMessage: Message = {
+      id: Date.now().toString(),
+      text: inputText,
+      isUser: true,
+      timestamp: new Date(),
+    };
+
+    setMessages(prev => [...prev, newMessage]);
+    setInputText('');
+    setIsTyping(true);
+
+    try {
+      const response = await agentChatService.sendMessage({
+        message: newMessage.text,
+        session_id: sessionId,
+        user_id: user?.id || 'guest',
+        context: {}, // You can add user context here (balance, transactions, etc.)
+      });
+
+      // Store session ID for conversation continuity
+      if (!sessionId) {
+        setSessionId(response.session_id);
+      }
+
+      // Parse response to separate thinking from actual response
+      const parsed = parseResponse(response.message);
+
+      const aiResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: parsed.text,
+        thinking: parsed.thinking || undefined,
+        isUser: false,
+        timestamp: new Date(),
+        sources: response.sources,
+        suggestions: response.suggestions,
+      };
+
+      setMessages(prev => [...prev, aiResponse]);
+    } catch (error) {
+      console.error('Error sending message:', error);
+
+      const errorResponse: Message = {
+        id: (Date.now() + 1).toString(),
+        text: "Sorry, I'm having trouble connecting right now. Please try again in a moment.",
+        isUser: false,
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, newMessage]);
-      setInputText('');
-      setIsTyping(true);
-
-      // Simulate AI response
-      setTimeout(() => {
-        const aiResponse: Message = {
-          id: (Date.now() + 1).toString(),
-          text: "Thanks for your question! I'm currently being developed to provide personalized financial advice. Soon I'll be able to help you with detailed financial planning and insights based on your data.",
-          isUser: false,
-          timestamp: new Date(),
-        };
-        setMessages(prev => [...prev, aiResponse]);
-        setIsTyping(false);
-      }, 1500);
+      setMessages(prev => [...prev, errorResponse]);
+    } finally {
+      setIsTyping(false);
     }
   };
 
@@ -62,8 +128,11 @@ export default function ChatScreen() {
     'How can I start budgeting?',
     "What's a good savings rate?",
     'How do I build an emergency fund?',
-    'Should I invest or pay off debt first?',
   ];
+
+  const handleQuickQuestion = (question: string) => {
+    setInputText(question);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-white dark:bg-gray-900">
@@ -81,43 +150,136 @@ export default function ChatScreen() {
           </Text>
         </View>
 
-        {/* Welcome Message */}
-        <ScrollView className="flex-1 p-4">
-          <View className="mb-4 items-start">
-            <View className="max-w-[90%] rounded-2xl rounded-bl-md bg-gray-100 p-4 dark:bg-gray-800">
-              <Text className="mb-2 text-gray-900 dark:text-white">
-                Hello! I&apos;m your AI financial assistant 🤖
-              </Text>
-              <Text className="text-sm text-gray-700 dark:text-gray-300">
-                I can help you with budgeting, saving tips, investment advice,
-                and analyzing your spending patterns.
-              </Text>
-            </View>
-          </View>
+        {/* Messages */}
+        <ScrollView ref={scrollViewRef} className="flex-1 p-4">
+          {messages.map(message => (
+            <View
+              key={message.id}
+              className={`mb-4 ${message.isUser ? 'items-end' : 'items-start'}`}
+            >
+              <View
+                className={`max-w-[85%] rounded-2xl p-4 ${
+                  message.isUser
+                    ? 'rounded-tr-md bg-blue-500'
+                    : 'rounded-tl-md bg-gray-100 dark:bg-gray-800'
+                }`}
+              >
+                <Text
+                  className={`${
+                    message.isUser
+                      ? 'text-white'
+                      : 'text-gray-900 dark:text-white'
+                  }`}
+                >
+                  {message.text}
+                </Text>
 
-          {/* Quick Questions */}
-          <View className="mt-4">
-            <Text className="mb-3 text-sm text-gray-600 dark:text-gray-400">
-              Quick questions to get started:
-            </Text>
-            <View className="gap-2">
-              <TouchableOpacity className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
-                <Text className="text-sm text-gray-700 dark:text-gray-300">
-                  How can I start budgeting?
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
-                <Text className="text-sm text-gray-700 dark:text-gray-300">
-                  What&apos;s a good savings rate?
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800">
-                <Text className="text-sm text-gray-700 dark:text-gray-300">
-                  How do I build an emergency fund?
-                </Text>
-              </TouchableOpacity>
+                {/* AI Thinking Process (Collapsible) */}
+                {message.thinking && !message.isUser && (
+                  <View className="mt-3 border-t border-gray-200 pt-2 dark:border-gray-700">
+                    <TouchableOpacity
+                      onPress={() =>
+                        setExpandedThinking(
+                          expandedThinking === message.id ? null : message.id
+                        )
+                      }
+                      className="flex-row items-center justify-between"
+                    >
+                      <Text className="text-xs font-medium text-blue-600 dark:text-blue-400">
+                        💭 AI Reasoning Process
+                      </Text>
+                      <Text className="text-xs text-gray-500">
+                        {expandedThinking === message.id ? '▼' : '▶'}
+                      </Text>
+                    </TouchableOpacity>
+                    {expandedThinking === message.id && (
+                      <View className="mt-2 rounded-lg bg-gray-50 p-2 dark:bg-gray-700">
+                        <Text className="text-xs italic text-gray-600 dark:text-gray-400">
+                          {message.thinking}
+                        </Text>
+                      </View>
+                    )}
+                  </View>
+                )}
+
+                {/* Sources */}
+                {message.sources && message.sources.length > 0 && (
+                  <View className="mt-3 border-t border-gray-200 pt-2 dark:border-gray-700">
+                    <Text className="mb-1 text-xs text-gray-600 dark:text-gray-400">
+                      Sources:
+                    </Text>
+                    {message.sources.map((source, idx) => (
+                      <Text
+                        key={idx}
+                        className="text-xs text-gray-700 dark:text-gray-300"
+                      >
+                        • {source}
+                      </Text>
+                    ))}
+                  </View>
+                )}
+
+                {/* Suggestions */}
+                {message.suggestions && message.suggestions.length > 0 && (
+                  <View className="mt-3 gap-2">
+                    <Text className="text-xs text-gray-600 dark:text-gray-400">
+                      Related topics:
+                    </Text>
+                    {message.suggestions.map((suggestion, idx) => (
+                      <TouchableOpacity
+                        key={idx}
+                        onPress={() => handleQuickQuestion(suggestion)}
+                        className="rounded-lg bg-gray-200 p-2 dark:bg-gray-700"
+                      >
+                        <Text className="text-xs text-gray-700 dark:text-gray-300">
+                          {suggestion}
+                        </Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+              </View>
             </View>
-          </View>
+          ))}
+
+          {/* Typing Indicator */}
+          {isTyping && (
+            <View className="mb-4 items-start">
+              <View className="max-w-[85%] rounded-2xl rounded-tl-md bg-gray-100 p-4 dark:bg-gray-800">
+                <View className="flex-row items-center gap-2">
+                  <ActivityIndicator size="small" color="#3B82F6" />
+                  <Text className="text-sm text-gray-600 dark:text-gray-400">
+                    AI is thinking...
+                  </Text>
+                </View>
+                <Text className="mt-1 text-xs text-gray-500 dark:text-gray-500">
+                  This may take up to 30 seconds
+                </Text>
+              </View>
+            </View>
+          )}
+
+          {/* Quick Questions - Show only if no messages sent yet */}
+          {messages.length === 1 && (
+            <View className="mt-4">
+              <Text className="mb-3 text-sm text-gray-600 dark:text-gray-400">
+                Quick questions to get started:
+              </Text>
+              <View className="gap-2">
+                {quickQuestions.map((question, idx) => (
+                  <TouchableOpacity
+                    key={idx}
+                    onPress={() => handleQuickQuestion(question)}
+                    className="rounded-xl bg-gray-50 p-3 dark:bg-gray-800"
+                  >
+                    <Text className="text-sm text-gray-700 dark:text-gray-300">
+                      {question}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+          )}
         </ScrollView>
 
         {/* Input */}
@@ -129,9 +291,15 @@ export default function ChatScreen() {
               placeholderTextColor="#9CA3AF"
               value={inputText}
               onChangeText={setInputText}
+              onSubmitEditing={sendMessage}
               multiline
+              editable={!isTyping}
             />
-            <TouchableOpacity className="rounded-full bg-blue-500 p-3">
+            <TouchableOpacity
+              className="rounded-full bg-blue-500 p-3 disabled:opacity-50"
+              onPress={sendMessage}
+              disabled={isTyping || !inputText.trim()}
+            >
               <Text className="text-lg text-white">➤</Text>
             </TouchableOpacity>
           </View>

@@ -9,10 +9,64 @@ from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.schema import Document
 import uuid
-from sentence_transformers import SentenceTransformer
-import numpy as np
+import hashlib
+import re
 
 logger = logging.getLogger(__name__)
+
+try:
+    from sentence_transformers import SentenceTransformer
+    import numpy as np
+    SENTENCE_TRANSFORMERS_AVAILABLE = True
+except ImportError:
+    SENTENCE_TRANSFORMERS_AVAILABLE = False
+    logger.warning("sentence-transformers not available, using simple text matching")
+
+
+class SimpleTextEmbedder:
+    """Simple text embedder that uses basic text features when sentence-transformers is not available."""
+    
+    def __init__(self):
+        self.vocab_size = 10000  # Simple vocabulary for basic embedding
+        
+    def encode(self, texts: List[str]) -> List[List[float]]:
+        """Create simple embeddings based on text features."""
+        embeddings = []
+        for text in texts:
+            # Simple embedding based on text characteristics
+            text_lower = text.lower()
+            
+            # Basic features
+            features = [
+                len(text),  # Text length
+                len(text.split()),  # Word count
+                text.count('.'),  # Sentence count approximation
+                text.count('$'),  # Dollar signs (financial context)
+                text.count('%'),  # Percentages
+                len(re.findall(r'\d+', text)),  # Number count
+                len(set(text_lower.split())),  # Unique word count
+                text_lower.count('budget'),
+                text_lower.count('save'),
+                text_lower.count('invest'),
+                text_lower.count('debt'),
+                text_lower.count('money'),
+                text_lower.count('financial'),
+                text_lower.count('credit'),
+                text_lower.count('loan'),
+                text_lower.count('bank'),
+            ]
+            
+            # Normalize features to 0-1 range (simple approach)
+            max_vals = [1000, 200, 20, 10, 10, 50, 100] + [20] * 9  # Rough maximums
+            normalized = [min(f / max_val, 1.0) for f, max_val in zip(features, max_vals)]
+            
+            # Pad to fixed size
+            while len(normalized) < 32:
+                normalized.append(0.0)
+            
+            embeddings.append(normalized[:32])
+        
+        return embeddings
 
 
 class RAGPipeline:
@@ -38,6 +92,7 @@ class RAGPipeline:
         self.embedding_model = None
         self.chroma_client = None
         self.collection = None
+        self.using_simple_embedder = False
         self.text_splitter = RecursiveCharacterTextSplitter(
             chunk_size=1000,
             chunk_overlap=200,
@@ -47,9 +102,22 @@ class RAGPipeline:
     async def initialize(self) -> bool:
         """Initialize the RAG pipeline."""
         try:
-            # Initialize embedding model
-            logger.info(f"Loading embedding model: {self.embedding_model_name}")
-            self.embedding_model = SentenceTransformer(self.embedding_model_name)
+            # Initialize embedding model with fallback
+            if SENTENCE_TRANSFORMERS_AVAILABLE:
+                try:
+                    logger.info(f"Loading embedding model: {self.embedding_model_name}")
+                    self.embedding_model = SentenceTransformer(self.embedding_model_name)
+                    logger.info("Successfully loaded SentenceTransformer model")
+                    self.using_simple_embedder = False
+                except Exception as e:
+                    logger.warning(f"Failed to load SentenceTransformer: {str(e)}")
+                    logger.info("Falling back to simple text embedder")
+                    self.embedding_model = SimpleTextEmbedder()
+                    self.using_simple_embedder = True
+            else:
+                logger.info("SentenceTransformers not available, using simple text embedder")
+                self.embedding_model = SimpleTextEmbedder()
+                self.using_simple_embedder = True
             
             # Initialize ChromaDB
             self.chroma_client = chromadb.PersistentClient(
@@ -223,6 +291,8 @@ class RAGPipeline:
                 "unique_sources": len(sources),
                 "sources": list(sources)[:10],  # Show first 10 sources
                 "embedding_model": self.embedding_model_name,
+                "using_simple_embedder": self.using_simple_embedder,
+                "embedder_type": "Simple Text Features" if self.using_simple_embedder else "SentenceTransformers",
             }
             
         except Exception as e:
